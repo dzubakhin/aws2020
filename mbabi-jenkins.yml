@@ -1,0 +1,176 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+
+  Key:
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: 30deysdevops
+
+  Environment:
+    Type: String
+    Description: Environment (qa, prod).
+    AllowedValues: [qa, prod]
+    ConstraintDescription: Must be a valid environment name
+
+  Owner:
+    Type: String
+    Description: Owner
+    Default: 'mbabi'
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-0080e4c5bc078760e
+    us-west-1:
+      AMI: ami-0bdb828fd58c52235
+
+Resources:
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: "/"
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: EC2
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Resource: "*"
+                Action:
+                  - ec2:*
+                  - s3:*
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - Ref: InstanceRole
+
+  LaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      SecurityGroups: [!Ref SSHSecurityGroup, !Ref HTTPSecurityGroup]
+      InstanceType: t2.micro
+      IamInstanceProfile: !Ref InstanceProfile
+      # SpotPrice: "0.007"
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+
+          # sudo yum install -y aws-cfn-bootstrap
+          # sudo /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfig --region ${AWS::Region} -c prepare
+          # sudo /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfig --region ${AWS::Region} -c install
+          # sudo /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfig --region ${AWS::Region} -c config
+
+          sudo /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfig --region ${AWS::Region}
+
+          # Signal the status from cfn-init
+          sudo /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource LaunchConfig --region ${AWS::Region}
+
+          /opt/aws/bin/cfn-hup || error_exit 'Failed to start cfn-hup'
+
+      KeyName: !Ref Key
+    Metadata:
+      "AWS::CloudFormation::Init":
+        configSets:
+          prepare:
+            - addrepo
+            - yumupdate
+          install:
+            - install
+          config:
+            - config
+          default:
+            - ConfigSet: prepare
+            - ConfigSet: install
+            - ConfigSet: config
+        yumupdate:
+          commands:
+            update:
+              command: "yum -y update"
+        addrepo:
+          files:
+            "/etc/yum.repos.d/jenkins.repo":
+              source: http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
+              mode: 0644
+              owner: root
+              group: root
+          commands:
+            set_key:
+              command: "rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key"
+        install:
+          packages:
+            yum:
+              nginx: []
+              jenkins: []
+              java-1.8.0-openjdk-devel: []
+              git: []
+        config:
+          commands:
+            set_altern:
+              command: "alternatives --set java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java"
+            get_nginx_conf:
+              command: "aws s3 cp s3://30daysdevops/nick/nginx.conf /etc/nginx/"
+          # TODO: Why doesnt not work with S3?
+          # files:
+          #   "/etc/nginx/nginx.conf":
+          #     source: s3://30daysdevops/nick/nginx.conf
+          #     mode: 0644
+          #     owner: root
+          #     group: root
+          services:
+            sysvinit:
+              nginx:
+                enabled: true
+                ensureRunning: true
+                # files:
+                #   - "/etc/nginx/nginx.conf"
+              jenkins:
+                enabled: true
+                ensureRunning: true
+
+  ServerGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AvailabilityZones:
+        Fn::GetAZs: ''
+      LaunchConfigurationName: !Ref LaunchConfig
+      MinSize: '1'
+      MaxSize: '3'
+      Cooldown: 60
+      DesiredCapacity: 1
+      Tags:
+      - Key: 'Name'
+        Value: 'nick-jenkins'
+        PropagateAtLaunch: true
+      - Key: 'Owner'
+        Value: 'Nick'
+        PropagateAtLaunch: true
+
+  SSHSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+
+  HTTPSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP access via port 80
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
