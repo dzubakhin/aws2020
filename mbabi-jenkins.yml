@@ -43,8 +43,12 @@ Resources:
               - Effect: Allow
                 Resource: "*"
                 Action:
-                  - ec2:*
-                  - s3:*
+                  - s3:GetObject
+                  - s3:PutObject
+                  - cloudformation:CreateStack
+                  - iam:CreateInstanceProfile
+                  - iam:CreateRole
+                  - autoscaling:CreateLaunchConfiguration
 
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
