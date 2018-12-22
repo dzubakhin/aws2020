@@ -1,0 +1,1 @@
+AWS EBS volume for Jenkins working directory

@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  Size:
+    Type: Number
+    Description: Size of volume in GB
+    Default: 8
+
+Resources:
+  EBSVolume:
+    Type: AWS::EC2::Volume
+    Properties:
+      AvailabilityZone: us-east-1a
+      Encrypted: No
+      Size: !Ref Size
+      Tags:
+        - 
+          Key: "service"
+          Value: "jenkins"
+      VolumeType: gp2
