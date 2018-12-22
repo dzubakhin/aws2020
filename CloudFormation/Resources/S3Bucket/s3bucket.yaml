@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  S3Name:
+    Type: String
+    Description: The S3 bucket name
+    Default: 30daysdevops
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref S3Name
+      AccessControl: BucketOwnerFullControl
