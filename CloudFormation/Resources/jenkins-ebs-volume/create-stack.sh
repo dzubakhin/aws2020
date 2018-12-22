@@ -7,7 +7,7 @@ set -o nounset
 #
 # @param $1 - The AWS region. us-east-1 used
 # @param $2 - [Optional] Stack name. "S3Bucket" used by default.
-# @param $3 - Name of created bucket
+# @param $3 - Size of volume
 #--------------------------------------------------------------------------------------------------
 function launch() {
   local region="${1}"
@@ -17,9 +17,9 @@ function launch() {
   local params=""
   params="${params:+${params} }ParameterKey=Size,ParameterValue=${size}"
 
-  aws cloudformation create-stack                       \
-    --stack-name "${stack_name}"                        \
-    --region "${region}"                                \
+  aws cloudformation create-stack                         \
+    --stack-name "${stack_name}"                          \
+    --region "${region}"                                  \
     --template-body file://$(dirname $0)/ebs-volume.yaml  \
     --parameters ${params}
 }
