@@ -1,0 +1,130 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  Environment:
+    Type: String
+    Description: Environment (qa, prod).
+    AllowedValues: [qa, prod]
+    ConstraintDescription: Must be a valid environment name
+  Owner:
+    Type: String
+    Description: Owner
+    Default: 'max'
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-00b94673edfccb7ca
+Resources:
+  SimpleConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      KeyName: 30deysdevops
+      SecurityGroups:
+      - Ref: InstanceSecurityGroup
+      InstanceType: t2.micro
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          sudo yum update -y
+          sudo amazon-linux-extras install -y docker
+          sudo service docker start
+          sudo usermod -a -G docker ec2-user
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          curl -sSL https://raw.githubusercontent.com/bitnami/bitnami-docker-jenkins/master/docker-compose.yml > docker-compose.yml
+          docker-compose up -d
+         # mount disc
+          sudo file -s /dev/sdh
+         # resurce
+          sudo yum install -y aws-cfn-bootstrap
+          sudo /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource MyServerGroup --region ${AWS::Region}
+
+          /opt/aws/bin/cfn-hup || error_exit 'Failed to start cfn-hup'
+
+          # Signal the status from cfn-init
+          sudo /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource MyServerGroup --region ${AWS::Region}
+
+          #!/usr/bin/env python
+          from boto.s3.connection import S3Connection
+          from boto.s3.key import Key
+          from boto.sqs.message import Message
+          from boto.ec2.connection import EC2Connection
+          import boto
+          import re, sys, os, stat, subprocess, json, time, logging
+
+          boto.set_file_logger('boto', '/home/ec2-user/boto.log', format_string="%(asctime)s - %(levelname)s - %(message)s")
+          logging.getLogger('boto').setLevel(logging.DEBUG)
+
+          sqs=boto.sqs.connect_to_region('us-east-1')
+          s3=boto.connect_s3()
+          ec2=boto.ec2.connect_to_region('us-east-1')
+          boto.log.info('Connections made')
+
+          inst_id=subprocess.check_output(["GET", "http://169.254.169.254/latest/meta-data/instance-id"])
+          boto.log.info('Got instance ID')
+
+          volume=ec2.create_volume(size=8, zone='us-east-1a', snapshot='')
+          vol_id=str(volume).split(':')[-1]
+          ec2.attach_volume(instance_id=inst_id, volume_id=vol_id, device='/dev/sdf')
+          while volume.status != u'available':
+              time.sleep(15)
+              volume.update()
+              volume.status
+          boto.log.info('volume attached')
+
+          #This doesn't work:
+          cmd=('sudo', 'mount', '/dev/sdf', '/jenkins_config')
+          c=subprocess.call(cmd)
+  MyServerGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AvailabilityZones:
+        Fn::GetAZs: 'us-east-1a'
+      InstanceId: !Ref AvailabilityZones
+      LaunchConfigurationName: !Ref SimpleConfig
+      MinSize: '1'
+      MaxSize: '3'
+      Tags:
+        - Key: 'Service'
+          Value: 'jenkins'
+          PropagateAtLaunch: true
+        - Key: 'Owner'
+          Value: 'max'
+          PropagateAtLaunch: true
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 50000
+        ToPort: 50000
+        CidrIp: 0.0.0.0/0
+
+  NewVolume:
+    Type: AWS::EC2::Volume
+    Properties:
+      Size: 8
+      VolumeType: gp2
+      AvailabilityZone:
+        Fn::GetAtt: [ "InstanceId", "AvailabilityZone" ]
+
+  MountPoint:
+    Type: AWS::EC2::VolumeAttachment
+    Properties:
+      InstanceId: !Ref AvailabilityZone
+      VolumeId: !Ref NewVolume
+      Device: /dev/sdf

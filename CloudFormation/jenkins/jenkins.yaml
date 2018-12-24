@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of the SSH keypair to use for the EC2 instances.
+    Default: 30deysdevops
+
+  InstanceType:
+    Type: String
+    Description: Type of EC2 instance
+    Default: t2.micro
+    ConstraintDescription: Must be a valid EC2 instance type.
+
+  Environment:
+    Type: String
+    Description: Environment (qa, prod).
+    AllowedValues: [qa, prod]
+    Default: qa
+    ConstraintDescription: Must be a valid environment name
+
+  S3Path:
+    Type: String
+    Description: The S3 path
+    Default: 30daysdevops
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-0ff8a91507f77f867
+
+Resources:
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: "/"
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: EC2
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Resource: "*"
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - cloudformation:CreateStack
+                  - iam:CreateInstanceProfile
+                  - iam:CreateRole
+                  - autoscaling:CreateLaunchConfiguration
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - Ref: InstanceRole
+
+  SimpleConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      IamInstanceProfile: !Ref InstanceProfile
+      KeyName: !Ref KeyPairName
+      SecurityGroups:
+      - Ref: InstanceSecurityGroup
+      InstanceType: !Ref InstanceType
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          set -o errexit
+          set -o nounset
+          set -o xtrace
+
+          aws s3 cp "s3://${S3Path}/artem/install-jenkins.sh" - |         \
+            bash -l -s --                                                 \
+            --hostname jenkins-"${Environment}"
+
+          echo $(date): Finished installing Jenkins
+
+  MyServerGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      Tags:
+        - Key: 'Service'
+          Value: 'Jenkins'
+          PropagateAtLaunch: true
+        - Key: 'Owner'
+          Value: 'auskov'
+          PropagateAtLaunch: true
+      AvailabilityZones:
+        Fn::GetAZs: ''
+      LaunchConfigurationName: !Ref SimpleConfig
+      MinSize: '1'
+      MaxSize: '3'
+
+  InstanceSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: SSH, HTTP
+        SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
