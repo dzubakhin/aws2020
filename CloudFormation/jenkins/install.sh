@@ -275,6 +275,18 @@ EOF
 
 
 #-------------------------------------------------------------------------------
+# Install a Jenkins
+#-------------------------------------------------------------------------------
+function install_jenkins() {
+  curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
+  rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+  yum_install jenkins
+  yum remove -y java-1.7.0-openjdk
+  yum_install java-1.8.0
+  service jenkins start
+}
+
+#-------------------------------------------------------------------------------
 # Install Jenkins.
 #-------------------------------------------------------------------------------
 function main() {
@@ -287,6 +299,8 @@ function main() {
   set_hostname ${name}
 
   mount_jenkins_data_volume ${region}
+
+  install_jenkins
 
   wait_until yum update -y aws-cli
 

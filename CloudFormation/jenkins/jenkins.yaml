@@ -88,10 +88,10 @@ Resources:
     Properties:
       Tags:
         - Key: 'service'
-          Value: 'senkins'
+          Value: 'jenkins'
           PropagateAtLaunch: true
       AvailabilityZones:
-        Fn::GetAZs: ''
+        - 'us-east-1a'
       LaunchConfigurationName: !Ref SimpleConfig
       MinSize: '1'
       MaxSize: '3'
