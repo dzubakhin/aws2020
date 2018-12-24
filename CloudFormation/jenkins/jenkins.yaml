@@ -80,11 +80,8 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       Tags:
-        - Key: 'Service'
-          Value: 'Jenkins'
-          PropagateAtLaunch: true
-        - Key: 'Owner'
-          Value: 'auskov'
+        - Key: 'service'
+          Value: 'senkins'
           PropagateAtLaunch: true
       AvailabilityZones:
         Fn::GetAZs: ''
