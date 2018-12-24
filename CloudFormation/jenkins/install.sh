@@ -314,6 +314,8 @@ function main() {
 
   install_jenkins
 
+  install_nginx
+
   wait_until yum update -y aws-cli
 
 }
