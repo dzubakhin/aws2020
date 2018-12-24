@@ -11,13 +11,6 @@ Parameters:
     Default: t2.micro
     ConstraintDescription: Must be a valid EC2 instance type.
 
-  Environment:
-    Type: String
-    Description: Environment (qa, prod).
-    AllowedValues: [qa, prod]
-    Default: qa
-    ConstraintDescription: Must be a valid environment name
-
   S3Path:
     Type: String
     Description: The S3 path
@@ -77,9 +70,9 @@ Resources:
           set -o nounset
           set -o xtrace
 
-          aws s3 cp "s3://${S3Path}/artem/install-jenkins.sh" - |         \
+          aws s3 cp "s3://${S3Path}/scripts/jenkins/install.sh" - |         \
             bash -l -s --                                                 \
-            --hostname jenkins-"${Environment}"
+            --hostname jenkins
 
           echo $(date): Finished installing Jenkins
 
