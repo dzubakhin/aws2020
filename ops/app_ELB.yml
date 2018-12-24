@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+################################################################################
+# Parameters
+################################################################################
+Parameters:
+  Environment:
+    Type: String
+    Description: Environment (qa, prod).
+    AllowedValues: [qa, prod]
+    ConstraintDescription: Must be a valid environment name
+
+  Owner:
+    Type: String
+    Description: Owner
+    Default: 'mbabi'
+
+  Name:
+    Type: String
+    Default: nick
+    MaxLength: 50     # optional
+    MinLength: 1     # optional
+
+################################################################################
+# Resources
+################################################################################
+Resources:
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      # SecurityGroups: [!Ref HTTPSecurityGroup]
+      AvailabilityZones:
+        Fn::GetAZs: ''
+      Listeners:
+        - InstancePort: 80
+          LoadBalancerPort: 80
+          Protocol: HTTP
+      HealthCheck:
+        Target: HTTP:80/
+        HealthyThreshold: '3'
+        UnhealthyThreshold: '5'
+        Interval: '30'
+        Timeout: '2'
+      Tags:
+      - Key: 'Name'
+        Value: !Ref Name
+      - Key: 'Owner'
+        Value: !Ref Owner
+
+Outputs:
+  LoadBalancerID:
+    Description: Apps LoadBalancer ID
+    Value: !Ref LoadBalancer
+    Export:
+      Name: !Sub "${AWS::StackName}-LoadBalancerID"
