@@ -170,6 +170,7 @@ function attach_volume() {
       --region ${region}
       --description 'Jenkins-data'
       --volume-id $volume_id
+      --tag-specifications 'ResourceType=snapshot,Tags=[{Key=service,Value=jenkins}]'
   "
 # Attach the EBS data volume as /dev/sdh
   wait_until aws ec2 attach-volume                    \
