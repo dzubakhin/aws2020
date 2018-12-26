@@ -64,14 +64,20 @@ Resources:
           # set -x
 
           sudo yum install -y aws-cfn-bootstrap
-          sudo /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebLaunchConfig --region ${AWS::Region}
+          sudo /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} \
+                                        --resource WebLaunchConfig \
+                                        --region ${AWS::Region}
 
-          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebLaunchConfig --region ${AWS::Region}
+          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} \
+                                        --resource WebServerGroup \
+                                        --region ${AWS::Region}
 
-          aws s3 cp s3://30daysdevops/nick/app.pp ./
-          sudo /opt/puppetlabs/bin/puppet apply app.pp
+          aws s3 cp s3://30daysdevops/nick/app.pp ./ && \
+            sudo /opt/puppetlabs/bin/puppet apply app.pp
 
-          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebLaunchConfig --region ${AWS::Region}
+          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} \
+                                        --resource WebServerGroup \
+                                        --region ${AWS::Region}
     Metadata:
       "AWS::CloudFormation::Init":
           config:
@@ -102,6 +108,10 @@ Resources:
         - Key: 'Owner'
           Value: !Ref Owner
           PropagateAtLaunch: true
+    CreationPolicy:
+      ResourceSignal:
+        Count: 2
+        Timeout: "PT5M"
 
   WebServerScaleUpPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
