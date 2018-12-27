@@ -300,25 +300,67 @@ function install_nginx() {
 }
 
 #-------------------------------------------------------------------------------
+# Install and configure the DataDog agent on the current instance.
+#
+# @param $1 - The API key to connect to DataDog with.
+#-------------------------------------------------------------------------------
+function install_datadog() {
+  local api_key="${1}"
+
+
+  log "Installing datadog-agent..."
+  DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
+  log "Done."
+
+  log "Configuring datadog..."
+  local tags=""
+  tags="${tags:+${tags}, }service:jenkins"
+
+  cat > /etc/dd-agent/datadog.conf <<EOF
+[Main]
+dd_url: https://app.datadoghq.com
+api_key: ${api_key}
+tags: ${tags}
+EOF
+  log "Done."
+
+  log "Starting datadog-agent..."
+  service datadog-agent start
+  log "Done."
+}
+
+#-------------------------------------------------------------------------------
 # Install Jenkins.
 #-------------------------------------------------------------------------------
 function main() {
   local region=$(get_ec2_instance_region)
+  local hostname=""
+  local datadog_api_key=""
 
-  # Readable hostname
-  local name="jenkins"
+    while [[ ${#} -gt 0 ]]; do
+    case "${1}" in
+      --datadog-key)    datadog_api_key="${2}"
+                        shift 2 ;;
+      --hostname)       hostname="${2}"
+                        shift 2 ;;
+      *)                error Unrecognized option "${1}" ;;
+    esac
+  done
+
+  yum update -y
+
+  if [[ -n "${datadog_api_key}" ]]; then
+    install_datadog "${datadog_api_key}"
+  fi
 
   # Set the hostname
-  set_hostname ${name}
+  set_hostname ${hostname}
 
   mount_jenkins_data_volume ${region}
 
   install_jenkins
 
   install_nginx
-
-  wait_until yum update -y aws-cli
-
 }
 
 exec &> >(logger -t "cloud_init" -p "local0.info")

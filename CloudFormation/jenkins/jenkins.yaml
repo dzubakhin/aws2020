@@ -16,6 +16,11 @@ Parameters:
     Description: The S3 path
     Default: 30daysdevops
 
+  DatadogApiKey:
+    Type: String
+    Description: API key for datadog agent
+    NoEcho: true
+
 Mappings:
   RegionMap:
     us-east-1:
@@ -77,8 +82,9 @@ Resources:
           set -o nounset
           set -o xtrace
 
-          aws s3 cp "s3://${S3Path}/scripts/jenkins/install.sh" - |         \
+          aws s3 cp "s3://${S3Path}/scripts/jenkins/install.sh" - |       \
             bash -l -s --                                                 \
+            --datadog-key "${DatadogApiKey}"                              \
             --hostname jenkins
 
           echo $(date): Finished installing Jenkins
