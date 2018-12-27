@@ -55,6 +55,11 @@ Resources:
       InstanceType: t2.micro
       KeyName: !Ref SSHKey
       IamInstanceProfile: !Ref InstanceProfile
+      AssociatePublicIpAddress: no
+      ClassicLinkVPCId:
+        - Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
+      ClassicLinkVPCSecurityGroups:
+        - Fn::ImportValue: !Sub "${VPCStackName}-DefaultSecurityGroup"
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
@@ -84,7 +89,6 @@ Resources:
     Properties:
       VPCZoneIdentifier: 
         - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
-      AssociatePublicIpAddress: no
       AvailabilityZones:
         Fn::GetAZs: ''
       LaunchConfigurationName: !Ref WebLaunchConfig

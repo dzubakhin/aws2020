@@ -220,8 +220,8 @@
       Export:
         Name: !Sub "${AWS::StackName}-PrivateSubnet0"
 
-#    DefaultSecurityGroup:
-#      Description: "DefaultSecurityGroup Id"
-#      Value: !GetAtt VPC.DefaultSecurityGroup
-#      Export:
-#        Name: !Sub "${AWS::StackName}-DefaultSecurityGroup"
+    DefaultSecurityGroup:
+      Description: "DefaultSecurityGroup Id"
+      Value: !GetAtt VPC.DefaultSecurityGroup
+      Export:
+        Name: !Sub "${AWS::StackName}-DefaultSecurityGroup"
