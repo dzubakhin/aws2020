@@ -8,6 +8,11 @@ Parameters:
     Default: app-ELB
     MinLength: 1
 
+  VPCStackName:
+    Type: String
+    Default: ProjectVPC
+    MinLength: 1
+
   SSHKey:
     Type: AWS::EC2::KeyPair::KeyName
     Default: 30deysdevops
@@ -35,15 +40,8 @@ Mappings:
   RegionMap:
     us-east-1:
       AMI: ami-0080e4c5bc078760e
-    us-west-1:
-      AMI: ami-0bdb828fd58c52235
-
-  # TODO: Complete this!
-  # Subnets:
-  #   us-east-1:
-  #     Subnet: []
-  #   us-west-2:
-  #     Subnet: []
+#    us-west-1:
+#      AMI: ami-0bdb828fd58c52235
 
 ################################################################################
 # Resources
@@ -84,6 +82,9 @@ Resources:
   WebServerGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
+      VPCZoneIdentifier: 
+        - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
+      AssociatePublicIpAddress: no
       AvailabilityZones:
         Fn::GetAZs: ''
       LaunchConfigurationName: !Ref WebLaunchConfig
@@ -92,7 +93,7 @@ Resources:
       HealthCheckType: ELB
       HealthCheckGracePeriod: 120
       MinSize: '1'
-      MaxSize: '5'
+      MaxSize: '1'
       Cooldown: 60
       DesiredCapacity: 1
       Tags:
