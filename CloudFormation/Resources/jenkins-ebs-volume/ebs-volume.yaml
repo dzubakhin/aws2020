@@ -18,14 +18,46 @@ Resources:
           Value: "jenkins"
       VolumeType: gp2
 
+  DLMRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: "Allow"
+          Principal:
+            Service:
+              - "ec2.amazonaws.com"
+          Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: "dlmservice"
+          PolicyDocument:
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - ec2:CreateSnapshot
+                  - ec2:DeleteSnapshot
+                  - ec2:DescribeVolumes
+                  - ec2:DescribeSnapshots
+                Resource: "*"
+              - Effect: "Allow"
+                Action:
+                  - ec2:CreateTags
+                Resource: "arn:aws:ec2:*::snapshot/*"
+
   BasicLifecyclePolicy:
     Type: "AWS::DLM::LifecyclePolicy"
     Properties:
       Description: "Lifecycle Policy for Jenkins"
+      ExecutionRoleArn: !GetAtt DLMRole.Arn
       State: "ENABLED"
       PolicyDetails:
         ResourceTypes:
           - "VOLUME"
+        TargetTags:
+          - Key: "resource"
+            Value: "snapshot"
 
         Schedules:
           -
