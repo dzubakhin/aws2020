@@ -276,28 +276,18 @@ EOF
 
 
 #-------------------------------------------------------------------------------
-# Install a Jenkins
+# Install a Jenkins Docker
 #-------------------------------------------------------------------------------
 function install_jenkins() {
-  curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
-  rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
-  yum_install jenkins
-  yum remove -y java-1.7.0-openjdk
-  yum_install java-1.8.0
-  service jenkins start
+  yum install -y docker
+  service docker start
+  usermod -a -G docker ec2-user
+  curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
+  chmod +x /usr/bin/docker-compose
+  aws s3 cp s3://30daysdevops/scripts/jenkins/docker-compose.yml /home/ec2-user/docker-compose.yml
+  docker-compose -f /home/ec2-user/docker-compose.yml up -d
 }
 
-#-------------------------------------------------------------------------------
-# Install Nginx
-#-------------------------------------------------------------------------------
-function install_nginx() {
-  yum_install epel-release
-  yum_install nginx
-
-  aws s3 cp s3://30daysdevops/artem/nginx.conf /etc/nginx/nginx.conf
-
-  service nginx start
-}
 
 #-------------------------------------------------------------------------------
 # Install and configure the DataDog agent on the current instance.
@@ -347,7 +337,7 @@ function main() {
     esac
   done
 
-  yum update -y
+  wait_until yum update -y
 
   if [[ -n "${datadog_api_key}" ]]; then
     install_datadog "${datadog_api_key}"
@@ -359,8 +349,6 @@ function main() {
   mount_jenkins_data_volume ${region}
 
   install_jenkins
-
-  install_nginx
 }
 
 exec &> >(logger -t "cloud_init" -p "local0.info")
