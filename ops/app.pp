@@ -1,3 +1,9 @@
+$var_json = generate('/usr/bin/aws', '--output', 'json', '--region',
+  'us-east-1', 'secretsmanager', 'get-secret-value',
+  '--secret-id', 'datadog_api_key')
+$secret_data = parsejson($var_json)
+$datadog_api_key = $secret_data['SecretString'].split(':')[1].split('"')[1]
+
 yumrepo { 'Datadog':
   ensure   => present,
   name     => 'datadog',
@@ -40,7 +46,7 @@ file { '/etc/datadog-agent/datadog.yaml':
   mode    => '0640',
   owner   => dd-agent,
   group   => dd-agent,
-  content => "api_key: 999bec7755b4411e669ecbb204ccd5ab\n",
+  content => "api_key: ${datadog_api_key}\n",
   # source => '/etc/datadog-agent/datadog.yaml.example',
   notify  => Service['datadog-agent']
 }
