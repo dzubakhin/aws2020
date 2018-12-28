@@ -9,11 +9,6 @@ Parameters:
     AllowedValues: [qa, prod]
     ConstraintDescription: Must be a valid environment name
 
-  Owner:
-    Type: String
-    Description: Owner
-    Default: 'mbabi'
-
   Name:
     Type: String
     Default: nick
@@ -43,8 +38,6 @@ Resources:
       Tags:
       - Key: 'Name'
         Value: !Ref Name
-      - Key: 'Owner'
-        Value: !Ref Owner
 
 Outputs:
   LoadBalancerID:
