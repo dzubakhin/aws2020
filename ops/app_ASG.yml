@@ -56,17 +56,12 @@ Resources:
       KeyName: !Ref SSHKey
       IamInstanceProfile: !Ref InstanceProfile
       AssociatePublicIpAddress: no
-      ClassicLinkVPCId:
-        - Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
-      ClassicLinkVPCSecurityGroups:
-        - Fn::ImportValue: !Sub "${VPCStackName}-DefaultSecurityGroup"
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          # set -o
-          # set -x
 
-          sudo yum install -y aws-cfn-bootstrap
+          sudo yum install -y aws-cfn-bootstrap httpd
+          sudo service httpd start
           sudo /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebLaunchConfig --region ${AWS::Region}
 
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebLaunchConfig --region ${AWS::Region}
@@ -88,16 +83,14 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier: 
-        - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
-      AvailabilityZones:
-        Fn::GetAZs: ''
+        - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
       LaunchConfigurationName: !Ref WebLaunchConfig
       LoadBalancerNames:
         - Fn::ImportValue: !Sub "${ELBStackName}-LoadBalancerID"
       HealthCheckType: ELB
       HealthCheckGracePeriod: 120
       MinSize: '1'
-      MaxSize: '1'
+      MaxSize: '3'
       Cooldown: 60
       DesiredCapacity: 1
       Tags:
@@ -188,6 +181,8 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable SSH access via port 22
+      VpcId:
+        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 22
@@ -198,6 +193,8 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable HTTP access via port 80
+      VpcId: 
+        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 80

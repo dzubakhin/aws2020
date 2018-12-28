@@ -44,6 +44,7 @@
           - Key: "Name"
             Value: "VPC Public and Private with NAT"
 
+
     PublicSubnet0:
       Type: "AWS::EC2::Subnet"
       Properties:
@@ -180,7 +181,8 @@
           Fn::GetAtt:
             - "ElasticIP0"
             - "AllocationId"
-        SubnetId: !Ref "PublicSubnet0"
+#        SubnetId: !Ref "PublicSubnet0"
+        SubnetId: !Ref "PrivateSubnet0"
 
     PrivateRouteTable0:
       Type: "AWS::EC2::RouteTable"
@@ -202,10 +204,11 @@
 
   Outputs:
 
-    VPCId:
+    VPC:
       Description: "VPCId of VPC"
       Value: !Ref "VPC"
       Export:
+        Type: String
         Name: !Sub "${AWS::StackName}-VPCId"
 
     PublicSubnet0:
