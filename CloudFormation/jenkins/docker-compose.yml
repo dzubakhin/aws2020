@@ -9,4 +9,4 @@ services:
 #      - '443:8443'
 #      - '50000:50000'
     volumes:
-      - /jenkins_config:/bitnami/jenkins
+      - /var/lib/jenkins:/bitnami/jenkins

@@ -276,27 +276,47 @@ EOF
 
 
 #-------------------------------------------------------------------------------
-# Install a Jenkins
+# Install a Jenkins Docker
 #-------------------------------------------------------------------------------
 function install_jenkins() {
-  curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
-  rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
-  yum_install jenkins
-  yum remove -y java-1.7.0-openjdk
-  yum_install java-1.8.0
-  service jenkins start
+  yum install -y docker
+  service docker start
+  usermod -a -G docker ec2-user
+  curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
+  chmod +x /usr/bin/docker-compose
+  aws s3 cp s3://30daysdevops/scripts/jenkins/docker-compose.yml /home/ec2-user/docker-compose.yml
+  docker-compose -f /home/ec2-user/docker-compose.yml up -d
 }
 
-#-------------------------------------------------------------------------------
-# Install Nginx
-#-------------------------------------------------------------------------------
-function install_nginx() {
-  yum_install epel-release
-  yum_install nginx
 
-  aws s3 cp s3://30daysdevops/artem/nginx.conf /etc/nginx/nginx.conf
+#-------------------------------------------------------------------------------
+# Install and configure the DataDog agent on the current instance.
+#
+# @param $1 - The API key to connect to DataDog with.
+#-------------------------------------------------------------------------------
+function install_datadog() {
+  local api_key="${1}"
 
-  service nginx start
+
+  log "Installing datadog-agent..."
+  DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
+  log "Done."
+
+  log "Configuring datadog..."
+  local tags=""
+  tags="${tags:+${tags}, }service:jenkins"
+
+  cat > /etc/dd-agent/datadog.conf <<EOF
+[Main]
+dd_url: https://app.datadoghq.com
+api_key: ${api_key}
+tags: ${tags}
+EOF
+  log "Done."
+
+  log "Starting datadog-agent..."
+  service datadog-agent start
+  log "Done."
 }
 
 #-------------------------------------------------------------------------------
@@ -304,21 +324,31 @@ function install_nginx() {
 #-------------------------------------------------------------------------------
 function main() {
   local region=$(get_ec2_instance_region)
+  local hostname=""
+  local datadog_api_key=""
 
-  # Readable hostname
-  local name="jenkins"
+    while [[ ${#} -gt 0 ]]; do
+    case "${1}" in
+      --datadog-key)    datadog_api_key="${2}"
+                        shift 2 ;;
+      --hostname)       hostname="${2}"
+                        shift 2 ;;
+      *)                error Unrecognized option "${1}" ;;
+    esac
+  done
+
+  wait_until yum update -y
+
+  if [[ -n "${datadog_api_key}" ]]; then
+    install_datadog "${datadog_api_key}"
+  fi
 
   # Set the hostname
-  set_hostname ${name}
+  set_hostname ${hostname}
 
   mount_jenkins_data_volume ${region}
 
   install_jenkins
-
-  install_nginx
-
-  wait_until yum update -y aws-cli
-
 }
 
 exec &> >(logger -t "cloud_init" -p "local0.info")
