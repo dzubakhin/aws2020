@@ -171,6 +171,7 @@ Resources:
                 Resource: "*"
                 Action:
                   - s3:GetObject
+                  - secretsmanager:GetSecretValue
 
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
