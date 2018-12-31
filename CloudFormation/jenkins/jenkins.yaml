@@ -101,8 +101,6 @@ Resources:
         - Key: 'service'
           Value: 'jenkins'
           PropagateAtLaunch: true
-      AvailabilityZones:
-        - 'us-east-1a'
       #----------------------
       #Import subnet here
       #----------------------
@@ -117,6 +115,7 @@ Resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         GroupDescription: SSH, HTTP
+        VpcId: vpc-614be31b
         SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
