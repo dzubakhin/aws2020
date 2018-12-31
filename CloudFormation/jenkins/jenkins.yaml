@@ -106,7 +106,8 @@ Resources:
       #----------------------
       #Import subnet here
       #----------------------
-      VPCZoneIdentifier: 
+      VPCZoneIdentifier:
+        - 'subnet-653ba702'
       #----------------------
       LaunchConfigurationName: !Ref SimpleConfig
       MinSize: '1'
