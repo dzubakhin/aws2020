@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+  ElasticIP:
+    Type: AWS::EC2::EIP
+
+Outputs:
+  ElasticIP:
+    Description: Jenkins Elastic IP
+    Value: !GetAtt ElasticIP.AllocationId
+    Export:
+      Name: !Sub "${AWS::StackName}-ElasticIP"
