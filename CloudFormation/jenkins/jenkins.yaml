@@ -56,10 +56,12 @@ Resources:
                   - ec2:DescribeTags
                   - ec2:DescribeSnapshots
                   - ec2:DescribeVolumes
+                  - ec2:DescribeAddresses
                   - ec2:CreateVolume
                   - ec2:CreateSnapshot
                   - ec2:CreateTags
                   - ec2:AttachVolume
+                  - ec2:AssociateAddress
                   - secretsmanager:GetSecretValue
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -77,6 +79,7 @@ Resources:
       SecurityGroups:
       - Ref: InstanceSecurityGroup
       InstanceType: !Ref InstanceType
+      AssociatePublicIpAddress: False
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
