@@ -103,6 +103,11 @@ Resources:
           PropagateAtLaunch: true
       AvailabilityZones:
         - 'us-east-1a'
+      #----------------------
+      #Import subnet here
+      #----------------------
+      VPCZoneIdentifier: 
+      #----------------------
       LaunchConfigurationName: !Ref SimpleConfig
       MinSize: '1'
       MaxSize: '3'
