@@ -60,8 +60,7 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash
 
-          sudo yum install -y aws-cfn-bootstrap httpd
-          sudo service httpd start
+          sudo yum install -y aws-cfn-bootstrap
           sudo /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebLaunchConfig --region ${AWS::Region}
 
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebLaunchConfig --region ${AWS::Region}
