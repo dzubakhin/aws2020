@@ -39,6 +39,7 @@ Resources:
                 - ec2.amazonaws.com
             Action:
               - sts:AssumeRole
+
       Policies:
         - PolicyName: EC2
           PolicyDocument:
@@ -59,6 +60,7 @@ Resources:
                   - ec2:CreateSnapshot
                   - ec2:CreateTags
                   - ec2:AttachVolume
+                  - secretsmanager:GetSecretValue
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:

@@ -6,34 +6,23 @@ set -o nounset
 # Create stack in AWS.
 #
 # @param $1 - The AWS region. us-east-1 used
-# @param $2 - [Optional] Stack name. "app" used by default.
-# @param $3 - [Optionsl] ELB Stack name.
-# @param $4 - [Optional] Environment name. "qa" used by default
+# @param $2 - [Optional] Stack name. "S3Bucket" used by default.
+# @param $3 - Size of volume
 #--------------------------------------------------------------------------------------------------
 function launch() {
   local region="${1}"
   local stack_name="${2}"
-  local ELB_stack_name="${3}"
-  local environment="${4}"
-
-  local params=""
-  params="${params:+${params} }ParameterKey=Name,ParameterValue=${stack_name}"
-  params="${params:+${params} }ParameterKey=ELBStackName,ParameterValue=${ELB_stack_name}"
-  params="${params:+${params} }ParameterKey=Environment,ParameterValue=${environment}"
 
   local tags=""
-  tags="${tags:+${tags} }Key=service,Value=load-balancer"
-  tags="${tags:+${tags} }Key=Environment,Value=${environment}"
+  tags="${tags:+${tags} }Key=service,Value=jenkins"
 
-  aws --output text cloudformation create-stack                             \
-      --stack-name "${stack_name}"                                          \
-      --region "${region}"                                                  \
-      --template-body file://$(dirname $0)/app_ASG.yml                      \
-      --parameters ${params}                                              \
-      --capabilities CAPABILITY_IAM                                         \
-      --tags ${tags}
+  aws cloudformation create-stack                         \
+    --stack-name "${stack_name}"                          \
+    --region "${region}"                                  \
+    --template-body file://$(dirname $0)/EIP.yml          \
+    --tags $tags
 
-    log "Stack creation launched"
+  log "Stack creation launched"
 }
 
 function wait_complete() {
@@ -49,6 +38,19 @@ function wait_complete() {
   log "Stack creation complete"
 }
 
+function tag_eip() {
+  local region="${1}"
+  local stack_name="${2}"
+
+  local tags=""
+  tags="${tags:+${tags} }Key=service,Value=jenkins"
+
+  log "Tagging EIP"
+
+  eip_id=`aws --output text --region ${region} cloudformation list-exports | \
+          grep "${stack_name}-ElasticIP" | cut -f 4`
+  aws --region ${region} ec2 create-tags --resources ${eip_id} --tags ${tags}
+}
 #-------------------------------------------------------------------------------
 # Log a message.
 #-------------------------------------------------------------------------------
@@ -81,15 +83,8 @@ function usage() {
 Usage: ${0#./} [OPTION]...
 
 Options:
-
   --stack-name
-      [Optional] Name of created stack. "app" is default.
-
- --elb-stack-name
-      [Optional] Name of attached stack with ELB. "app-ELB" as default.
-
-  --environment
-      [Optional] Environment name.
+      [Optional] Name of created stack. "jenkins-EIP" is default.
 
   -h/--help
       Display this help message.
@@ -100,17 +95,13 @@ EOF
 # Main program.
 #-------------------------------------------------------------------------------
 function main() {
-  local stack_name="app"
-  local ELB_stack_name="app-ELB"
-  local environment='qa'
+  local stack_name="jenkins-EIP"
   local region="us-east-1"
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
     case "${1}" in
       --stack-name)           stack_name="${2}"; shift;;
-      --elb-stack-name)       ELB_stack_name="${2}"; shift;;
-      --environment)          environment="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
       -*)                     usage_error "Unrecognized option ${1}";;
@@ -122,13 +113,16 @@ function main() {
   # Finally create the stack
   launch                  \
     "${region}"           \
-    "${stack_name}"       \
-    "${ELB_stack_name}"   \
-    "${environment}"
+    "${stack_name}"
 
   wait_complete           \
     "${region}"           \
     "${stack_name}"
+
+  tag_eip                 \
+    "${region}"           \
+    "${stack_name}"
+
 }
 
 main "${@:-}"
