@@ -181,8 +181,7 @@
           Fn::GetAtt:
             - "ElasticIP0"
             - "AllocationId"
-#        SubnetId: !Ref "PublicSubnet0"
-        SubnetId: !Ref "PrivateSubnet0"
+        SubnetId: !Ref "PublicSubnet0"
 
     PrivateRouteTable0:
       Type: "AWS::EC2::RouteTable"
@@ -223,8 +222,8 @@
       Export:
         Name: !Sub "${AWS::StackName}-PrivateSubnet0"
 
-    DefaultSecurityGroup:
-      Description: "DefaultSecurityGroup Id"
-      Value: !GetAtt VPC.DefaultSecurityGroup
-      Export:
-        Name: !Sub "${AWS::StackName}-DefaultSecurityGroup"
+#    DefaultSecurityGroup:
+#      Description: "DefaultSecurityGroup Id"
+#      Value: !GetAtt VPC.DefaultSecurityGroup
+#      Export:
+#        Name: !Sub "${AWS::StackName}-DefaultSecurityGroup"
