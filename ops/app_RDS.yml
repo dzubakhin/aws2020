@@ -49,15 +49,15 @@ Resources:
       EngineVersion: 5.7
       MasterUsername: !Ref 'DBUser'
       MasterUserPassword: !Ref 'DBPassword'
-#      VPCSecurityGroups:
-#        - !GetAtt DBSecurityGroup.GroupId
+      VPCSecurityGroups:
+        - !GetAtt DBEC2SecurityGroup.GroupId
     DeletionPolicy: Delete
 
 #      DBParameterGroupName: !Ref 'MyRDSParamGroup'
 #  MyRDSParamGroup:
 #    Type: AWS::RDS::DBParameterGroup
 #    Properties:
-#      Family: MySQL5.6
+#      Family: MySQL5.7
 #      Parameters:
 #        autocommit: '1'
 #        general_log: '1'
@@ -68,6 +68,7 @@ Resources:
 #    Properties: 
 #      DBSubnetGroupDescription: "subnet for db"
 #      SubnetIds: 
+#        - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
 #        - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
 
   DBSecurityGroup: 
