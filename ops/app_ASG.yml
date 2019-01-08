@@ -8,6 +8,11 @@ Parameters:
     Default: app-ELB
     MinLength: 1
 
+  VPCStackName:
+    Type: String
+    Default: ProjectVPC
+    MinLength: 1
+
   SSHKey:
     Type: AWS::EC2::KeyPair::KeyName
     Default: 30deysdevops
@@ -30,15 +35,8 @@ Mappings:
   RegionMap:
     us-east-1:
       AMI: ami-0080e4c5bc078760e
-    us-west-1:
-      AMI: ami-0bdb828fd58c52235
-
-  # TODO: Complete this!
-  # Subnets:
-  #   us-east-1:
-  #     Subnet: []
-  #   us-west-2:
-  #     Subnet: []
+#    us-west-1:
+#      AMI: ami-0bdb828fd58c52235
 
 ################################################################################
 # Resources
@@ -52,11 +50,10 @@ Resources:
       InstanceType: t2.micro
       KeyName: !Ref SSHKey
       IamInstanceProfile: !Ref InstanceProfile
+      AssociatePublicIpAddress: no
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          # set -o
-          # set -x
 
           sudo yum install -y aws-cfn-bootstrap
           sudo /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} \
@@ -85,15 +82,15 @@ Resources:
   WebServerGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      AvailabilityZones:
-        Fn::GetAZs: ''
+      VPCZoneIdentifier: 
+        - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
       LaunchConfigurationName: !Ref WebLaunchConfig
       LoadBalancerNames:
         - Fn::ImportValue: !Sub "${ELBStackName}-LoadBalancerID"
       HealthCheckType: ELB
       HealthCheckGracePeriod: 120
       MinSize: '1'
-      MaxSize: '5'
+      MaxSize: '3'
       Cooldown: 60
       DesiredCapacity: 1
       Tags:
@@ -186,6 +183,8 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable SSH access via port 22
+      VpcId:
+        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 22
@@ -196,6 +195,8 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable HTTP access via port 80
+      VpcId: 
+        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 80
