@@ -5,10 +5,15 @@ Parameters:
     Description: Name of the SSH keypair to use for the EC2 instances.
     Default: 30deysdevops
 
+  VPCStackName:
+    Type: String
+    Default: ProjectVPC
+    MinLength: 1
+
   InstanceType:
     Type: String
     Description: Type of EC2 instance
-    Default: t2.micro
+    Default: t3.large
     ConstraintDescription: Must be a valid EC2 instance type.
 
   S3Path:
@@ -100,21 +105,19 @@ Resources:
         - Key: 'service'
           Value: 'jenkins'
           PropagateAtLaunch: true
-      #----------------------
-      #Import subnet here
-      #----------------------
+
       VPCZoneIdentifier:
-        - 'subnet-653ba702'
-      #----------------------
+        - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
       LaunchConfigurationName: !Ref SimpleConfig
       MinSize: '1'
-      MaxSize: '3'
+      MaxSize: '1'
 
   InstanceSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
+        VpcId:
+          - Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
         GroupDescription: SSH, HTTP
-        VpcId: vpc-614be31b
         SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -123,4 +126,8 @@ Resources:
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
           CidrIp: 0.0.0.0/0
