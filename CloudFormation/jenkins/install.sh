@@ -164,14 +164,7 @@ function attach_volume() {
   local volume_id="${1}"
   local device="${2}"
   local region="${3}"
-  local cron_file="/etc/cron.d/ebs_daily_snapshot"
-  local command="
-    /usr/bin/aws ec2 create-snapshot
-      --region ${region}
-      --description 'Jenkins-data'
-      --volume-id $volume_id
-      --tag-specifications 'ResourceType=snapshot,Tags=[{Key=service,Value=jenkins}]'
-  "
+
 # Attach the EBS data volume as /dev/sdh
   wait_until aws ec2 attach-volume                    \
                  --region ${region}                   \
@@ -179,22 +172,12 @@ function attach_volume() {
                  --instance-id $(get_ec2_instance_id) \
                  --device ${device}
 
-
   #Wait until EBS volume attached.
   while [[ ! -b ${device} ]]; do
     log "Waiting for AWS to finish attaching the EBS volume. Looping..."
     sleep 10
   done
   log "EBS volume ${volume_id} attached."
-
-  #Configuring cron for snapshot creation daily job
-  cat - > "${cron_file}" <<CRON
-MAILTO=
-# mins  hours d  m  dow  user  command
-  0     1     *  *  *    root  $(echo ${command})
-CRON
-
-log "EBS Snapshot backup setup complete."
 }
 
 #-------------------------------------------------------------------------------
@@ -211,7 +194,6 @@ function mount_jenkins_data_volume() {
   local snapshot_id="$(get_jenkins_snapshot ${region})"
   local mount_point="/var/lib/jenkins"
   local device="/dev/sdh"
-
 
   #Valid volume found
   if [[ -n "${volume_id}" ]]; then
@@ -274,12 +256,11 @@ EOF
   log "Mounted data volume."
 }
 
-
 #-------------------------------------------------------------------------------
 # Install a Jenkins Docker
 #-------------------------------------------------------------------------------
 function install_jenkins() {
-  yum install -y docker
+  yum_install docker
   service docker start
   usermod -a -G docker ec2-user
   curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
@@ -288,6 +269,18 @@ function install_jenkins() {
   docker-compose -f /home/ec2-user/docker-compose.yml up -d
 }
 
+#-------------------------------------------------------------------------------
+# Install Apache Maven
+#-------------------------------------------------------------------------------
+function install_maven() {
+
+  wget https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+  sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+  yum_install apache-maven
+  yum_install java-1.8.0-openjdk-devel.x86_64
+  alternatives --set java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java
+  alternatives --set javac /usr/lib/jvm/java-1.8.0-openjdk.x86_64/bin/javac
+}
 
 #-------------------------------------------------------------------------------
 # Install and configure the DataDog agent on the current instance.
@@ -349,6 +342,10 @@ function main() {
   mount_jenkins_data_volume ${region}
 
   install_jenkins
+
+  install_maven
+
+  yum_install git
 }
 
 exec &> >(logger -t "cloud_init" -p "local0.info")
