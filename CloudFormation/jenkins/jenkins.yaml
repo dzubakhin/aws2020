@@ -116,7 +116,7 @@ Resources:
       Type: AWS::EC2::SecurityGroup
       Properties:
         VpcId:
-          - Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
+          Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
         GroupDescription: SSH, HTTP
         SecurityGroupIngress:
         - IpProtocol: tcp
