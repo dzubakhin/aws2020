@@ -104,6 +104,29 @@ function get_jenkins_snapshot() {
 }
 
 #-------------------------------------------------------------------------------
+# Determine public IP for Jenkins
+#
+# @param $1 - The region where the host is located.
+#-------------------------------------------------------------------------------
+function get_jenkins_public_ip() {
+  local region="${1}"
+
+  local public_ip=$(wait_until aws ec2  describe-addresses                 \
+                                --region ${region}                         \
+                                --filter Name=tag:service,Values=jenkins   \
+                                --query 'Addresses[].[PublicIp]'           \
+                                --output text)
+
+  if [[ -z ${public_ip} ]]; then
+    log "Public IP not found."
+    echo ""
+  else
+    log "Found IP ${public_ip}"
+    echo "${public_ip}"
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Determine the physical ID of the assigned EBS data volume to attach and mount
 #
 # This is determined from the EC2 tags on the current instance.
@@ -257,16 +280,30 @@ EOF
 }
 
 #-------------------------------------------------------------------------------
-# Install a Jenkins Docker
+# Associates an Elastic IP address with jenkins host
+#-------------------------------------------------------------------------------
+function associate_eip() {
+  local region="${1}"
+  local public_ip=$(get_jenkins_public_ip ${region})
+  local instance_id=$(get_ec2_instance_id)
+  local allocation_id=""
+
+  allocation_id=$(wait_until aws ec2 associate-address        \
+                             --region ${region}               \
+                             --instance-id ${instance_id}     \
+                             --public-ip ${public_ip}         \
+                             --output text)
+  log "Allocation ID is ${allocation_id} for EIP ${public_ip}"
+}
+
+#-------------------------------------------------------------------------------
+# Install a Jenkins
 #-------------------------------------------------------------------------------
 function install_jenkins() {
-  yum_install docker
-  service docker start
-  usermod -a -G docker ec2-user
-  curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
-  chmod +x /usr/bin/docker-compose
-  aws s3 cp s3://30daysdevops/scripts/jenkins/docker-compose.yml /home/ec2-user/docker-compose.yml
-  docker-compose -f /home/ec2-user/docker-compose.yml up -d
+  curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
+  rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+  yum_install jenkins
+  service jenkins start
 }
 
 #-------------------------------------------------------------------------------
@@ -340,12 +377,14 @@ function main() {
   set_hostname ${hostname}
 
   mount_jenkins_data_volume ${region}
-
-  install_jenkins
+ 
+  associate_eip ${region}
 
   install_maven
 
   yum_install git
+  
+  install_jenkins
 }
 
 exec &> >(logger -t "cloud_init" -p "local0.info")

@@ -8,12 +8,15 @@ Parameters:
     Description: Environment (qa, prod).
     AllowedValues: [qa, prod]
     ConstraintDescription: Must be a valid environment name
-
   Name:
     Type: String
     Default: nick
     MaxLength: 50     # optional
     MinLength: 1     # optional
+  VPCStackName:
+    Type: String
+    Default: ProjectVPC
+    MinLength: 1
 
 ################################################################################
 # Resources
@@ -23,8 +26,10 @@ Resources:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
       # SecurityGroups: [!Ref HTTPSecurityGroup]
-      AvailabilityZones:
-        Fn::GetAZs: ''
+#      AvailabilityZones:
+#        Fn::GetAZs: ''
+      Subnets:
+        - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
       Listeners:
         - InstancePort: 80
           LoadBalancerPort: 80
