@@ -325,8 +325,16 @@ function install_maven() {
 # @param $1 - The API key to connect to DataDog with.
 #-------------------------------------------------------------------------------
 function install_datadog() {
-  local api_key="${1}"
+  local region="${1}"
+  local datadog_secret_name="${2}"
 
+
+  log "Getting Datadog API key from Secret Manager"
+  local api_key=$(wait_until aws secretsmanager get-secret-value        \
+                                     --region ${region}                 \
+                                     --secret-id ${datadog_secret_name} \
+                                     --output text)
+  Log "Datadog API key is ${api_key}"
 
   log "Installing datadog-agent..."
   DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
@@ -355,23 +363,19 @@ EOF
 function main() {
   local region=$(get_ec2_instance_region)
   local hostname=""
-  local datadog_api_key=""
+  local datadog_secret_name="datadog_api_key"
 
     while [[ ${#} -gt 0 ]]; do
     case "${1}" in
-      --datadog-key)    datadog_api_key="${2}"
-                        shift 2 ;;
-      --hostname)       hostname="${2}"
-                        shift 2 ;;
-      *)                error Unrecognized option "${1}" ;;
+      --datadog_secret_name)    datadog_secret_name="${2}"
+                                shift 2 ;;
+      --hostname)               hostname="${2}"
+                                shift 2 ;;
+      *)                        error Unrecognized option "${1}" ;;
     esac
   done
 
   wait_until yum update -y
-
-  if [[ -n "${datadog_api_key}" ]]; then
-    install_datadog "${datadog_api_key}"
-  fi
 
   # Set the hostname
   set_hostname ${hostname}
@@ -379,6 +383,8 @@ function main() {
   mount_jenkins_data_volume ${region}
  
   associate_eip ${region}
+
+  install_datadog ${region} ${datadog_secret_name}
 
   install_maven
 

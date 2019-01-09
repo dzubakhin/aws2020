@@ -21,10 +21,10 @@ Parameters:
     Description: The S3 path
     Default: 30daysdevops
 
-  DatadogApiKey:
+  DatadogSecretName:
     Type: String
-    Description: API key for datadog agent
-    NoEcho: true
+    Description: Secret Name in SecretManager to extract Datadog API key
+    Default: datadog_api_key
 
 Mappings:
   RegionMap:
@@ -93,7 +93,7 @@ Resources:
 
           aws s3 cp "s3://${S3Path}/scripts/jenkins/install.sh" - |       \
             bash -l -s --                                                 \
-            --datadog-key "${DatadogApiKey}"                              \
+            --datadog-secret-name "${DatadogSecretName}"                  \
             --hostname jenkins
 
           echo $(date): Finished installing Jenkins
