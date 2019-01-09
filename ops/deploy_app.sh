@@ -15,15 +15,18 @@ function launch() {
   local stack_name="${2}"
   local ELB_stack_name="${3}"
   local version="${4}"
+  local environment="${5}"
 
   local params=""
   params="${params:+${params} }ParameterKey=Name,ParameterValue=${stack_name}"
   params="${params:+${params} }ParameterKey=ELBStackName,ParameterValue=${ELB_stack_name}"
   params="${params:+${params} }ParameterKey=Version,ParameterValue=${version}"
+  params="${params:+${params} }ParameterKey=Environment,ParameterValue=${environment}"
 
   local tags=""
   tags="${tags:+${tags} }Key=service,Value=dropwizard"
   tags="${tags:+${tags} }Key=Version,Value=${version}"
+  tags="${tags:+${tags} }Key=Environment,Value=${environment}"
 
   aws --output text cloudformation create-stack                             \
       --stack-name "${stack_name}"                                          \
@@ -88,6 +91,9 @@ Options:
  --elb-stack-name
       [Optional] Name of attached stack with ELB. "app-ELB" as default.
 
+ --environment
+      [Optional] Environment name. "qa" as default
+
  --version
       Version of application to deploy
 
@@ -103,6 +109,7 @@ function main() {
   local stack_name="app"
   local ELB_stack_name="app-ELB"
   local version=""
+  local environment="qa"
   local region="us-east-1"
 
   # Parse the arguments from the commandline.
@@ -111,6 +118,7 @@ function main() {
       --stack-name)           stack_name="${2}"; shift;;
       --elb-stack-name)       ELB_stack_name="${2}"; shift;;
       --version)              version="${2}"; shift;;
+      --environment)          environment="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
       -*)                     usage_error "Unrecognized option ${1}";;
@@ -128,7 +136,8 @@ function main() {
     "${region}"           \
     "${stack_name}"       \
     "${ELB_stack_name}"   \
-    "${version}"
+    "${version}"          \
+    "${environment}"
 
   wait_complete           \
     "${region}"           \
