@@ -7,29 +7,29 @@ set -o nounset
 #
 # @param $1 - The AWS region. us-east-1 used
 # @param $2 - [Optional] Stack name. "app" used by default.
-# @param $3 - [Optionsl] ELB Stack name.
-# @param $4 - [Optional] Environment name. "qa" used by default
+# @param $3 - [Optional] ELB Stack name.
+# @param $4 - Version of DropWizard application to deploy
 #--------------------------------------------------------------------------------------------------
 function launch() {
   local region="${1}"
   local stack_name="${2}"
   local ELB_stack_name="${3}"
-  local environment="${4}"
+  local version="${4}"
 
   local params=""
   params="${params:+${params} }ParameterKey=Name,ParameterValue=${stack_name}"
   params="${params:+${params} }ParameterKey=ELBStackName,ParameterValue=${ELB_stack_name}"
-  params="${params:+${params} }ParameterKey=Environment,ParameterValue=${environment}"
+  params="${params:+${params} }ParameterKey=Version,ParameterValue=${version}"
 
   local tags=""
-  tags="${tags:+${tags} }Key=service,Value=load-balancer"
-  tags="${tags:+${tags} }Key=Environment,Value=${environment}"
+  tags="${tags:+${tags} }Key=service,Value=dropwizard"
+  tags="${tags:+${tags} }Key=Version,Value=${version}"
 
   aws --output text cloudformation create-stack                             \
       --stack-name "${stack_name}"                                          \
       --region "${region}"                                                  \
       --template-body file://$(dirname $0)/app_ASG.yml                      \
-      --parameters ${params}                                              \
+      --parameters ${params}                                                \
       --capabilities CAPABILITY_IAM                                         \
       --tags ${tags}
 
@@ -88,10 +88,10 @@ Options:
  --elb-stack-name
       [Optional] Name of attached stack with ELB. "app-ELB" as default.
 
-  --environment
-      [Optional] Environment name.
+ --version
+      Version of application to deploy
 
-  -h/--help
+ -h/--help
       Display this help message.
 EOF
 }
@@ -102,7 +102,7 @@ EOF
 function main() {
   local stack_name="app"
   local ELB_stack_name="app-ELB"
-  local environment='qa'
+  local version=""
   local region="us-east-1"
 
   # Parse the arguments from the commandline.
@@ -110,7 +110,7 @@ function main() {
     case "${1}" in
       --stack-name)           stack_name="${2}"; shift;;
       --elb-stack-name)       ELB_stack_name="${2}"; shift;;
-      --environment)          environment="${2}"; shift;;
+      --version)              version="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
       -*)                     usage_error "Unrecognized option ${1}";;
@@ -119,12 +119,16 @@ function main() {
     shift
   done
 
+  if [[ -z "${version}" ]]; then
+    usage_error "The version to install must be specified."
+  fi
+
   # Finally create the stack
   launch                  \
     "${region}"           \
     "${stack_name}"       \
     "${ELB_stack_name}"   \
-    "${environment}"
+    "${version}"
 
   wait_complete           \
     "${region}"           \
