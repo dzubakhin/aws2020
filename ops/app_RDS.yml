@@ -44,6 +44,9 @@ Resources:
       DBInstanceClass: db.t2.micro
       PubliclyAccessible: false
 #      DBSubnetGroupName: !Ref 'DBSubnetGroup'
+#      DBSubnetGroupName:
+#        Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
+
       MultiAZ: false
       Engine: MySQL
       EngineVersion: 5.7
@@ -52,8 +55,8 @@ Resources:
       VPCSecurityGroups:
         - !GetAtt DBEC2SecurityGroup.GroupId
     DeletionPolicy: Delete
-
 #      DBParameterGroupName: !Ref 'MyRDSParamGroup'
+
 #  MyRDSParamGroup:
 #    Type: AWS::RDS::DBParameterGroup
 #    Properties:
@@ -71,14 +74,14 @@ Resources:
 #        - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
 #        - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
 
-  DBSecurityGroup: 
-    Type: AWS::RDS::DBSecurityGroup
-    Properties: 
-      EC2VpcId: 
-        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
-      DBSecurityGroupIngress: 
-        - EC2SecurityGroupId: !Ref DBEC2SecurityGroup
-      GroupDescription: "Database Access"
+#  DBSecurityGroup: 
+#    Type: AWS::RDS::DBSecurityGroup
+#    Properties: 
+#      EC2VpcId: 
+#        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
+#      DBSecurityGroupIngress: 
+#        - EC2SecurityGroupId: !Ref DBEC2SecurityGroup
+#      GroupDescription: "Database Access"
 
   DBEC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
