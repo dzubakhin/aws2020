@@ -17,12 +17,12 @@
         CIDR: "10.0.0.0/24"
       Private0:
         CIDR: "10.0.1.0/24"
+      Private1:
+        CIDR: "10.0.2.0/24"
 
     AZRegions:
       us-east-1:
         AZs: ["a", "b"]
-#      us-west-1:
-#        AZs: ["a", "b"]
 
   Resources:
 
@@ -79,6 +79,27 @@
           Fn::FindInMap:
             - "SubnetConfig"
             - "Private0"
+            - "CIDR"
+        Tags:
+          - Key: "Application"
+            Value: !Ref "AWS::StackName"
+          - Key: "Network"
+            Value: "Private"
+          - Key: "Name"
+            Value: "Private"
+
+    PrivateSubnet1:
+      Type: "AWS::EC2::Subnet"
+      Properties:
+        VpcId: !Ref "VPC"
+        AvailabilityZone:
+          Fn::Sub:
+            - "${AWS::Region}${AZ}"
+            - AZ: !Select [ 1, !FindInMap [ "AZRegions", !Ref "AWS::Region", "AZs" ] ]
+        CidrBlock:
+          Fn::FindInMap:
+            - "SubnetConfig"
+            - "Private1"
             - "CIDR"
         Tags:
           - Key: "Application"
@@ -200,6 +221,11 @@
       Properties:
         SubnetId: !Ref "PrivateSubnet0"
         RouteTableId: !Ref "PrivateRouteTable0"
+    PrivateSubnetRouteTableAssociation1:
+      Type: "AWS::EC2::SubnetRouteTableAssociation"
+      Properties:
+        SubnetId: !Ref "PrivateSubnet1"
+        RouteTableId: !Ref "PrivateRouteTable0"
 
   Outputs:
 
@@ -221,3 +247,8 @@
       Value: !Ref "PrivateSubnet0"
       Export:
         Name: !Sub "${AWS::StackName}-PrivateSubnet0"
+    PrivateSubnet1:
+      Description: "SubnetId of private subnet 1"
+      Value: !Ref "PrivateSubnet1"
+      Export:
+        Name: !Sub "${AWS::StackName}-PrivateSubnet1"
