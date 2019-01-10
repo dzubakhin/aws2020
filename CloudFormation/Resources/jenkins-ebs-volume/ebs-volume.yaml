@@ -56,8 +56,8 @@ Resources:
         ResourceTypes:
           - "VOLUME"
         TargetTags:
-          - Key: "resource"
-            Value: "snapshot"
+          - Key: "service"
+            Value: "jenkins"
 
         Schedules:
           -
