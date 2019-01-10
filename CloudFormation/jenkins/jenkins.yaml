@@ -26,10 +26,10 @@ Parameters:
     Default: 'arn:aws:acm:us-east-1:230883561944:certificate/79616372-c929-4269-b861-dde983e0fb34'
     Description: ARN of Certificate attached to ELB
 
-  DatadogApiKey:
+  DatadogSecretName:
     Type: String
-    Description: API key for datadog agent
-    NoEcho: true
+    Description: Secret Name in SecretManager to extract Datadog API key
+    Default: datadog_api_key
 
 Mappings:
   RegionMap:
@@ -98,7 +98,7 @@ Resources:
 
           aws s3 cp "s3://${S3Path}/scripts/jenkins/install.sh" - |       \
             bash -l -s --                                                 \
-            --datadog-key "${DatadogApiKey}"                              \
+            --datadog-secret-name "${DatadogSecretName}"                  \
             --hostname jenkins
 
           echo $(date): Finished installing Jenkins
