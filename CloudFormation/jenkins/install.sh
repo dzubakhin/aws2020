@@ -343,7 +343,7 @@ function install_datadog() {
   log "Datadog API key is ${api_key}"
 
   log "Installing datadog-agent..."
-  DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
+  DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent/master/cmd/agent/install_script.sh)"
   log "Done."
 
   log "Configuring datadog..."
