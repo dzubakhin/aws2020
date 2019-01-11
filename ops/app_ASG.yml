@@ -86,6 +86,16 @@ Resources:
                --stack ${AWS::StackName}                           \
                --resource WebServerGroup                           \
                --region ${AWS::Region}
+
+          sudo -u dropwizard /usr/bin/java                         \
+                    -jar /opt/dropwizard/dropwizard-example-0.0.1-SNAPSHOT.jar \
+                      server /opt/dropwizard/server.yml &
+
+          /opt/aws/bin/cfn-signal -e $?                            \
+               --stack ${AWS::StackName}                           \
+               --resource WebServerGroup                           \
+               --region ${AWS::Region}
+
     Metadata:
       "AWS::CloudFormation::Init":
           config:
