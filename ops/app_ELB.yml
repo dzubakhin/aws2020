@@ -29,7 +29,7 @@ Resources:
 #      AvailabilityZones:
 #        Fn::GetAZs: ''
       Subnets:
-        - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
+        - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
       Listeners:
         - InstancePort: 80
           LoadBalancerPort: 80
