@@ -7,29 +7,34 @@ set -o nounset
 #
 # @param $1 - The AWS region. us-east-1 used
 # @param $2 - [Optional] Stack name. "app" used by default.
-# @param $3 - [Optionsl] ELB Stack name.
-# @param $4 - [Optional] Environment name. "qa" used by default
+# @param $3 - [Optional] ELB Stack name.
+# @param $4 - Version of DropWizard application to deploy
 #--------------------------------------------------------------------------------------------------
 function launch() {
   local region="${1}"
   local stack_name="${2}"
   local ELB_stack_name="${3}"
-  local environment="${4}"
+  local vpc_name="${4}"
+  local version="${5}"
+  local environment="${6}"
 
   local params=""
   params="${params:+${params} }ParameterKey=Name,ParameterValue=${stack_name}"
   params="${params:+${params} }ParameterKey=ELBStackName,ParameterValue=${ELB_stack_name}"
+  params="${params:+${params} }ParameterKey=VPCStackName,ParameterValue=${vpc_name}"
+  params="${params:+${params} }ParameterKey=Version,ParameterValue=${version}"
   params="${params:+${params} }ParameterKey=Environment,ParameterValue=${environment}"
 
   local tags=""
-  tags="${tags:+${tags} }Key=service,Value=load-balancer"
+  tags="${tags:+${tags} }Key=service,Value=dropwizard"
+  tags="${tags:+${tags} }Key=Version,Value=${version}"
   tags="${tags:+${tags} }Key=Environment,Value=${environment}"
 
   aws --output text cloudformation create-stack                             \
       --stack-name "${stack_name}"                                          \
       --region "${region}"                                                  \
       --template-body file://$(dirname $0)/app_ASG.yml                      \
-      --parameters ${params}                                              \
+      --parameters ${params}                                                \
       --capabilities CAPABILITY_IAM                                         \
       --tags ${tags}
 
@@ -88,10 +93,16 @@ Options:
  --elb-stack-name
       [Optional] Name of attached stack with ELB. "app-ELB" as default.
 
-  --environment
-      [Optional] Environment name.
+  --vpc-name
+      [Optional] Name of Used VPC. "DefaultVPC" is default.
 
-  -h/--help
+ --environment
+      [Optional] Environment name. "qa" as default
+
+ --version
+      Version of application to deploy
+
+ -h/--help
       Display this help message.
 EOF
 }
@@ -102,7 +113,9 @@ EOF
 function main() {
   local stack_name="app"
   local ELB_stack_name="app-ELB"
-  local environment='qa'
+  local vpc_name="DefaultVPC"
+  local version=""
+  local environment="qa"
   local region="us-east-1"
 
   # Parse the arguments from the commandline.
@@ -110,6 +123,8 @@ function main() {
     case "${1}" in
       --stack-name)           stack_name="${2}"; shift;;
       --elb-stack-name)       ELB_stack_name="${2}"; shift;;
+      --vpc-name)             vpc_name="${2}"; shift;;
+      --version)              version="${2}"; shift;;
       --environment)          environment="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
@@ -119,11 +134,17 @@ function main() {
     shift
   done
 
+  if [[ -z "${version}" ]]; then
+    usage_error "The version to install must be specified."
+  fi
+
   # Finally create the stack
   launch                  \
     "${region}"           \
     "${stack_name}"       \
     "${ELB_stack_name}"   \
+    "${vpc_name}"         \
+    "${version}"          \
     "${environment}"
 
   wait_complete           \

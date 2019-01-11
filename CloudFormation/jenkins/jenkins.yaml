@@ -21,10 +21,15 @@ Parameters:
     Description: The S3 path
     Default: 30daysdevops
 
-  DatadogApiKey:
+  SSLCertificate:
     Type: String
-    Description: API key for datadog agent
-    NoEcho: true
+    Default: 'arn:aws:acm:us-east-1:230883561944:certificate/79616372-c929-4269-b861-dde983e0fb34'
+    Description: ARN of Certificate attached to ELB
+
+  DatadogSecretName:
+    Type: String
+    Description: Secret Name in SecretManager to extract Datadog API key
+    Default: datadog_api_key
 
 Mappings:
   RegionMap:
@@ -93,7 +98,7 @@ Resources:
 
           aws s3 cp "s3://${S3Path}/scripts/jenkins/install.sh" - |       \
             bash -l -s --                                                 \
-            --datadog-key "${DatadogApiKey}"                              \
+            --datadog-secret-name "${DatadogSecretName}"                  \
             --hostname jenkins
 
           echo $(date): Finished installing Jenkins
@@ -111,12 +116,36 @@ Resources:
       LaunchConfigurationName: !Ref SimpleConfig
       MinSize: '1'
       MaxSize: '1'
+      LoadBalancerNames:
+        - Ref: JenkinsLoadBalancer
+
+  JenkinsLoadBalancer:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      Subnets:
+        - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
+      SecurityGroups:
+        - Ref: LBSecurityGroup
+      Listeners:
+        - InstancePort: 8080
+          LoadBalancerPort: 80
+          Protocol: HTTP
+        - InstancePort: 8080
+          InstanceProtocol: HTTP
+          LoadBalancerPort: 443
+          Protocol: HTTPS
+          SSLCertificateId: !Ref SSLCertificate
+      Tags:
+        - Key: 'service'
+          Value: 'jenkins'
+        - Key: 'resource'
+          Value: 'ELB'
 
   InstanceSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
         VpcId:
-          - Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
+          Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
         GroupDescription: SSH, HTTP
         SecurityGroupIngress:
         - IpProtocol: tcp
@@ -124,10 +153,22 @@ Resources:
           ToPort: 22
           CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+
+  LBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId:
+        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
+      GroupDescription: HTTP, HTTPS
+      SecurityGroupIngress:
+        - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
         - IpProtocol: tcp
-          FromPort: 8080
-          ToPort: 8080
+          FromPort: 443
+          ToPort: 443
           CidrIp: 0.0.0.0/0
