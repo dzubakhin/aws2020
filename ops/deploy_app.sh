@@ -14,12 +14,14 @@ function launch() {
   local region="${1}"
   local stack_name="${2}"
   local ELB_stack_name="${3}"
-  local version="${4}"
-  local environment="${5}"
+  local vpc_name="${4}"
+  local version="${5}"
+  local environment="${6}"
 
   local params=""
   params="${params:+${params} }ParameterKey=Name,ParameterValue=${stack_name}"
   params="${params:+${params} }ParameterKey=ELBStackName,ParameterValue=${ELB_stack_name}"
+  params="${params:+${params} }ParameterKey=VPCStackName,ParameterValue=${vpc_name}"
   params="${params:+${params} }ParameterKey=Version,ParameterValue=${version}"
   params="${params:+${params} }ParameterKey=Environment,ParameterValue=${environment}"
 
@@ -91,6 +93,9 @@ Options:
  --elb-stack-name
       [Optional] Name of attached stack with ELB. "app-ELB" as default.
 
+  --vpc-name
+      [Optional] Name of Used VPC. "DefaultVPC" is default.
+
  --environment
       [Optional] Environment name. "qa" as default
 
@@ -108,6 +113,7 @@ EOF
 function main() {
   local stack_name="app"
   local ELB_stack_name="app-ELB"
+  local vpc_name="DefaultVPC"
   local version=""
   local environment="qa"
   local region="us-east-1"
@@ -117,6 +123,7 @@ function main() {
     case "${1}" in
       --stack-name)           stack_name="${2}"; shift;;
       --elb-stack-name)       ELB_stack_name="${2}"; shift;;
+      --vpc-name)             vpc_name="${2}"; shift;;
       --version)              version="${2}"; shift;;
       --environment)          environment="${2}"; shift;;
       -h|--help)              usage; exit 0;;
@@ -136,6 +143,7 @@ function main() {
     "${region}"           \
     "${stack_name}"       \
     "${ELB_stack_name}"   \
+    "${vpc_name}"         \
     "${version}"          \
     "${environment}"
 

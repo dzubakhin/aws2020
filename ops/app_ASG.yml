@@ -60,35 +60,55 @@ Resources:
 
           sudo yum install -y aws-cfn-bootstrap
           sudo /opt/aws/bin/cfn-init -v                            \
-               --stack ${AWS::StackName}-${Environment}-${Version} \
+               --stack ${AWS::StackName}                           \
                --resource WebLaunchConfig                          \
                --region ${AWS::Region}
 
           /opt/aws/bin/cfn-signal -e $?                            \
-               --stack ${AWS::StackName}-${Environment}-${Version} \
+               --stack ${AWS::StackName}                           \
                --resource WebServerGroup                           \
                --region ${AWS::Region}
+
+          sudo /opt/puppetlabs/bin/puppet module install puppetlabs-stdlib
+
+          /opt/aws/bin/cfn-signal -e $?                            \
+               --stack ${AWS::StackName}                           \
+               --resource WebServerGroup                           \
+               --region ${AWS::Region}
+
+          aws s3 cp s3://30daysdevops/nick/release/dropwizard-example-0.0.1-SNAPSHOT.jar /tmp/
+          aws s3 cp s3://30daysdevops/nick/release/mysql.yml /tmp/
 
           aws s3 cp s3://30daysdevops/nick/app.pp ./ && \
             sudo /opt/puppetlabs/bin/puppet apply app.pp
 
           /opt/aws/bin/cfn-signal -e $?                            \
-               --stack ${AWS::StackName}-${Environment}-${Version} \
+               --stack ${AWS::StackName}                           \
                --resource WebServerGroup                           \
                --region ${AWS::Region}
+
+          sudo -u dropwizard /usr/bin/java                         \
+                    -jar /opt/dropwizard/dropwizard-example-0.0.1-SNAPSHOT.jar \
+                      server /opt/dropwizard/server.yml &
+
+          /opt/aws/bin/cfn-signal -e $?                            \
+               --stack ${AWS::StackName}                           \
+               --resource WebServerGroup                           \
+               --region ${AWS::Region}
+
     Metadata:
       "AWS::CloudFormation::Init":
           config:
             packages:
               rpm:
-                puppet: "https://yum.puppet.com/puppet5/puppet5-release-el-6.noarch.rpm"
+                puppet: "https://yum.puppet.com/puppet6/puppet-release-el-6.noarch.rpm"
               yum:
                 puppet-agent: []
 
   WebServerGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      VPCZoneIdentifier: 
+      VPCZoneIdentifier:
         - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
       LaunchConfigurationName: !Ref WebLaunchConfig
       LoadBalancerNames:
@@ -103,10 +123,16 @@ Resources:
         - Key: 'Name'
           Value: !Ref Name
           PropagateAtLaunch: true
+        - Key: 'Service'
+          Value: 'dropwizard'
+          PropagateAtLaunch: true
+        - Key: 'Environment'
+          Value: !Ref Environment
+          PropagateAtLaunch: true
     CreationPolicy:
       ResourceSignal:
-        Count: 2
-        Timeout: "PT5M"
+        Count: 0
+        Timeout: "PT10M"
 
   WebServerScaleUpPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
@@ -131,7 +157,7 @@ Resources:
       MetricName: CPUUtilization
       Namespace: AWS/EC2
       Statistic: Average
-      Period: 300
+      Period: 60
       EvaluationPeriods: 2
       Threshold: 75
       AlarmActions: [ !Ref WebServerScaleUpPolicy ]
@@ -200,11 +226,11 @@ Resources:
   HTTPSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Enable HTTP access via port 80
-      VpcId: 
+      GroupDescription: Enable HTTP access via port 8080
+      VpcId:
         Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
+        FromPort: 8080
+        ToPort: 8080
         CidrIp: 0.0.0.0/0

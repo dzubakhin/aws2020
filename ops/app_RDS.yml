@@ -2,9 +2,22 @@ AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
   Name:
     Type: String
-    Default: app-RDS
+    Default: dropwizard-db
     MaxLength: 50
     MinLength: 1
+
+  Service:
+    Type: String
+    Default: dropwizard
+    MaxLength: 50
+    MinLength: 1
+
+  Environment:
+    Type: String
+    Description: Environment (qa, prod).
+    AllowedValues: [qa, prod]
+    ConstraintDescription: Must be a valid environment name
+    Default: qa
 
   VPCStackName:
     Type: String
@@ -12,7 +25,7 @@ Parameters:
     MinLength: 1
 
   DBName:
-    Default: MyDatabase
+    Default: example
     Description: The database name
     Type: String
     MinLength: '1'
@@ -39,6 +52,7 @@ Resources:
       DBName: !Ref 'DBName'
       AllocatedStorage: '20'
       DBInstanceClass: db.t2.medium
+      StorageType: gp2
       PubliclyAccessible: false
       DBSubnetGroupName: !Ref 'DBSubnetGroup'
       MultiAZ: false

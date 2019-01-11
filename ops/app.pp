@@ -17,9 +17,14 @@ exec { 'yum-update':
   command => '/usr/bin/yum -y update'
 }
 
-package { 'httpd24':
+package { 'java-1.8.0-openjdk':
   ensure  => installed,
   require => Exec['yum-update'],
+}
+
+exec { 'Set alternatives':
+  command => '/usr/sbin/alternatives --set java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java',
+  require => Package['java-1.8.0-openjdk'],
 }
 
 package { 'datadog-agent':
@@ -27,16 +32,10 @@ package { 'datadog-agent':
   require => Yumrepo['Datadog'],
 }
 
-service { 'httpd':
-  ensure  => running,
-  enable  => true,
-  require => Package['httpd24'],
-}
-
 service { 'datadog-agent':
   ensure     => running,
   enable     => true,
-  provider   => 'upstart',
+  # provider   => 'upstart',
   hasrestart => true,
   subscribe  => File['/etc/datadog-agent/datadog.yaml'],
 }
@@ -51,13 +50,27 @@ file { '/etc/datadog-agent/datadog.yaml':
   notify  => Service['datadog-agent']
 }
 
-file { '/var/www/html/index.html':
+user { 'dropwizard':
+  ensure  => present,
+}
+
+file {'/opt/dropwizard':
+  ensure  => directory,
+  mode    => '0755',
+  owner   => 'dropwizard',
+  require => User['dropwizard']
+}
+
+file {'/opt/dropwizard/dropwizard-example-0.0.1-SNAPSHOT.jar':
   ensure  => file,
-  content => '<html>
-              <body>
-              <h1>Congratulations, you have successfully launched the
-                  AWS CloudFormation sample.</h1>
-              </body>
-              </html>',
-  require => Package['httpd24'],        # require 'apache2' package
+  mode    => '0644',
+  source  => 'file:///tmp/dropwizard-example-0.0.1-SNAPSHOT.jar',
+  require => File['/opt/dropwizard']
+}
+
+file {'/opt/dropwizard/server.yml':
+  ensure  => file,
+  mode    => '0644',
+  source  => 'file:///tmp/mysql.yml',
+  require => File['/opt/dropwizard']
 }

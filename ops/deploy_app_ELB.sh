@@ -12,10 +12,12 @@ set -o nounset
 function launch() {
   local region="${1}"
   local stack_name="${2}"
-  local environment="${3}"
+  local vpc_name="${3}"
+  local environment="${4}"
 
   local params=""
   params="${params:+${params} }ParameterKey=Name,ParameterValue=${stack_name}"
+  params="${params:+${params} }ParameterKey=VPCStackName,ParameterValue=${vpc_name}"
   params="${params:+${params} }ParameterKey=Environment,ParameterValue=${environment}"
 
   local tags=""
@@ -78,7 +80,10 @@ Usage: ${0#./} [OPTION]...
 Options:
 
   --stack-name
-      [Optional] Name of created stack. "S3bucket" is default.
+      [Optional] Name of created stack. "app-ELB" is default.
+
+  --vpc-name
+      [Optional] Name of Used VPC. "DefaultVPC" is default.
 
   --environment
       [Optional] Environment name.
@@ -93,6 +98,7 @@ EOF
 #-------------------------------------------------------------------------------
 function main() {
   local stack_name="app-ELB"
+  local vpc_name="DefaultVPC"
   local environment='qa'
   local region="us-east-1"
 
@@ -100,6 +106,7 @@ function main() {
   while [[ ${#} -gt 0 ]]; do
     case "${1}" in
       --stack-name)           stack_name="${2}"; shift;;
+      --vpc-name)             vpc_name="${2}"; shift;;
       --environment)          environment="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
@@ -113,6 +120,7 @@ function main() {
   launch                  \
     "${region}"           \
     "${stack_name}"       \
+    "${vpc_name}"         \
     "${environment}"
 
   wait_complete           \

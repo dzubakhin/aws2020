@@ -38,6 +38,8 @@ Resources:
 #        Fn::GetAZs: ''
       Subnets:
         - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
+      SecurityGroups:
+        - Ref: LBSecurityGroup
       Listeners:
         - InstancePort: 8080
           LoadBalancerPort: 80
@@ -49,7 +51,7 @@ Resources:
           SSLCertificateId: !Ref SSLCertificate
       HealthCheck:
         Target: HTTP:8080/hello-world
-        HealthyThreshold: '3'
+        HealthyThreshold: '2'
         UnhealthyThreshold: '5'
         Interval: '30'
         Timeout: '2'
@@ -59,6 +61,10 @@ Resources:
       Tags:
       - Key: 'Name'
         Value: !Ref Name
+      - Key: 'Service'
+        Value: 'dropwizard'
+      - Key: 'Environment'
+        Value: !Ref Environment
 
   R53RecordSet:
     Type: AWS::Route53::RecordSet
@@ -68,6 +74,22 @@ Resources:
       Type: CNAME
       TTL: 300
       ResourceRecords: [ !GetAtt LoadBalancer.DNSName ]
+
+  LBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId:
+        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
+      GroupDescription: HTTP, HTTPS
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
 
 Outputs:
   LoadBalancerID:
