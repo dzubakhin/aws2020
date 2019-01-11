@@ -24,6 +24,13 @@ Parameters:
     ConstraintDescription: Must be a valid environment name
     Default: qa
 
+  DeploySource:
+    Type: String
+    Description: Deploy (docker, s3).
+    AllowedValues: [docker, s3]
+    ConstraintDescription: Source from where the application will be deployed
+    Default: docker
+
   Name:
     Type: String
     Default: app
@@ -57,53 +64,19 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
+          set -o errexit
+          set -o nounset
+          set -o xtrace
 
-          sudo yum install -y aws-cfn-bootstrap
-          sudo /opt/aws/bin/cfn-init -v                            \
-               --stack ${AWS::StackName}                           \
-               --resource WebLaunchConfig                          \
+          aws s3 cp "s3://30daysdevops/dropwizard/deploy/install-${DeploySource}.sh" - |  \
+            bash -l -s --                                                 \
+            --datadog-secret-name "${DatadogSecretName}"                  \
+            --version ${Version}
+
+          /opt/aws/bin/cfn-signal -e $?   \
+               --stack ${AWS::StackName}  \
+               --resource WebServerGroup  \
                --region ${AWS::Region}
-
-          /opt/aws/bin/cfn-signal -e $?                            \
-               --stack ${AWS::StackName}                           \
-               --resource WebServerGroup                           \
-               --region ${AWS::Region}
-
-          sudo /opt/puppetlabs/bin/puppet module install puppetlabs-stdlib
-
-          /opt/aws/bin/cfn-signal -e $?                            \
-               --stack ${AWS::StackName}                           \
-               --resource WebServerGroup                           \
-               --region ${AWS::Region}
-
-          aws s3 cp s3://30daysdevops/nick/release/dropwizard-example-0.0.1-SNAPSHOT.jar /tmp/
-          aws s3 cp s3://30daysdevops/nick/release/mysql.yml /tmp/
-
-          aws s3 cp s3://30daysdevops/nick/app.pp ./ && \
-            sudo /opt/puppetlabs/bin/puppet apply app.pp
-
-          /opt/aws/bin/cfn-signal -e $?                            \
-               --stack ${AWS::StackName}                           \
-               --resource WebServerGroup                           \
-               --region ${AWS::Region}
-
-          sudo -u dropwizard /usr/bin/java                         \
-                    -jar /opt/dropwizard/dropwizard-example-0.0.1-SNAPSHOT.jar \
-                      server /opt/dropwizard/server.yml &
-
-          /opt/aws/bin/cfn-signal -e $?                            \
-               --stack ${AWS::StackName}                           \
-               --resource WebServerGroup                           \
-               --region ${AWS::Region}
-
-    Metadata:
-      "AWS::CloudFormation::Init":
-          config:
-            packages:
-              rpm:
-                puppet: "https://yum.puppet.com/puppet6/puppet-release-el-6.noarch.rpm"
-              yum:
-                puppet-agent: []
 
   WebServerGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
