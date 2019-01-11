@@ -328,6 +328,9 @@ function install_datadog() {
   local region="${1}"
   local datadog_secret_name="${2}"
 
+  log "Installing jq..."
+  yum_install jq
+  log "Done."
 
   log "Getting Datadog API key from Secret Manager"
   local api_key=$(wait_until aws secretsmanager get-secret-value                     \
