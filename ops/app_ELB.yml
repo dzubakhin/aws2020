@@ -33,11 +33,8 @@ Resources:
   LoadBalancer:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
-      # SecurityGroups: [!Ref HTTPSecurityGroup]
-#      AvailabilityZones:
-#        Fn::GetAZs: ''
       Subnets:
-        - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
+        - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
       SecurityGroups:
         - Ref: LBSecurityGroup
       Listeners:

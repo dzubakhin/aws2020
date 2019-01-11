@@ -29,21 +29,21 @@ Parameters:
     Description: The database name
     Type: String
     MinLength: '1'
-    AllowedPattern: '[\w+!@#$%&*]*'
+    AllowedPattern: '[\w]+'
 
   DBUser:
     NoEcho: 'true'
     Description: The database admin account username
     Type: String
     MinLength: '1'
-    AllowedPattern: '[\w+!@#$%&*]*'
+    AllowedPattern: '[\w]+'
 
   DBPassword:
     NoEcho: 'true'
     Description: The database admin account password
     Type: String
     MinLength: '8'
-    AllowedPattern: '[\w+!@#$%&*]*'
+    AllowedPattern: '[\w\s]+'
 
 Resources:
   MyDB:
