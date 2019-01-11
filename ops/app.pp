@@ -22,6 +22,11 @@ package { 'java-1.8.0-openjdk':
   require => Exec['yum-update'],
 }
 
+exec { 'Set alternatives':
+  command => '/usr/sbin/alternatives --set java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java',
+  require => Package['java-1.8.0-openjdk'],
+}
+
 package { 'datadog-agent':
   ensure  => installed,
   require => Yumrepo['Datadog'],
@@ -68,11 +73,4 @@ file {'/opt/dropwizard/server.yml':
   mode    => '0644',
   source  => 'file:///tmp/mysql.yml',
   require => File['/opt/dropwizard']
-}
-
-exec { 'Run app':
-  cwd     => '/opt/dropwizard',
-  command => '/usr/bin/java -jar /opt/dropwizard/dropwizard-example-0.0.1-SNAPSHOT.jar server /opt/dropwizard/mysql.yml &',
-  user    => 'dropwizard',
-  require => [File['/opt/dropwizard'], Package['java-1.8.0-openjdk']]
 }
