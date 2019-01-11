@@ -28,6 +28,7 @@ Parameters:
 
   DatadogSecretName:
     Type: String
+
     Description: Secret Name in SecretManager to extract Datadog API key
     Default: datadog_api_key
 

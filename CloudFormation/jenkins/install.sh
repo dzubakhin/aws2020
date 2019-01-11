@@ -328,13 +328,19 @@ function install_datadog() {
   local region="${1}"
   local datadog_secret_name="${2}"
 
+  log "Installing jq..."
+  yum_install jq
+  log "Done."
 
   log "Getting Datadog API key from Secret Manager"
-  local api_key=$(wait_until aws secretsmanager get-secret-value        \
-                                     --region ${region}                 \
-                                     --secret-id ${datadog_secret_name} \
-                                     --output text)
-  Log "Datadog API key is ${api_key}"
+  local api_key=$(wait_until aws secretsmanager get-secret-value                     \
+                                                --region ${region}                   \
+                                                --secret-id ${datadog_secret_name}   \
+                                                --output json                        \
+                                                --version-stage AWSCURRENT |         \
+                                                jq ".SecretString" -r |              \
+                                                jq ".key" -r)
+  log "Datadog API key is ${api_key}"
 
   log "Installing datadog-agent..."
   DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
@@ -367,7 +373,7 @@ function main() {
 
     while [[ ${#} -gt 0 ]]; do
     case "${1}" in
-      --datadog_secret_name)    datadog_secret_name="${2}"
+      --datadog-secret-name)    datadog_secret_name="${2}"
                                 shift 2 ;;
       --hostname)               hostname="${2}"
                                 shift 2 ;;
