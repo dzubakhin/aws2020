@@ -35,6 +35,8 @@ Resources:
     Properties:
       Subnets:
         - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
+      SecurityGroups:
+        - Ref: LBSecurityGroup
       Listeners:
         - InstancePort: 8080
           LoadBalancerPort: 80
@@ -69,6 +71,22 @@ Resources:
       Type: CNAME
       TTL: 300
       ResourceRecords: [ !GetAtt LoadBalancer.DNSName ]
+
+  LBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId:
+        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
+      GroupDescription: HTTP, HTTPS
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
 
 Outputs:
   LoadBalancerID:
