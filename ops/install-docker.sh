@@ -63,11 +63,9 @@ function install_dropwizard() {
 
   yum_install docker
   service docker start
-  aws s3 cp s3://30daysdevops/dropwizard/docker/Dockerfile Dockerfile
-  aws s3 cp s3://30daysdevops/nick/release/dropwizard-example-${version}-SNAPSHOT.jar dropwizard.jar
-  aws s3 cp s3://30daysdevops/nick/release/mysql.yml mysql.yml
-  wait_until docker build -t dropwizard .
-  docker run -d -p 8080:8080 dropwizard
+  $(aws ecr get-login --no-include-email --region us-east-1)
+  docker pull 230883561944.dkr.ecr.us-east-1.amazonaws.com/dropwizard:${version}
+  docker run -d -p 8080:8080 230883561944.dkr.ecr.us-east-1.amazonaws.com/dropwizard:${version}
 }
 
 #-------------------------------------------------------------------------------
@@ -142,6 +140,6 @@ function main() {
   install_datadog ${region} ${datadog_secret_name} ${version} ${environment}
 }
 
-#exec &> >(logger -t "cloud_init" -p "local0.info")
+exec &> >(logger -t "cloud_init" -p "local0.info")
 
-main "${@}"
+main "${@}" &
