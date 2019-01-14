@@ -2,6 +2,7 @@ version: '2'
 services:
   jenkins:
     image: 'jenkinsci/blueocean'
+    user: root
     labels:
       kompose.service.type: nodeport
     ports:
@@ -9,6 +10,5 @@ services:
     #      - '443:8443'
     #      - '50000:50000'
     volumes:
-      - /home/ec2-user:/home
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/jenkins:/var/jenkins_home
