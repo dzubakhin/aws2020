@@ -297,26 +297,17 @@ function associate_eip() {
 }
 
 #-------------------------------------------------------------------------------
-# Install a Jenkins
+# Install a Docker&StartJenkins
 #-------------------------------------------------------------------------------
 function install_jenkins() {
-  curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
-  rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
-  yum_install jenkins
-  service jenkins start
-}
-
-#-------------------------------------------------------------------------------
-# Install Apache Maven
-#-------------------------------------------------------------------------------
-function install_maven() {
-
-  wget https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
-  sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
-  yum_install apache-maven
-  yum_install java-1.8.0-openjdk-devel.x86_64
-  alternatives --set java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java
-  alternatives --set javac /usr/lib/jvm/java-1.8.0-openjdk.x86_64/bin/javac
+          yum install -y docker
+          service docker start
+          usermod -a -G docker root
+          curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
+          chmod +x /usr/bin/docker-compose
+          chown -R 1000 /var/lib/jenkins
+          aws s3 cp s3://30daysdevops/scripts/jenkins/docker-compose.yml /home/ec2-user/docker-compose.yml
+          docker-compose -f /home/ec2-user/docker-compose.yml up -d
 }
 
 #-------------------------------------------------------------------------------
@@ -392,9 +383,6 @@ function main() {
 
   install_datadog ${region} ${datadog_secret_name}
 
-  install_maven
-
-  yum_install git
   
   install_jenkins
 }
