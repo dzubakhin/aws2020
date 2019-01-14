@@ -76,8 +76,6 @@ function install_dropwizard() {
 function install_datadog() {
   local region="${1}"
   local datadog_secret_name="${2}"
-  local version="${3}"
-  local environment="${4}"
 
   log "Installing jq..."
   yum_install jq
@@ -94,25 +92,43 @@ function install_datadog() {
   log "Datadog API key is ${api_key}"
 
   log "Installing datadog-agent..."
-  DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
+  DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent/master/cmd/agent/install_script.sh)"
   log "Done."
+  
+  log "Add datadog to docker group"
+  usermod -a -G docker dd-agent
+  log "Done"
 
   log "Configuring datadog..."
-  local tags=""
-  tags="${tags:+${tags}, }service:dropwizard"
-  tags="${tags:+${tags}, }version:${version}"
-  tags="${tags:+${tags}, }environment:${environment}"
-
-  cat > /etc/dd-agent/datadog.conf <<EOF
-[Main]
-dd_url: https://app.datadoghq.com
+  cat > /etc/datadog-agent/datadog.yaml <<EOF
 api_key: ${api_key}
-tags: ${tags}
+logs_enabled: true
+listeners:
+  - name: docker
+config_providers:
+  - name: docker
+    polling: true
 EOF
+
+  cat > /etc/datadog-agent/conf.d/docker.d/conf.yaml <<EOF
+logs:
+    - type: docker
+      service: docker
+      source: docker
+EOF
+
+  cat > /etc/datadog-agent/conf.d/docker.d/docker_daemon.yaml <<EOF
+init_config:
+
+instances:
+    - url: "unix://var/run/docker.sock"
+      new_tag_names: true
+EOF
+
   log "Done."
 
-  log "Starting datadog-agent..."
-  service datadog-agent start
+  log "Restarting datadog-agent..."
+  restart datadog-agent
   log "Done."
 }
 
