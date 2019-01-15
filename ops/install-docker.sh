@@ -60,10 +60,11 @@ function yum_install() {
 #-------------------------------------------------------------------------------
 function install_dropwizard() {
   local version="${1}"
+  local region="${2}"
 
   yum_install docker
   service docker start
-  $(aws ecr get-login --no-include-email --region us-east-1)
+  $(aws ecr get-login --no-include-email --region "${region}")
   docker pull 230883561944.dkr.ecr.us-east-1.amazonaws.com/dropwizard:${version}
   docker run -d -p 8080:8080 230883561944.dkr.ecr.us-east-1.amazonaws.com/dropwizard:${version}
 }
@@ -151,9 +152,9 @@ function main() {
     esac
   done
 
-  install_dropwizard ${version}
+  install_dropwizard ${version} ${region}
 
-  install_datadog ${region} ${datadog_secret_name} ${version} ${environment}
+  install_datadog ${region} ${datadog_secret_name}
 }
 
 exec &> >(logger -t "cloud_init" -p "local0.info")
