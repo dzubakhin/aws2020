@@ -104,6 +104,29 @@ function get_jenkins_snapshot() {
 }
 
 #-------------------------------------------------------------------------------
+# Determine public IP for Jenkins
+#
+# @param $1 - The region where the host is located.
+#-------------------------------------------------------------------------------
+function get_jenkins_public_ip() {
+  local region="${1}"
+
+  local public_ip=$(wait_until aws ec2  describe-addresses                 \
+                                --region ${region}                         \
+                                --filter Name=tag:service,Values=jenkins   \
+                                --query 'Addresses[].[PublicIp]'           \
+                                --output text)
+
+  if [[ -z ${public_ip} ]]; then
+    log "Public IP not found."
+    echo ""
+  else
+    log "Found IP ${public_ip}"
+    echo "${public_ip}"
+  fi
+}
+
+#-------------------------------------------------------------------------------
 # Determine the physical ID of the assigned EBS data volume to attach and mount
 #
 # This is determined from the EC2 tags on the current instance.
@@ -164,14 +187,7 @@ function attach_volume() {
   local volume_id="${1}"
   local device="${2}"
   local region="${3}"
-  local cron_file="/etc/cron.d/ebs_daily_snapshot"
-  local command="
-    /usr/bin/aws ec2 create-snapshot
-      --region ${region}
-      --description 'Jenkins-data'
-      --volume-id $volume_id
-      --tag-specifications 'ResourceType=snapshot,Tags=[{Key=service,Value=jenkins}]'
-  "
+
 # Attach the EBS data volume as /dev/sdh
   wait_until aws ec2 attach-volume                    \
                  --region ${region}                   \
@@ -179,22 +195,12 @@ function attach_volume() {
                  --instance-id $(get_ec2_instance_id) \
                  --device ${device}
 
-
   #Wait until EBS volume attached.
   while [[ ! -b ${device} ]]; do
     log "Waiting for AWS to finish attaching the EBS volume. Looping..."
     sleep 10
   done
   log "EBS volume ${volume_id} attached."
-
-  #Configuring cron for snapshot creation daily job
-  cat - > "${cron_file}" <<CRON
-MAILTO=
-# mins  hours d  m  dow  user  command
-  0     1     *  *  *    root  $(echo ${command})
-CRON
-
-log "EBS Snapshot backup setup complete."
 }
 
 #-------------------------------------------------------------------------------
@@ -211,7 +217,6 @@ function mount_jenkins_data_volume() {
   local snapshot_id="$(get_jenkins_snapshot ${region})"
   local mount_point="/var/lib/jenkins"
   local device="/dev/sdh"
-
 
   #Valid volume found
   if [[ -n "${volume_id}" ]]; then
@@ -274,29 +279,35 @@ EOF
   log "Mounted data volume."
 }
 
+#-------------------------------------------------------------------------------
+# Associates an Elastic IP address with jenkins host
+#-------------------------------------------------------------------------------
+function associate_eip() {
+  local region="${1}"
+  local public_ip=$(get_jenkins_public_ip ${region})
+  local instance_id=$(get_ec2_instance_id)
+  local allocation_id=""
 
-#-------------------------------------------------------------------------------
-# Install a Jenkins
-#-------------------------------------------------------------------------------
-function install_jenkins() {
-  curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
-  rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
-  yum_install jenkins
-  yum remove -y java-1.7.0-openjdk
-  yum_install java-1.8.0
-  service jenkins start
+  allocation_id=$(wait_until aws ec2 associate-address        \
+                             --region ${region}               \
+                             --instance-id ${instance_id}     \
+                             --public-ip ${public_ip}         \
+                             --output text)
+  log "Allocation ID is ${allocation_id} for EIP ${public_ip}"
 }
 
 #-------------------------------------------------------------------------------
-# Install Nginx
+# Install a Docker&StartJenkins
 #-------------------------------------------------------------------------------
-function install_nginx() {
-  yum_install epel-release
-  yum_install nginx
-
-  aws s3 cp s3://30daysdevops/artem/nginx.conf /etc/nginx/nginx.conf
-
-  service nginx start
+function install_jenkins() {
+          yum install -y docker
+          service docker start
+          usermod -a -G docker root
+          curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
+          chmod +x /usr/bin/docker-compose
+          chown -R 1000 /var/lib/jenkins
+          aws s3 cp s3://30daysdevops/scripts/jenkins/docker-compose.yml /home/ec2-user/docker-compose.yml
+          docker-compose -f /home/ec2-user/docker-compose.yml up -d
 }
 
 #-------------------------------------------------------------------------------
@@ -305,11 +316,25 @@ function install_nginx() {
 # @param $1 - The API key to connect to DataDog with.
 #-------------------------------------------------------------------------------
 function install_datadog() {
-  local api_key="${1}"
+  local region="${1}"
+  local datadog_secret_name="${2}"
 
+  log "Installing jq..."
+  yum_install jq
+  log "Done."
+
+  log "Getting Datadog API key from Secret Manager"
+  local api_key=$(wait_until aws secretsmanager get-secret-value                     \
+                                                --region ${region}                   \
+                                                --secret-id ${datadog_secret_name}   \
+                                                --output json                        \
+                                                --version-stage AWSCURRENT |         \
+                                                jq ".SecretString" -r |              \
+                                                jq ".key" -r)
+  log "Datadog API key is ${api_key}"
 
   log "Installing datadog-agent..."
-  DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
+  DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent/master/cmd/agent/install_script.sh)"
   log "Done."
 
   log "Configuring datadog..."
@@ -335,32 +360,31 @@ EOF
 function main() {
   local region=$(get_ec2_instance_region)
   local hostname=""
-  local datadog_api_key=""
+  local datadog_secret_name="datadog_api_key"
 
     while [[ ${#} -gt 0 ]]; do
     case "${1}" in
-      --datadog-key)    datadog_api_key="${2}"
-                        shift 2 ;;
-      --hostname)       hostname="${2}"
-                        shift 2 ;;
-      *)                error Unrecognized option "${1}" ;;
+      --datadog-secret-name)    datadog_secret_name="${2}"
+                                shift 2 ;;
+      --hostname)               hostname="${2}"
+                                shift 2 ;;
+      *)                        error Unrecognized option "${1}" ;;
     esac
   done
 
-  yum update -y
-
-  if [[ -n "${datadog_api_key}" ]]; then
-    install_datadog "${datadog_api_key}"
-  fi
+  wait_until yum update -y
 
   # Set the hostname
   set_hostname ${hostname}
 
   mount_jenkins_data_volume ${region}
+ 
+  associate_eip ${region}
 
+  install_datadog ${region} ${datadog_secret_name}
+
+  
   install_jenkins
-
-  install_nginx
 }
 
 exec &> >(logger -t "cloud_init" -p "local0.info")

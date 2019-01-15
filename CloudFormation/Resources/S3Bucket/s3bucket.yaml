@@ -11,3 +11,8 @@ Resources:
     Properties:
       BucketName: !Ref S3Name
       AccessControl: BucketOwnerFullControl
+      Tags:
+        - Key: "service"
+          Value: "jenkins"
+        - Key: "environment"
+          Value: "ci"

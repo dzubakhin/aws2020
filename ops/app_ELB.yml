@@ -8,17 +8,23 @@ Parameters:
     Description: Environment (qa, prod).
     AllowedValues: [qa, prod]
     ConstraintDescription: Must be a valid environment name
-
-  Owner:
-    Type: String
-    Description: Owner
-    Default: 'mbabi'
-
   Name:
     Type: String
     Default: nick
     MaxLength: 50     # optional
     MinLength: 1     # optional
+  VPCStackName:
+    Type: String
+    Default: ProjectVPC
+    MinLength: 1
+  SSLCertificate:
+    Type: String
+    Default: 'arn:aws:acm:us-east-1:230883561944:certificate/79616372-c929-4269-b861-dde983e0fb34'
+    Description: ARN of Certificate attached to ELB
+  R53HostedZone:
+    Type: String
+    Default: '30daystodevops.me.uk.'
+    Description: Base DNS domain name
 
 ################################################################################
 # Resources
@@ -27,24 +33,60 @@ Resources:
   LoadBalancer:
     Type: AWS::ElasticLoadBalancing::LoadBalancer
     Properties:
-      # SecurityGroups: [!Ref HTTPSecurityGroup]
-      AvailabilityZones:
-        Fn::GetAZs: ''
+      Subnets:
+        - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
+      SecurityGroups:
+        - Ref: LBSecurityGroup
       Listeners:
-        - InstancePort: 80
+        - InstancePort: 8080
           LoadBalancerPort: 80
           Protocol: HTTP
+        - InstancePort: 8080
+          InstanceProtocol: HTTP
+          LoadBalancerPort: 443
+          Protocol: HTTPS
+          SSLCertificateId: !Ref SSLCertificate
       HealthCheck:
-        Target: HTTP:80/
-        HealthyThreshold: '3'
+        Target: HTTP:8080/hello-world
+        HealthyThreshold: '2'
         UnhealthyThreshold: '5'
         Interval: '30'
         Timeout: '2'
+      ConnectionDrainingPolicy:
+        Enabled: true
+        Timeout: 60
       Tags:
       - Key: 'Name'
         Value: !Ref Name
-      - Key: 'Owner'
-        Value: !Ref Owner
+      - Key: 'Service'
+        Value: 'dropwizard'
+      - Key: 'Environment'
+        Value: !Ref Environment
+
+  R53RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Ref R53HostedZone
+      Name: !Join ['', [!Ref Environment, ., !Ref R53HostedZone]]
+      Type: CNAME
+      TTL: 300
+      ResourceRecords: [ !GetAtt LoadBalancer.DNSName ]
+
+  LBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId:
+        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
+      GroupDescription: HTTP, HTTPS
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
 
 Outputs:
   LoadBalancerID:

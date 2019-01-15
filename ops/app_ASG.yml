@@ -5,7 +5,12 @@ AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
   ELBStackName:
     Type: String
-    Default: app-ELB
+    Default: qa-ELB2
+    MinLength: 1
+
+  VPCStackName:
+    Type: String
+    Default: ProjectVPC
     MinLength: 1
 
   SSHKey:
@@ -17,17 +22,29 @@ Parameters:
     Description: Environment (qa, prod).
     AllowedValues: [qa, prod]
     ConstraintDescription: Must be a valid environment name
+    Default: qa
 
-  Owner:
+  DeploySource:
     Type: String
-    Description: Owner
-    Default: 'mbabi'
+    Description: Deploy (docker, s3).
+    AllowedValues: [docker, s3]
+    ConstraintDescription: Source from where the application will be deployed
+    Default: docker
+
+  DatadogSecretName:
+    Type: String
+    Description: Datadog API key
+    Default: datadog_api_key
 
   Name:
     Type: String
-    Default: nick
+    Default: app
     MaxLength: 50     # optional
     MinLength: 1     # optional
+
+  Version:
+    Type: String
+
 ################################################################################
 # Mappings
 ################################################################################
@@ -35,15 +52,6 @@ Mappings:
   RegionMap:
     us-east-1:
       AMI: ami-0080e4c5bc078760e
-    us-west-1:
-      AMI: ami-0bdb828fd58c52235
-
-  # TODO: Complete this!
-  # Subnets:
-  #   us-east-1:
-  #     Subnet: []
-  #   us-west-2:
-  #     Subnet: []
 
 ################################################################################
 # Resources
@@ -57,35 +65,24 @@ Resources:
       InstanceType: t2.micro
       KeyName: !Ref SSHKey
       IamInstanceProfile: !Ref InstanceProfile
+      AssociatePublicIpAddress: no
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          # set -o
-          # set -x
+          set -o errexit
+          set -o nounset
+          set -o xtrace
 
-          sudo yum install -y aws-cfn-bootstrap
-          sudo /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebLaunchConfig --region ${AWS::Region}
-
-          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebLaunchConfig --region ${AWS::Region}
-
-          aws s3 cp s3://30daysdevops/nick/app.pp ./
-          sudo /opt/puppetlabs/bin/puppet apply app.pp
-
-          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebLaunchConfig --region ${AWS::Region}
-    Metadata:
-      "AWS::CloudFormation::Init":
-          config:
-            packages:
-              rpm:
-                puppet: "https://yum.puppet.com/puppet5/puppet5-release-el-6.noarch.rpm"
-              yum:
-                puppet-agent: []
+          aws s3 cp "s3://30daysdevops/dropwizard/deploy/install-${DeploySource}.sh" - |  \
+            bash -l -s --                                                 \
+            --datadog-secret-name "${DatadogSecretName}"                  \
+            --version ${Version}
 
   WebServerGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      AvailabilityZones:
-        Fn::GetAZs: ''
+      VPCZoneIdentifier:
+        - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
       LaunchConfigurationName: !Ref WebLaunchConfig
       LoadBalancerNames:
         - Fn::ImportValue: !Sub "${ELBStackName}-LoadBalancerID"
@@ -99,9 +96,16 @@ Resources:
         - Key: 'Name'
           Value: !Ref Name
           PropagateAtLaunch: true
-        - Key: 'Owner'
-          Value: !Ref Owner
+        - Key: 'Service'
+          Value: 'dropwizard'
           PropagateAtLaunch: true
+        - Key: 'Environment'
+          Value: !Ref Environment
+          PropagateAtLaunch: true
+    CreationPolicy:
+      ResourceSignal:
+        Count: 0
+        Timeout: "PT10M"
 
   WebServerScaleUpPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
@@ -126,7 +130,7 @@ Resources:
       MetricName: CPUUtilization
       Namespace: AWS/EC2
       Statistic: Average
-      Period: 300
+      Period: 60
       EvaluationPeriods: 2
       Threshold: 75
       AlarmActions: [ !Ref WebServerScaleUpPolicy ]
@@ -171,6 +175,15 @@ Resources:
                 Resource: "*"
                 Action:
                   - s3:GetObject
+                  - secretsmanager:GetSecretValue
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:GetRepositoryPolicy
+                  - ecr:DescribeRepositories
+                  - ecr:ListImages
+                  - ecr:DescribeImages
+                  - ecr:BatchGetImage
 
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -183,6 +196,8 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable SSH access via port 22
+      VpcId:
+        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 22
@@ -192,9 +207,11 @@ Resources:
   HTTPSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Enable HTTP access via port 80
+      GroupDescription: Enable HTTP access via port 8080
+      VpcId:
+        Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
+        FromPort: 8080
+        ToPort: 8080
         CidrIp: 0.0.0.0/0

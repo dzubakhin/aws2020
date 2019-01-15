@@ -13,9 +13,10 @@ Resources:
       Encrypted: No
       Size: !Ref Size
       Tags:
-        - 
-          Key: "service"
+        - Key: "service"
           Value: "jenkins"
+        - Key: "environment"
+          Value: "ci"
       VolumeType: gp2
 
   DLMRole:
@@ -37,6 +38,7 @@ Resources:
               - Effect: "Allow"
                 Action:
                   - ec2:CreateSnapshot
+<<<<<<< HEAD
                   - ec2:CopySnapshot
                   - ec2:DeleteSnapshot
                   - ec2:ImportSnapshot
@@ -47,6 +49,11 @@ Resources:
                   - ec2:DescribeVolumeStatus
                   - ec2:DescribeVolumesModifications
                   - ec2:DescribeTags
+=======
+                  - ec2:DeleteSnapshot
+                  - ec2:DescribeVolumes
+                  - ec2:DescribeSnapshots
+>>>>>>> 4e0e12fb7db53dea8f9e4856323fbd3c54a1cfe8
                 Resource: "*"
               - Effect: "Allow"
                 Action:
@@ -65,13 +72,22 @@ Resources:
         TargetTags:
           - Key: "service"
             Value: "jenkins"
+<<<<<<< HEAD
 
+=======
+          - Key: "environment"
+            Value: "ci"
+>>>>>>> 4e0e12fb7db53dea8f9e4856323fbd3c54a1cfe8
         Schedules:
           -
             Name: "Daily Snapshots"
             TagsToAdd:
+<<<<<<< HEAD
               -
                 Key: "type"
+=======
+              - Key: "type"
+>>>>>>> 4e0e12fb7db53dea8f9e4856323fbd3c54a1cfe8
                 Value: "DailySnapshot"
 
             CreateRule:
@@ -81,4 +97,8 @@ Resources:
                 - "01:00"
             RetainRule:
               Count: 5
+<<<<<<< HEAD
             CopyTags: true
+=======
+            CopyTags: true
+>>>>>>> 4e0e12fb7db53dea8f9e4856323fbd3c54a1cfe8

@@ -6,27 +6,51 @@ set -o nounset
 # Create stack in AWS.
 #
 # @param $1 - The AWS region. us-east-1 used
-# @param $2 - [Optional] Stack name. "S3Bucket" used by default.
-# @param $3 - Name of created bucket
+# @param $2 - [Optional] Stack name. "app-ELB" used by default.
+# @param $3 - [Optional] Environment name. "qa" used by default
 #--------------------------------------------------------------------------------------------------
 function launch() {
   local region="${1}"
   local stack_name="${2}"
-  local bucket_name="${3}"
-
-  local tags=""
-  tags="${tags:+${tags} }Key=service,Value=S3"
-  tags="${tags:+${tags} }Key=environment,Value=ci"
+  local vpc_name="${3}"
+  local environment="${4}"
 
   local params=""
-  params="${params:+${params} }ParameterKey=S3Name,ParameterValue=${bucket_name}"
+  params="${params:+${params} }ParameterKey=Name,ParameterValue=${stack_name}"
+  params="${params:+${params} }ParameterKey=VPCStackName,ParameterValue=${vpc_name}"
+  params="${params:+${params} }ParameterKey=Environment,ParameterValue=${environment}"
 
-  aws cloudformation create-stack                       \
-    --stack-name "${stack_name}"                        \
-    --region "${region}"                                \
-    --template-body file://$(dirname $0)/s3bucket.yaml  \
-    --parameters ${params}                              \
-    --tags $tags
+  local tags=""
+  tags="${tags:+${tags} }Key=service,Value=load-balancer Key=Environment,Value=${environment}"
+
+  aws cloudformation create-stack                         \
+    --stack-name "${stack_name}"                          \
+    --region "${region}"                                  \
+    --template-body file://$(dirname $0)/app_ELB.yml      \
+    --parameters ${params}                                \
+    --tags ${tags}
+
+    log "Stack creation launched"
+}
+
+function wait_complete() {
+  local region="${1}"
+  local stack_name="${2}"
+
+  log "Waiting..."
+
+  aws cloudformation wait stack-create-complete           \
+    --region ${region}                                    \
+    --stack-name ${stack_name}
+
+  log "Stack creation complete"
+}
+
+#-------------------------------------------------------------------------------
+# Log a message.
+#-------------------------------------------------------------------------------
+function log() {
+  echo 1>&2 "INFO: $@"
 }
 
 #-------------------------------------------------------------------------------
@@ -56,10 +80,13 @@ Usage: ${0#./} [OPTION]...
 Options:
 
   --stack-name
-      [Optional] Name of created stack. "S3bucket" is default.
+      [Optional] Name of created stack. "app-ELB" is default.
 
-  --bucket-name
-      [Optional] The name of created bucket
+  --vpc-name
+      [Optional] Name of Used VPC. "DefaultVPC" is default.
+
+  --environment
+      [Optional] Environment name.
 
   -h/--help
       Display this help message.
@@ -70,15 +97,17 @@ EOF
 # Main program.
 #-------------------------------------------------------------------------------
 function main() {
-  local stack_name="S3bucket"
-  local bucket_name="30daysdevops"
+  local stack_name="app-ELB"
+  local vpc_name="DefaultVPC"
+  local environment='qa'
   local region="us-east-1"
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
     case "${1}" in
       --stack-name)           stack_name="${2}"; shift;;
-      --bucket-name)          bucket_name="${2}"; shift;;
+      --vpc-name)             vpc_name="${2}"; shift;;
+      --environment)          environment="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
       -*)                     usage_error "Unrecognized option ${1}";;
@@ -91,8 +120,12 @@ function main() {
   launch                  \
     "${region}"           \
     "${stack_name}"       \
-    "${bucket_name}"
+    "${vpc_name}"         \
+    "${environment}"
 
+  wait_complete           \
+    "${region}"           \
+    "${stack_name}"
 }
 
 main "${@:-}"

@@ -7,26 +7,60 @@ set -o nounset
 #
 # @param $1 - The AWS region. us-east-1 used
 # @param $2 - [Optional] Stack name. "S3Bucket" used by default.
-# @param $3 - Name of created bucket
+# @param $3 - Size of volume
 #--------------------------------------------------------------------------------------------------
 function launch() {
   local region="${1}"
   local stack_name="${2}"
-  local bucket_name="${3}"
 
   local tags=""
-  tags="${tags:+${tags} }Key=service,Value=S3"
+  tags="${tags:+${tags} }Key=service,Value=jenkins"
   tags="${tags:+${tags} }Key=environment,Value=ci"
 
-  local params=""
-  params="${params:+${params} }ParameterKey=S3Name,ParameterValue=${bucket_name}"
-
-  aws cloudformation create-stack                       \
-    --stack-name "${stack_name}"                        \
-    --region "${region}"                                \
-    --template-body file://$(dirname $0)/s3bucket.yaml  \
-    --parameters ${params}                              \
+  aws cloudformation create-stack                         \
+    --stack-name "${stack_name}"                          \
+    --region "${region}"                                  \
+    --template-body file://$(dirname $0)/EIP.yml          \
     --tags $tags
+
+  log "Stack creation launched"
+}
+
+function wait_complete() {
+  local region="${1}"
+  local stack_name="${2}"
+
+  log "Waiting..."
+
+  aws cloudformation wait stack-create-complete           \
+    --region ${region}                                    \
+    --stack-name ${stack_name}
+
+  log "Stack creation complete"
+}
+
+#-------------------------------------------------------------------------------
+# Add tags to EIP
+#-------------------------------------------------------------------------------
+function tag_eip() {
+  local region="${1}"
+  local stack_name="${2}"
+
+  local tags=""
+  tags="${tags:+${tags} }Key=service,Value=jenkins"
+  tags="${tags:+${tags} }Key=environment,Value=ci"
+
+  log "Tagging EIP"
+
+  eip_id=`aws --output text --region ${region} cloudformation list-exports | \
+          grep "${stack_name}-ElasticIP" | cut -f 4`
+  aws --region ${region} ec2 create-tags --resources ${eip_id} --tags ${tags}
+}
+#-------------------------------------------------------------------------------
+# Log a message.
+#-------------------------------------------------------------------------------
+function log() {
+  echo 1>&2 "INFO: $@"
 }
 
 #-------------------------------------------------------------------------------
@@ -54,12 +88,8 @@ function usage() {
 Usage: ${0#./} [OPTION]...
 
 Options:
-
   --stack-name
-      [Optional] Name of created stack. "S3bucket" is default.
-
-  --bucket-name
-      [Optional] The name of created bucket
+      [Optional] Name of created stack. "jenkins-EIP" is default.
 
   -h/--help
       Display this help message.
@@ -70,15 +100,13 @@ EOF
 # Main program.
 #-------------------------------------------------------------------------------
 function main() {
-  local stack_name="S3bucket"
-  local bucket_name="30daysdevops"
+  local stack_name="jenkins-EIP"
   local region="us-east-1"
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
     case "${1}" in
       --stack-name)           stack_name="${2}"; shift;;
-      --bucket-name)          bucket_name="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
       -*)                     usage_error "Unrecognized option ${1}";;
@@ -90,8 +118,15 @@ function main() {
   # Finally create the stack
   launch                  \
     "${region}"           \
-    "${stack_name}"       \
-    "${bucket_name}"
+    "${stack_name}"
+
+  wait_complete           \
+    "${region}"           \
+    "${stack_name}"
+
+  tag_eip                 \
+    "${region}"           \
+    "${stack_name}"
 
 }
 
