@@ -14,6 +14,10 @@ function launch() {
   local stack_name="${2}"
   local bucket_name="${3}"
 
+  local tags=""
+  tags="${tags:+${tags} }Key=service,Value=S3"
+  tags="${tags:+${tags} }Key=environment,Value=ci"
+
   local params=""
   params="${params:+${params} }ParameterKey=S3Name,ParameterValue=${bucket_name}"
 
@@ -21,7 +25,8 @@ function launch() {
     --stack-name "${stack_name}"                        \
     --region "${region}"                                \
     --template-body file://$(dirname $0)/s3bucket.yaml  \
-    --parameters ${params}
+    --parameters ${params}                              \
+    --tags $tags
 }
 
 #-------------------------------------------------------------------------------

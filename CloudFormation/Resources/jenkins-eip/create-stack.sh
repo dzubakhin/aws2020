@@ -15,6 +15,7 @@ function launch() {
 
   local tags=""
   tags="${tags:+${tags} }Key=service,Value=jenkins"
+  tags="${tags:+${tags} }Key=environment,Value=ci"
 
   aws cloudformation create-stack                         \
     --stack-name "${stack_name}"                          \
@@ -38,12 +39,16 @@ function wait_complete() {
   log "Stack creation complete"
 }
 
+#-------------------------------------------------------------------------------
+# Add tags to EIP
+#-------------------------------------------------------------------------------
 function tag_eip() {
   local region="${1}"
   local stack_name="${2}"
 
   local tags=""
   tags="${tags:+${tags} }Key=service,Value=jenkins"
+  tags="${tags:+${tags} }Key=environment,Value=ci"
 
   log "Tagging EIP"
 

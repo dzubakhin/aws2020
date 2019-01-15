@@ -13,9 +13,10 @@ Resources:
       Encrypted: No
       Size: !Ref Size
       Tags:
-        - 
-          Key: "service"
+        - Key: "service"
           Value: "jenkins"
+        - Key: "environment"
+          Value: "ci"
       VolumeType: gp2
 
   DLMRole:
@@ -58,12 +59,13 @@ Resources:
         TargetTags:
           - Key: "service"
             Value: "jenkins"
+          - Key: "environment"
+            Value: "ci"
         Schedules:
           -
             Name: "Daily Snapshots"
             TagsToAdd:
-              -
-                Key: "type"
+              - Key: "type"
                 Value: "DailySnapshot"
 
             CreateRule:
