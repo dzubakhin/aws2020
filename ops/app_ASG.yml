@@ -5,7 +5,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
   ELBStackName:
     Type: String
-    Default: app-ELB
+    Default: qa-ELB2
     MinLength: 1
 
   VPCStackName:
@@ -30,6 +30,11 @@ Parameters:
     AllowedValues: [docker, s3]
     ConstraintDescription: Source from where the application will be deployed
     Default: docker
+
+  DatadogSecretName:
+    Type: String
+    Description: Datadog API key
+    Default: datadog_api_key
 
   Name:
     Type: String
@@ -72,11 +77,6 @@ Resources:
             bash -l -s --                                                 \
             --datadog-secret-name "${DatadogSecretName}"                  \
             --version ${Version}
-
-          /opt/aws/bin/cfn-signal -e $?   \
-               --stack ${AWS::StackName}  \
-               --resource WebServerGroup  \
-               --region ${AWS::Region}
 
   WebServerGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -176,6 +176,14 @@ Resources:
                 Action:
                   - s3:GetObject
                   - secretsmanager:GetSecretValue
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:GetRepositoryPolicy
+                  - ecr:DescribeRepositories
+                  - ecr:ListImages
+                  - ecr:DescribeImages
+                  - ecr:BatchGetImage
 
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
