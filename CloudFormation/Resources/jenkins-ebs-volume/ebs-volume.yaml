@@ -66,22 +66,13 @@ Resources:
         TargetTags:
           - Key: "service"
             Value: "jenkins"
-<<<<<<< HEAD
-
-=======
           - Key: "environment"
             Value: "ci"
->>>>>>> 4e0e12fb7db53dea8f9e4856323fbd3c54a1cfe8
         Schedules:
           -
             Name: "Daily Snapshots"
             TagsToAdd:
-<<<<<<< HEAD
-              -
-                Key: "type"
-=======
               - Key: "type"
->>>>>>> 4e0e12fb7db53dea8f9e4856323fbd3c54a1cfe8
                 Value: "DailySnapshot"
 
             CreateRule:
@@ -91,8 +82,4 @@ Resources:
                 - "01:00"
             RetainRule:
               Count: 5
-<<<<<<< HEAD
             CopyTags: true
-=======
-            CopyTags: true
->>>>>>> 4e0e12fb7db53dea8f9e4856323fbd3c54a1cfe8
