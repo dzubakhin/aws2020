@@ -62,13 +62,18 @@ Resources:
       MasterUserPassword: !Ref 'DBPassword'
       VPCSecurityGroups:
         - !GetAtt DBEC2SecurityGroup.GroupId
+      Tags:
+        - Key: 'Service'
+          Value: 'database'
+        - Key: 'Environment'
+          Value: !Ref Environment
     DeletionPolicy: Delete
 
-  DBSubnetGroup: 
+  DBSubnetGroup:
     Type: "AWS::RDS::DBSubnetGroup"
-    Properties: 
+    Properties:
       DBSubnetGroupDescription: "subnet for db"
-      SubnetIds: 
+      SubnetIds:
         - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet0"
         - Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnet1"
 
@@ -81,7 +86,7 @@ Resources:
         FromPort: '3306'
         ToPort: '3306'
         CidrIp: 0.0.0.0/0
-      VpcId: 
+      VpcId:
         Fn::ImportValue: !Sub "${VPCStackName}-VPCId"
 
 Outputs:

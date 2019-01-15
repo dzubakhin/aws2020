@@ -111,6 +111,9 @@ Resources:
         - Key: 'service'
           Value: 'jenkins'
           PropagateAtLaunch: true
+        - Key: 'environment'
+          Value: 'ci'
+          PropagateAtLaunch: true
 
       VPCZoneIdentifier:
         - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
@@ -141,6 +144,8 @@ Resources:
           Value: 'jenkins'
         - Key: 'resource'
           Value: 'ELB'
+        - Key: 'environment'
+          Value: 'ci'
 
   InstanceSecurityGroup:
       Type: AWS::EC2::SecurityGroup

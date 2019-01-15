@@ -14,6 +14,10 @@ function launch() {
   local stack_name="${2}"
   local size="${3}"
 
+  local tags=""
+  tags="${tags:+${tags} }Key=service,Value=EBS"
+  tags="${tags:+${tags} }Key=environment,Value=ci"
+
   local params=""
   params="${params:+${params} }ParameterKey=Size,ParameterValue=${size}"
 
@@ -21,7 +25,8 @@ function launch() {
     --stack-name "${stack_name}"                          \
     --region "${region}"                                  \
     --template-body file://$(dirname $0)/ebs-volume.yaml  \
-    --parameters ${params}
+    --parameters ${params}                                \
+    --tags $tags
 }
 
 #-------------------------------------------------------------------------------
