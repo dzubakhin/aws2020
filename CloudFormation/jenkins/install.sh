@@ -338,19 +338,13 @@ function install_datadog() {
   log "Done."
 
   log "Configuring datadog..."
-  local tags=""
-  tags="${tags:+${tags}, }service:jenkins"
-
-  cat > /etc/dd-agent/datadog.conf <<EOF
-[Main]
-dd_url: https://app.datadoghq.com
+  cat > /etc/datadog-agent/datadog.yaml <<EOF
 api_key: ${api_key}
-tags: ${tags}
 EOF
   log "Done."
 
   log "Starting datadog-agent..."
-  service datadog-agent start
+  restart datadog-agent
   log "Done."
 }
 
