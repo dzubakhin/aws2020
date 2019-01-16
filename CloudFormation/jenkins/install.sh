@@ -340,6 +340,18 @@ function install_datadog() {
   log "Configuring datadog..."
   cat > /etc/datadog-agent/datadog.yaml <<EOF
 api_key: ${api_key}
+logs_enabled: true
+listeners:
+  - name: docker
+config_providers:
+  - name: docker
+    polling: true
+EOF
+  cat > /etc/datadog-agent/conf.d/docker.d/conf.yaml <<EOF
+logs:
+    - type: docker
+      service: jenkins
+      source: docker
 EOF
   log "Done."
 
