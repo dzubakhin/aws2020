@@ -353,6 +353,14 @@ logs:
       service: jenkins
       source: docker
 EOF
+  cat > /etc/datadog-agent/conf.d/docker.d/docker_daemon.yaml <<EOF
+init_config:
+
+instances:
+    - url: "unix://var/run/docker.sock"
+      new_tag_names: true
+EOF
+  usermod -a -G docker dd-agent
   log "Done."
 
   log "Starting datadog-agent..."
