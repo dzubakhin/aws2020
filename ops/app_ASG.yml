@@ -24,6 +24,12 @@ Parameters:
     ConstraintDescription: Must be a valid environment name
     Default: qa
 
+  InstanceType:
+    Type: String
+    Description: Type of EC2 instance.
+    Default: t2.micro
+    ConstraintDescription: Must be a valid EC2 instance type.
+
   DeploySource:
     Type: String
     Description: Deploy (docker, s3).
@@ -62,7 +68,7 @@ Resources:
     Properties:
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       SecurityGroups: [!Ref SSHSecurityGroup, !Ref HTTPSecurityGroup]
-      InstanceType: t2.micro
+      InstanceType: !Ref InstanceType
       KeyName: !Ref SSHKey
       IamInstanceProfile: !Ref InstanceProfile
       AssociatePublicIpAddress: no
