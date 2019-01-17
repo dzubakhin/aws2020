@@ -13,6 +13,7 @@ function launch() {
   local region="${1}"
   local stack_name="${2}"
   local size="${3}"
+  local templete_path="${4}"
 
   local tags=""
   tags="${tags:+${tags} }Key=service,Value=EBS"
@@ -24,7 +25,7 @@ function launch() {
   aws cloudformation create-stack                         \
     --stack-name "${stack_name}"                          \
     --region "${region}"                                  \
-    --template-body file://$(dirname $0)/ebs-volume.yaml  \
+    --template-body file://${templete_path}/ebs-volume.yaml  \
     --parameters ${params}                                \
     --tags $tags
 }
@@ -73,6 +74,7 @@ function main() {
   local stack_name="jenkins-ebs-volume"
   local size="8"
   local region="us-east-1"
+  local templete_path="$(dirname $0)"
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
@@ -91,7 +93,8 @@ function main() {
   launch                  \
     "${region}"           \
     "${stack_name}"       \
-    "${size}"
+    "${size}"       \
+    "${templete_path}"
 
 }
 
