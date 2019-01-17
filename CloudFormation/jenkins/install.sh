@@ -314,7 +314,7 @@ function install_jenkins() {
 # Install fail2ban
 #-------------------------------------------------------------------------------
 function install_fail2ban() {
-          yum install -y fail2ban
+          yum_install fail2ban
           chkconfig fail2ban on
           service fail2ban start
 }
