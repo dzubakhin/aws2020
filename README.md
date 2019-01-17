@@ -1,8 +1,7 @@
 # AWS_Demo_project
 
 Directories description:
-- app - Application code
 - ops - Application's infractracture
-- jenkins - Deploy infractracture
+- ci - Infractracture for jenkins
 
 Dropwizard application repository: https://github.com/babinskiy/dropwizard-example
