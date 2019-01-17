@@ -73,6 +73,7 @@ Resources:
                   - ec2:AttachVolume
                   - ec2:AssociateAddress
                   - secretsmanager:GetSecretValue
+                  - ecr:*
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
