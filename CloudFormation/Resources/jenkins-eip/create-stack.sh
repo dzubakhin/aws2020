@@ -7,7 +7,7 @@ set -o nounset
 #
 # @param $1 - The AWS region. us-east-1 used
 # @param $2 - Stack name
-# @param $3 - Size of volume
+# @param $3 - dns_name
 # @param $4 - relative path from git root
 # @param $5 - servive name - normally jenkins (for tags)
 # @param $6 - environment - normally ci (for tags)
