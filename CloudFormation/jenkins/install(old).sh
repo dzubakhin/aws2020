@@ -297,17 +297,26 @@ function associate_eip() {
 }
 
 #-------------------------------------------------------------------------------
-# Install a Docker&StartJenkins
+# Install a Jenkins
 #-------------------------------------------------------------------------------
 function install_jenkins() {
-          yum install -y docker
-          service docker start
-          usermod -a -G docker root
-          curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
-          chmod +x /usr/bin/docker-compose
-          chown -R 1000 /var/lib/jenkins
-          aws s3 cp s3://30daysdevops/scripts/jenkins/docker-compose.yml /home/ec2-user/docker-compose.yml
-          docker-compose -f /home/ec2-user/docker-compose.yml up -d
+  curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
+  rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+  yum_install jenkins
+  service jenkins start
+}
+
+#-------------------------------------------------------------------------------
+# Install Apache Maven
+#-------------------------------------------------------------------------------
+function install_maven() {
+
+  wget https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+  sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+  yum_install apache-maven
+  yum_install java-1.8.0-openjdk-devel.x86_64
+  alternatives --set java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java
+  alternatives --set javac /usr/lib/jvm/java-1.8.0-openjdk.x86_64/bin/javac
 }
 
 #-------------------------------------------------------------------------------
@@ -319,9 +328,9 @@ function install_datadog() {
   local region="${1}"
   local datadog_secret_name="${2}"
 
-  log "Installing jq..."
+  log "Install jq"
   yum_install jq
-  log "Done."
+  log "Done"
 
   log "Getting Datadog API key from Secret Manager"
   local api_key=$(wait_until aws secretsmanager get-secret-value                     \
@@ -334,37 +343,23 @@ function install_datadog() {
   log "Datadog API key is ${api_key}"
 
   log "Installing datadog-agent..."
-  DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent/master/cmd/agent/install_script.sh)"
+  DD_API_KEY=${api_key} bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh)"
   log "Done."
 
   log "Configuring datadog..."
-  cat > /etc/datadog-agent/datadog.yaml <<EOF
-api_key: ${api_key}
-logs_enabled: true
-listeners:
-  - name: docker
-config_providers:
-  - name: docker
-    polling: true
-EOF
-  cat > /etc/datadog-agent/conf.d/docker.d/conf.yaml <<EOF
-logs:
-    - type: docker
-      service: jenkins
-      source: docker
-EOF
-  cat > /etc/datadog-agent/conf.d/docker.d/docker_daemon.yaml <<EOF
-init_config:
+  local tags=""
+  tags="${tags:+${tags}, }service:jenkins"
 
-instances:
-    - url: "unix://var/run/docker.sock"
-      new_tag_names: true
+  cat > /etc/dd-agent/datadog.conf <<EOF
+[Main]
+dd_url: https://app.datadoghq.com
+api_key: ${api_key}
+tags: ${tags}
 EOF
-  usermod -a -G docker dd-agent
   log "Done."
 
   log "Starting datadog-agent..."
-  restart datadog-agent
+  service datadog-agent start
   log "Done."
 }
 
@@ -397,6 +392,9 @@ function main() {
 
   install_datadog ${region} ${datadog_secret_name}
 
+  install_maven
+
+  yum_install git
   
   install_jenkins
 }
