@@ -39,19 +39,24 @@ Resources:
         - Ref: LBSecurityGroup
       Listeners:
         - InstancePort: 8080
-          LoadBalancerPort: 80
-          Protocol: HTTP
-        - InstancePort: 8080
           InstanceProtocol: HTTP
           LoadBalancerPort: 443
           Protocol: HTTPS
           SSLCertificateId: !Ref SSLCertificate
+          PolicyNames:
+            - TLSELBSecurityPolicy
       HealthCheck:
         Target: HTTP:8080/hello-world
         HealthyThreshold: '2'
-        UnhealthyThreshold: '5'
-        Interval: '30'
+        UnhealthyThreshold: '8'
+        Interval: '15'
         Timeout: '2'
+      Policies:
+        - PolicyName: TLSELBSecurityPolicy
+          PolicyType: SSLNegotiationPolicyType
+          Attributes:
+            - Name: Reference-Security-Policy
+              Value: ELBSecurityPolicy-TLS-1-2-2017-01
       ConnectionDrainingPolicy:
         Enabled: true
         Timeout: 60
