@@ -17,6 +17,7 @@ function launch() {
   local vpc_name="${4}"
   local version="${5}"
   local environment="${6}"
+  local instance_type="${7}"
 
   local params=""
   params="${params:+${params} }ParameterKey=Name,ParameterValue=${stack_name}"
@@ -24,6 +25,7 @@ function launch() {
   params="${params:+${params} }ParameterKey=VPCStackName,ParameterValue=${vpc_name}"
   params="${params:+${params} }ParameterKey=Version,ParameterValue=${version}"
   params="${params:+${params} }ParameterKey=Environment,ParameterValue=${environment}"
+  params="${params:+${params} }ParameterKey=InstanceType,ParameterValue=${instance_type}"
 
   local tags=""
   tags="${tags:+${tags} }Key=service,Value=dropwizard"
@@ -117,6 +119,7 @@ function main() {
   local version=""
   local environment="qa"
   local region="us-east-1"
+  local instance_type="t2.micro"
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
@@ -125,6 +128,7 @@ function main() {
       --elb-stack-name)       ELB_stack_name="${2}"; shift;;
       --vpc-name)             vpc_name="${2}"; shift;;
       --version)              version="${2}"; shift;;
+      --instance-type)        instance_type="${2}"; shift;;
       --environment)          environment="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
@@ -145,7 +149,8 @@ function main() {
     "${ELB_stack_name}"   \
     "${vpc_name}"         \
     "${version}"          \
-    "${environment}"
+    "${environment}"      \
+    "${instance_type}"
 
   wait_complete           \
     "${region}"           \
