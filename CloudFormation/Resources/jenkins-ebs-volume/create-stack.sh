@@ -74,12 +74,12 @@ EOF
 # Main program.
 #-------------------------------------------------------------------------------
 function main() {
-#  local stack_name="jenkins-ebs-volume"
-#  local size="8"
-#  local region="us-east-1"
-#  local templete_path="$(dirname $0)"
-#  local service="jenkins"
-#  local environment="ci"
+  local stack_name="jenkins-ebs-volume"
+  local size="8"
+  local region="us-east-1"
+  local templete_path="$(dirname $0)"
+  local service="jenkins"
+  local environment="ci"
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
