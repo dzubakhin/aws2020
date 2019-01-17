@@ -73,7 +73,18 @@ Resources:
                   - ec2:AttachVolume
                   - ec2:AssociateAddress
                   - secretsmanager:GetSecretValue
-                  - ecr:*
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:GetRepositoryPolicy
+                  - ecr:DescribeRepositories
+                  - ecr:ListImages
+                  - ecr:DescribeImages
+                  - ecr:BatchGetImage
+                  - ecr:InitiateLayerUpload
+                  - ecr:UploadLayerPart
+                  - ecr:CompleteLayerUpload
+                  - ecr:PutImage
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
