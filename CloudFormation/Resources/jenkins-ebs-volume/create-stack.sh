@@ -14,10 +14,12 @@ function launch() {
   local stack_name="${2}"
   local size="${3}"
   local templete_path="${4}"
+  local service="${5}"
+  local environment="${6}"
 
   local tags=""
-  tags="${tags:+${tags} }Key=service,Value=EBS"
-  tags="${tags:+${tags} }Key=environment,Value=ci"
+  tags="${tags:+${tags} }Key=Service,Value=${service}"
+  tags="${tags:+${tags} }Key=Environment,Value=${environment}"
 
   local params=""
   params="${params:+${params} }ParameterKey=Size,ParameterValue=${size}"
@@ -78,6 +80,8 @@ function main() {
 #  local size="8"
 #  local region="us-east-1"
 #  local templete_path="$(dirname $0)"
+#  local service="jenkins"
+#  local environment="ci"
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
@@ -97,8 +101,9 @@ function main() {
     "${region}"           \
     "${stack_name}"       \
     "${size}"       \
-    "${templete_path}"
-
+    "${templete_path}"       \
+    "${service}"       \
+    "${environment}"
 }
 
 main "${@:-}"
