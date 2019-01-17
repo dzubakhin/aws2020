@@ -1,8 +1,27 @@
 AWSTemplateFormatVersion: '2010-09-09'
 
+Parameters:
+  R53HostedZone:
+    Type: String
+    Default: '30daystodevops.me.uk'
+    Description: Base DNS domain name
+
+  R53DNSName:
+    Type: String
+    Default: 'bastion.'
+
 Resources:
   ElasticIP:
     Type: AWS::EC2::EIP
+
+  R53RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Join ['', [!Ref R53HostedZone, .]]
+      Name: !Join ['', [ !Ref R53DNSName, ., !Ref R53HostedZone, .]]
+      Type: A
+      TTL: 300
+      ResourceRecords: [ !Ref ElasticIP ]
 
 Outputs:
   ElasticIP:

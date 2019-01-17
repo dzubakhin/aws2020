@@ -13,6 +13,13 @@ function launch() {
   local region="${1}"
   local stack_name="${2}"
 
+  local dns_base=`echo ${3} | sed 's/^[^.]*\.\(.*\)/\1/'`
+  local dns_subdomain=`echo ${3} | sed 's/^\([^.]*\)\..*/\1/'`
+
+  local params=""
+  params="${params:+${params} }ParameterKey=R53HostedZone,ParameterValue=${dns_base}"
+  params="${params:+${params} }ParameterKey=R53DNSName,ParameterValue=${dns_subdomain}"
+
   local tags=""
   tags="${tags:+${tags} }Key=service,Value=jenkins"
   tags="${tags:+${tags} }Key=environment,Value=ci"
@@ -21,6 +28,7 @@ function launch() {
     --stack-name "${stack_name}"                          \
     --region "${region}"                                  \
     --template-body file://$(dirname $0)/EIP.yml          \
+    --parameters ${params}                                \
     --tags $tags
 
   log "Stack creation launched"
@@ -91,6 +99,9 @@ Options:
   --stack-name
       [Optional] Name of created stack. "jenkins-EIP" is default.
 
+  --dns-name
+      [Optional] DNS Record for created IP. 'bastion.30daystodevops.me.uk' is default
+
   -h/--help
       Display this help message.
 EOF
@@ -102,11 +113,13 @@ EOF
 function main() {
   local stack_name="jenkins-EIP"
   local region="us-east-1"
+  local dns_name="bastion.30daystodevops.me.uk"
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
     case "${1}" in
       --stack-name)           stack_name="${2}"; shift;;
+      --dns-name)             dns_name="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
       -*)                     usage_error "Unrecognized option ${1}";;
@@ -118,7 +131,8 @@ function main() {
   # Finally create the stack
   launch                  \
     "${region}"           \
-    "${stack_name}"
+    "${stack_name}"       \
+    "${dns_name}"
 
   wait_complete           \
     "${region}"           \
