@@ -84,8 +84,12 @@ function main() {
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
     case "${1}" in
+      --region)               region="${2}"; shift;;
       --stack-name)           stack_name="${2}"; shift;;
       --size)                 size="${2}"; shift;;
+      --templete-path)        templete_path="${2}"; shift;;
+      --service)              service="${2}"; shift;;
+      --environment)          environment="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
       -*)                     usage_error "Unrecognized option ${1}";;

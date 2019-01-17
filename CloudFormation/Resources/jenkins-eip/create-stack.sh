@@ -8,28 +8,29 @@ set -o nounset
 # @param $1 - The AWS region. us-east-1 used
 # @param $2 - [Optional] Stack name. "S3Bucket" used by default.
 # @param $3 - Size of volume
+# @param $4 - relative path from git root
 #--------------------------------------------------------------------------------------------------
-function launch() {
-  local region="${1}"
-  local stack_name="${2}"
+  region="${1}"
+  stack_name="${2}"
+  templete_path="${3}"
+  service="${4}"
+  environment="${5}"
 
+function launch() {
   local tags=""
-  tags="${tags:+${tags} }Key=service,Value=jenkins"
-  tags="${tags:+${tags} }Key=environment,Value=ci"
+  tags="${tags:+${tags} }Key=Service,Value=${service}"
+  tags="${tags:+${tags} }Key=Environment,Value=${environment}"
 
   aws cloudformation create-stack                         \
     --stack-name "${stack_name}"                          \
     --region "${region}"                                  \
-    --template-body file://$(dirname $0)/EIP.yml          \
+    --template-body file://${templete_path}/EIP.yml          \
     --tags $tags
 
   log "Stack creation launched"
 }
 
 function wait_complete() {
-  local region="${1}"
-  local stack_name="${2}"
-
   log "Waiting..."
 
   aws cloudformation wait stack-create-complete           \
