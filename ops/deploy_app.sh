@@ -18,6 +18,7 @@ function launch() {
   local version="${5}"
   local environment="${6}"
   local instance_type="${7}"
+  local template_body="${8}"
 
   local params=""
   params="${params:+${params} }ParameterKey=Name,ParameterValue=${stack_name}"
@@ -35,7 +36,7 @@ function launch() {
   aws --output text cloudformation create-stack                             \
       --stack-name "${stack_name}"                                          \
       --region "${region}"                                                  \
-      --template-body file://$(dirname $0)/app_ASG.yml                      \
+      --template-body file://${template_body}                               \
       --parameters ${params}                                                \
       --capabilities CAPABILITY_IAM                                         \
       --tags ${tags}
@@ -123,6 +124,7 @@ function main() {
   local environment="qa"
   local region="us-east-1"
   local instance_type="t2.micro"
+  local template_body="ops/app_ASG.yml"
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
@@ -132,6 +134,7 @@ function main() {
       --vpc-name)             vpc_name="${2}"; shift;;
       --version)              version="${2}"; shift;;
       --instance-type)        instance_type="${2}"; shift;;
+      --template-body)        template_body="${2}"; shift;;
       --environment)          environment="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
@@ -153,7 +156,8 @@ function main() {
     "${vpc_name}"         \
     "${version}"          \
     "${environment}"      \
-    "${instance_type}"
+    "${instance_type}"    \
+    "${template_body}"
 
   wait_complete           \
     "${region}"           \

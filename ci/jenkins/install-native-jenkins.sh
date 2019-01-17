@@ -6,7 +6,7 @@ set -o nounset
 # Log a message.
 #-------------------------------------------------------------------------------
 function log() {
-  echo 1>&2 "INFO: $@"
+  echo 1>&2 "$@"
 }
 
 #-------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ function get_jenkins_data_volume() {
   local volume_id=$(wait_until aws ec2 describe-volumes                        \
                          --region ${region}                                    \
                          --filters Name=status,Values=available                \
-                                   Name=tag:service,Values=jenkins             \
+                                   Name=tag:service,Values=jenkins-native      \
                          --query 'Volumes[].[VolumeId, CreateTime] | reverse(sort_by(@, &[1])) | [0] | [0]'          \
                          --output text)
 
@@ -297,26 +297,26 @@ function associate_eip() {
 }
 
 #-------------------------------------------------------------------------------
-# Install a Docker&StartJenkins
+# Install a Jenkins
 #-------------------------------------------------------------------------------
 function install_jenkins() {
-          yum install -y docker
-          service docker start
-          usermod -a -G docker root
-          curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
-          chmod +x /usr/bin/docker-compose
-          chown -R 1000 /var/lib/jenkins
-          aws s3 cp s3://30daysdevops/scripts/jenkins/docker-compose.yml /home/ec2-user/docker-compose.yml
-          docker-compose -f /home/ec2-user/docker-compose.yml up -d
+  curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
+  rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+  yum_install jenkins
+  service jenkins start
 }
 
 #-------------------------------------------------------------------------------
-# Install fail2ban
+# Install Apache Maven
 #-------------------------------------------------------------------------------
-function install_fail2ban() {
-          yum_install fail2ban
-          chkconfig fail2ban on
-          service fail2ban start
+function install_maven() {
+
+  wget https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+  sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+  yum_install apache-maven
+  yum_install java-1.8.0-openjdk-devel.x86_64
+  alternatives --set java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java
+  alternatives --set javac /usr/lib/jvm/java-1.8.0-openjdk.x86_64/bin/javac
 }
 
 #-------------------------------------------------------------------------------
@@ -350,31 +350,31 @@ function install_datadog() {
   cat > /etc/datadog-agent/datadog.yaml <<EOF
 api_key: ${api_key}
 logs_enabled: true
-listeners:
-  - name: docker
-config_providers:
-  - name: docker
-    polling: true
 EOF
-  cat > /etc/datadog-agent/conf.d/docker.d/conf.yaml <<EOF
-logs:
-    - type: docker
-      service: jenkins
-      source: docker
-EOF
-  cat > /etc/datadog-agent/conf.d/docker.d/docker_daemon.yaml <<EOF
-init_config:
-
-instances:
-    - url: "unix://var/run/docker.sock"
-      new_tag_names: true
-EOF
-  usermod -a -G docker dd-agent
   log "Done."
 
   log "Starting datadog-agent..."
   restart datadog-agent
   log "Done."
+}
+
+#-------------------------------------------------------------------------------
+# Install fail2ban
+#-------------------------------------------------------------------------------
+function install_fail2ban() {
+          yum_install fail2ban
+          chkconfig fail2ban on
+          service fail2ban start
+}
+
+#-------------------------------------------------------------------------------
+# Install Docker
+#-------------------------------------------------------------------------------
+function install_docker() {
+          yum_install docker
+          usermod -aG docker jenkins
+          service docker start
+          service jenkins restart
 }
 
 #-------------------------------------------------------------------------------
@@ -401,16 +401,21 @@ function main() {
   set_hostname ${hostname}
 
   mount_jenkins_data_volume ${region}
+ 
+  #associate_eip ${region}
 
-  associate_eip ${region}
+  install_maven
+
+  yum_install git
+
+  install_jenkins
 
   install_datadog ${region} ${datadog_secret_name}
 
   install_fail2ban
 
-  install_jenkins
+  install_docker
 }
 
-exec &> >(logger -t "cloud_init" -p "local0.info")
+main "${@}"
 
-main "${@}" &
