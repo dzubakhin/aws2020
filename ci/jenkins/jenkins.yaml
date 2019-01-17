@@ -82,6 +82,18 @@ Resources:
                   - ec2:AttachVolume
                   - ec2:AssociateAddress
                   - secretsmanager:GetSecretValue
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:GetDownloadUrlForLayer
+                  - ecr:GetRepositoryPolicy
+                  - ecr:DescribeRepositories
+                  - ecr:ListImages
+                  - ecr:DescribeImages
+                  - ecr:BatchGetImage
+                  - ecr:InitiateLayerUpload
+                  - ecr:UploadLayerPart
+                  - ecr:CompleteLayerUpload
+                  - ecr:PutImage
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -106,9 +118,10 @@ Resources:
           set -o nounset
           set -o xtrace
 
-          aws s3 cp "s3://${S3Path}/scripts/jenkins/install-docker.sh" - |       \
+          aws s3 cp "s3://${S3Path}/scripts/jenkins/install.sh" - |       \
             bash -l -s --                                                 \
             --datadog-secret-name "${DatadogSecretName}"                  \
+            --service "${Service}"                  \
             --hostname jenkins
 
           echo $(date): Finished installing Jenkins
