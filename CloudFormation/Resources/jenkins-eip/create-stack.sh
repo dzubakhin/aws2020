@@ -11,12 +11,6 @@ set -o nounset
 # @param $4 - relative path from git root
 # @param $5 - environment to tagging
 #--------------------------------------------------------------------------------------------------
-  region="${1}"
-  stack_name="${2}"
-  templete_path="${3}"
-  service="${4}"
-  environment="${5}"
-
 function launch() {
   local dns_base=`echo ${3} | sed 's/^[^.]*\.\(.*\)/\1/'`
   local dns_subdomain=`echo ${3} | sed 's/^\([^.]*\)\..*/\1/'`
@@ -25,7 +19,7 @@ function launch() {
   params="${params:+${params} }ParameterKey=R53HostedZone,ParameterValue=${dns_base}"
   params="${params:+${params} }ParameterKey=R53DNSName,ParameterValue=${dns_subdomain}"
 
-local tags=""
+  local tags=""
   tags="${tags:+${tags} }Key=Service,Value=${service}"
   tags="${tags:+${tags} }Key=Environment,Value=${environment}"
 

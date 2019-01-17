@@ -5,9 +5,11 @@ set -o nounset
 #--------------------------------------------------------------------------------------------------
 # Create stack in AWS.
 #
-# @param $1 - The AWS region. us-east-1 used
-# @param $2 - [Optional] Stack name. "S3Bucket" used by default.
+# @param $1 - The AWS region. us-east-1 by default
+# @param $2 - Stack name
 # @param $3 - Size of volume
+# @param $4 - relative path to templete from git root
+# @param $5 - environment to tagging
 #--------------------------------------------------------------------------------------------------
 function launch() {
   local region="${1}"
