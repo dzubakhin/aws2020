@@ -13,10 +13,13 @@ function launch() {
   local region="${1}"
   local stack_name="${2}"
   local size="${3}"
+  local templete_path="${4}"
+  local service="${5}"
+  local environment="${6}"
 
   local tags=""
-  tags="${tags:+${tags} }Key=service,Value=EBS"
-  tags="${tags:+${tags} }Key=environment,Value=ci"
+  tags="${tags:+${tags} }Key=Service,Value=${service}"
+  tags="${tags:+${tags} }Key=Environment,Value=${environment}"
 
   local params=""
   params="${params:+${params} }ParameterKey=Size,ParameterValue=${size}"
@@ -24,9 +27,10 @@ function launch() {
   aws cloudformation create-stack                         \
     --stack-name "${stack_name}"                          \
     --region "${region}"                                  \
-    --template-body file://$(dirname $0)/ebs-volume.yaml  \
+    --template-body file://${templete_path}/ebs-volume.yaml  \
     --parameters ${params}                                \
-    --tags $tags
+    --tags $tags                                \
+    --capabilities CAPABILITY_IAM
 }
 
 #-------------------------------------------------------------------------------
@@ -73,12 +77,19 @@ function main() {
   local stack_name="jenkins-ebs-volume"
   local size="8"
   local region="us-east-1"
+  local templete_path="$(dirname $0)"
+  local service="jenkins"
+  local environment="ci"
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
     case "${1}" in
+      --region)               region="${2}"; shift;;
       --stack-name)           stack_name="${2}"; shift;;
       --size)                 size="${2}"; shift;;
+      --templete-path)        templete_path="${2}"; shift;;
+      --service)              service="${2}"; shift;;
+      --environment)          environment="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
       -*)                     usage_error "Unrecognized option ${1}";;
@@ -91,8 +102,10 @@ function main() {
   launch                  \
     "${region}"           \
     "${stack_name}"       \
-    "${size}"
-
+    "${size}"       \
+    "${templete_path}"       \
+    "${service}"       \
+    "${environment}"
 }
 
 main "${@:-}"

@@ -8,11 +8,16 @@ set -o nounset
 # @param $1 - The AWS region. us-east-1 used
 # @param $2 - [Optional] Stack name. "S3Bucket" used by default.
 # @param $3 - Size of volume
+# @param $4 - relative path from git root
+# @param $5 - environment to tagging
 #--------------------------------------------------------------------------------------------------
-function launch() {
-  local region="${1}"
-  local stack_name="${2}"
+  region="${1}"
+  stack_name="${2}"
+  templete_path="${3}"
+  service="${4}"
+  environment="${5}"
 
+function launch() {
   local dns_base=`echo ${3} | sed 's/^[^.]*\.\(.*\)/\1/'`
   local dns_subdomain=`echo ${3} | sed 's/^\([^.]*\)\..*/\1/'`
 
@@ -20,14 +25,14 @@ function launch() {
   params="${params:+${params} }ParameterKey=R53HostedZone,ParameterValue=${dns_base}"
   params="${params:+${params} }ParameterKey=R53DNSName,ParameterValue=${dns_subdomain}"
 
-  local tags=""
-  tags="${tags:+${tags} }Key=service,Value=jenkins"
-  tags="${tags:+${tags} }Key=environment,Value=ci"
+local tags=""
+  tags="${tags:+${tags} }Key=Service,Value=${service}"
+  tags="${tags:+${tags} }Key=Environment,Value=${environment}"
 
   aws cloudformation create-stack                         \
     --stack-name "${stack_name}"                          \
     --region "${region}"                                  \
-    --template-body file://$(dirname $0)/EIP.yml          \
+    --template-body file://${templete_path}/EIP.yml          \
     --parameters ${params}                                \
     --tags $tags
 
@@ -35,9 +40,6 @@ function launch() {
 }
 
 function wait_complete() {
-  local region="${1}"
-  local stack_name="${2}"
-
   log "Waiting..."
 
   aws cloudformation wait stack-create-complete           \

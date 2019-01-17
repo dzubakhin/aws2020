@@ -4,6 +4,14 @@ Parameters:
     Type: Number
     Description: Size of volume in GB
     Default: 8
+  Service:
+    Type: String
+    Description: lifecycle policy tag
+    Default: jenkins
+  Environment:
+    Type: String
+    Description: Normally - ci
+    Default: ci
 
 Resources:
   EBSVolume:
@@ -64,10 +72,10 @@ Resources:
         ResourceTypes:
           - "VOLUME"
         TargetTags:
-          - Key: "service"
-            Value: "jenkins"
-          - Key: "environment"
-            Value: "ci"
+          - Key: "Service"
+            Value: !Ref Service
+          - Key: "Environment"
+            Value: !Ref Environment
         Schedules:
           -
             Name: "Daily Snapshots"
