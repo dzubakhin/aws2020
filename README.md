@@ -2,6 +2,6 @@
 
 Directories description:
 - ops - Application's infractracture
-- CloudFormation - Deploy infractracture
+- ci - Infractracture for jenkins
 
 Dropwizard application repository: https://github.com/babinskiy/dropwizard-example
