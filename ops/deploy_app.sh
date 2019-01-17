@@ -101,6 +101,9 @@ Options:
  --environment
       [Optional] Environment name. "qa" as default
 
+ --instance-type
+      [Optional] Type of instances used for deploy Dropwizard application. t2.micro used by default.
+
  --version
       Version of application to deploy
 
