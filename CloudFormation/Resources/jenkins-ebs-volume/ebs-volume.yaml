@@ -11,7 +11,7 @@ Parameters:
   Environment:
     Type: String
     Description: Normally - ci
-    ConstraintDescription: Must be a valid environment name
+    Default: ci
 
 Resources:
   EBSVolume:
