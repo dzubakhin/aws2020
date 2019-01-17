@@ -6,7 +6,7 @@ set -o nounset
 # Log a message.
 #-------------------------------------------------------------------------------
 function log() {
-  echo 1>&2 "$@"
+  echo 1>&2 "INFO: $@"
 }
 
 #-------------------------------------------------------------------------------
@@ -311,6 +311,15 @@ function install_jenkins() {
 }
 
 #-------------------------------------------------------------------------------
+# Install fail2ban
+#-------------------------------------------------------------------------------
+function install_fail2ban() {
+          yum install -y fail2ban
+          chkconfig fail2ban on
+          service fail2ban start
+}
+
+#-------------------------------------------------------------------------------
 # Install and configure the DataDog agent on the current instance.
 #
 # @param $1 - The API key to connect to DataDog with.
@@ -392,12 +401,13 @@ function main() {
   set_hostname ${hostname}
 
   mount_jenkins_data_volume ${region}
- 
+
   associate_eip ${region}
 
   install_datadog ${region} ${datadog_secret_name}
 
-  
+  install_fail2ban
+
   install_jenkins
 }
 
