@@ -24,8 +24,6 @@ function launch() {
   local params=""
   params="${params:+${params} }ParameterKey=Size,ParameterValue=${size}"
 
-echo "${templete_path}"
-
   aws cloudformation create-stack                         \
     --stack-name "${stack_name}"                          \
     --region "${region}"                                  \
