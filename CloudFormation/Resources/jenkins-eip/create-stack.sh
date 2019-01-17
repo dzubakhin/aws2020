@@ -6,11 +6,13 @@ set -o nounset
 # Create stack in AWS.
 #
 # @param $1 - The AWS region. us-east-1 used
-# @param $2 - [Optional] Stack name. "S3Bucket" used by default.
+# @param $2 - Stack name
 # @param $3 - Size of volume
 # @param $4 - relative path from git root
-# @param $5 - environment to tagging
+# @param $5 - servive name - normally jenkins (for tags)
+# @param $6 - environment - normally ci (for tags)
 #--------------------------------------------------------------------------------------------------
+
 function launch() {
   local dns_base=`echo ${3} | sed 's/^[^.]*\.\(.*\)/\1/'`
   local dns_subdomain=`echo ${3} | sed 's/^\([^.]*\)\..*/\1/'`
@@ -47,12 +49,10 @@ function wait_complete() {
 # Add tags to EIP
 #-------------------------------------------------------------------------------
 function tag_eip() {
-  local region="${1}"
-  local stack_name="${2}"
 
   local tags=""
-  tags="${tags:+${tags} }Key=service,Value=jenkins"
-  tags="${tags:+${tags} }Key=environment,Value=ci"
+  tags="${tags:+${tags} }Key=Service,Value=${service}"
+  tags="${tags:+${tags} }Key=Environment,Value=${environment}"
 
   log "Tagging EIP"
 
@@ -114,8 +114,12 @@ function main() {
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
     case "${1}" in
+      --region)               region="${2}"; shift;;
       --stack-name)           stack_name="${2}"; shift;;
       --dns-name)             dns_name="${2}"; shift;;
+      --templete-path)        templete_path="${2}"; shift;;
+      --service)              service="${2}"; shift;;
+      --environment)          environment="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
       -*)                     usage_error "Unrecognized option ${1}";;
