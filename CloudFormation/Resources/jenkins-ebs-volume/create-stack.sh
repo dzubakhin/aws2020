@@ -22,6 +22,8 @@ function launch() {
   local params=""
   params="${params:+${params} }ParameterKey=Size,ParameterValue=${size}"
 
+echo "${templete_path}"
+
   aws cloudformation create-stack                         \
     --stack-name "${stack_name}"                          \
     --region "${region}"                                  \
@@ -71,10 +73,10 @@ EOF
 # Main program.
 #-------------------------------------------------------------------------------
 function main() {
-  local stack_name="jenkins-ebs-volume"
-  local size="8"
-  local region="us-east-1"
-  local templete_path="$(dirname $0)"
+#  local stack_name="jenkins-ebs-volume"
+#  local size="8"
+#  local region="us-east-1"
+#  local templete_path="$(dirname $0)"
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
