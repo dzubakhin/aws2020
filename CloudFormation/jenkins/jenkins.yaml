@@ -28,9 +28,18 @@ Parameters:
 
   DatadogSecretName:
     Type: String
-
     Description: Secret Name in SecretManager to extract Datadog API key
     Default: datadog_api_key
+
+  Service:
+    Type: String
+    Default: jenkins
+    MinLength: 1
+
+  Environment:
+    Type: String
+    Default: ci
+    MinLength: 1
 
 Mappings:
   RegionMap:
@@ -108,11 +117,11 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       Tags:
-        - Key: 'service'
-          Value: 'jenkins'
+        - Key: 'Service'
+          Value: !Ref Service
           PropagateAtLaunch: true
-        - Key: 'environment'
-          Value: 'ci'
+        - Key: 'Environment'
+          Value: !Ref Environment
           PropagateAtLaunch: true
 
       VPCZoneIdentifier:
@@ -145,12 +154,10 @@ Resources:
             - Name: Reference-Security-Policy
               Value: ELBSecurityPolicy-TLS-1-2-2017-01
       Tags:
-        - Key: 'service'
-          Value: 'jenkins'
-        - Key: 'resource'
-          Value: 'ELB'
-        - Key: 'environment'
-          Value: 'ci'
+        - Key: 'Service'
+          Value: !Ref Service
+        - Key: 'Environment'
+          Value: !Ref Environment
 
   InstanceSecurityGroup:
       Type: AWS::EC2::SecurityGroup

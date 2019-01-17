@@ -67,7 +67,7 @@ function get_ec2_instance_tag() {
   local tag="${1}"
   local region=$(get_ec2_instance_region)
   local instance_id=$(get_ec2_instance_id)
-  local value=
+  local value=""
 
     value=$(wait_until aws ec2 describe-tags                            \
                     --region "${region}"                                \
@@ -90,7 +90,7 @@ function get_jenkins_snapshot() {
   local snapshot_id=$(wait_until aws ec2 describe-snapshots                                                   \
                         --region ${region}                                                                    \
                         --filters Name=status,Values=completed                                                \
-                                  Name=tag:service,Values=jenkins                                             \
+                                  Name=tag:Service,Values=${service}                                             \
                         --query 'Snapshots[].[SnapshotId, StartTime] | reverse(sort_by(@, &[1])) | [0] | [0]' \
                         --output text)
 
@@ -113,7 +113,7 @@ function get_jenkins_public_ip() {
 
   local public_ip=$(wait_until aws ec2  describe-addresses                 \
                                 --region ${region}                         \
-                                --filter Name=tag:service,Values=jenkins   \
+                                --filter Name=tag:Service,Values=${service}   \
                                 --query 'Addresses[].[PublicIp]'           \
                                 --output text)
 
@@ -138,7 +138,7 @@ function get_jenkins_data_volume() {
   local volume_id=$(wait_until aws ec2 describe-volumes                        \
                          --region ${region}                                    \
                          --filters Name=status,Values=available                \
-                                   Name=tag:service,Values=jenkins             \
+                                   Name=tag:Service,Values=${service}             \
                          --query 'Volumes[].[VolumeId, CreateTime] | reverse(sort_by(@, &[1])) | [0] | [0]'          \
                          --output text)
 
@@ -375,12 +375,15 @@ function main() {
   local region=$(get_ec2_instance_region)
   local hostname=""
   local datadog_secret_name="datadog_api_key"
+  local service="jenkins"
 
     while [[ ${#} -gt 0 ]]; do
     case "${1}" in
       --datadog-secret-name)    datadog_secret_name="${2}"
                                 shift 2 ;;
       --hostname)               hostname="${2}"
+                                shift 2 ;;
+      --service)                service="${2}"
                                 shift 2 ;;
       *)                        error Unrecognized option "${1}" ;;
     esac
@@ -392,12 +395,11 @@ function main() {
   set_hostname ${hostname}
 
   mount_jenkins_data_volume ${region}
- 
+
   associate_eip ${region}
 
   install_datadog ${region} ${datadog_secret_name}
 
-  
   install_jenkins
 }
 
