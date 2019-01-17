@@ -338,19 +338,33 @@ function install_datadog() {
   log "Done."
 
   log "Configuring datadog..."
-  local tags=""
-  tags="${tags:+${tags}, }service:jenkins"
-
-  cat > /etc/dd-agent/datadog.conf <<EOF
-[Main]
-dd_url: https://app.datadoghq.com
+  cat > /etc/datadog-agent/datadog.yaml <<EOF
 api_key: ${api_key}
-tags: ${tags}
+logs_enabled: true
+listeners:
+  - name: docker
+config_providers:
+  - name: docker
+    polling: true
 EOF
+  cat > /etc/datadog-agent/conf.d/docker.d/conf.yaml <<EOF
+logs:
+    - type: docker
+      service: jenkins
+      source: docker
+EOF
+  cat > /etc/datadog-agent/conf.d/docker.d/docker_daemon.yaml <<EOF
+init_config:
+
+instances:
+    - url: "unix://var/run/docker.sock"
+      new_tag_names: true
+EOF
+  usermod -a -G docker dd-agent
   log "Done."
 
   log "Starting datadog-agent..."
-  service datadog-agent start
+  restart datadog-agent
   log "Done."
 }
 
