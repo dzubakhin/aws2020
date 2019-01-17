@@ -29,7 +29,8 @@ echo "${templete_path}"
     --region "${region}"                                  \
     --template-body file://${templete_path}/ebs-volume.yaml  \
     --parameters ${params}                                \
-    --tags $tags
+    --tags $tags                                \
+    --capabilities CAPABILITY_IAM
 }
 
 #-------------------------------------------------------------------------------
