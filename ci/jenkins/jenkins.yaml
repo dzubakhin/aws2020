@@ -71,6 +71,7 @@ Resources:
                   - autoscaling:UpdateAutoScalingGroup
                   - autoscaling:DescribeAutoScalingGroups
                   - autoscaling:DescribeScalingActivities
+                  - autoscaling:PutScalingPolicy
                   - ec2:DescribeTags
                   - ec2:DescribeSnapshots
                   - ec2:DescribeVolumes
@@ -99,6 +100,7 @@ Resources:
                   - ecr:CompleteLayerUpload
                   - ecr:PutImage
                   - cloudformation:DescribeStacks
+                  - cloudwatch:PutMetricAlarm
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
