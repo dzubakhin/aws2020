@@ -70,6 +70,8 @@ Resources:
                   - s3:GetObject
                   - s3:PutObject
                   - cloudformation:CreateStack
+                  - cloudformation:DeleteStack
+                  - cloudformation:DescribeStacks
                   - iam:CreateInstanceProfile
                   - iam:CreateRole
                   - iam:DeleteRolePolicy
