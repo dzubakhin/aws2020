@@ -28,10 +28,19 @@ Parameters:
 
   DatadogSecretName:
     Type: String
-
     Description: Secret Name in SecretManager to extract Datadog API key
     Default: datadog_api_key
 
+  DNSName:
+    Type: String
+    Description: DNS subdomain name for Jenkins
+    Default: ci
+
+  R53HostedZone:
+    Type: String
+    Default: '30daystodevops.me.uk.'
+    Description: Base DNS domain name
+        
 Mappings:
   RegionMap:
     us-east-1:
@@ -163,6 +172,15 @@ Resources:
           Value: 'ELB'
         - Key: 'environment'
           Value: 'ci'
+
+  R53RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Ref R53HostedZone
+      Name: !Join ['', [ !Ref DNSName, ., !Ref R53HostedZone]]
+      Type: CNAME
+      TTL: 300
+      ResourceRecords: [ !GetAtt JenkinsLoadBalancer.DNSName ]
 
   InstanceSecurityGroup:
       Type: AWS::EC2::SecurityGroup
