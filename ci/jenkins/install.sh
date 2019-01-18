@@ -303,6 +303,7 @@ function install_jenkins() {
   curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
   rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
   yum_install jenkins
+  sed -i 's/JENKINS_ENABLE_ACCESS_LOG="\w*"/JENKINS_ENABLE_ACCESS_LOG="yes"/' /etc/sysconfig/jenkins
   service jenkins start
 }
 
