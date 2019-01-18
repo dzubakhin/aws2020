@@ -411,6 +411,8 @@ function main() {
 
   pip install boto3
 
+  yum reinstall -y aws-cli
+
   install_jenkins
 
   install_datadog ${region} ${datadog_secret_name}
