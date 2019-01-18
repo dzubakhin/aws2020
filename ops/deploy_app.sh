@@ -19,6 +19,8 @@ function launch() {
   local environment="${6}"
   local instance_type="${7}"
   local template_body="${8}"
+  local deploy_source="${8}"
+
 
   local params=""
   params="${params:+${params} }ParameterKey=Name,ParameterValue=${stack_name}"
@@ -27,6 +29,7 @@ function launch() {
   params="${params:+${params} }ParameterKey=Version,ParameterValue=${version}"
   params="${params:+${params} }ParameterKey=Environment,ParameterValue=${environment}"
   params="${params:+${params} }ParameterKey=InstanceType,ParameterValue=${instance_type}"
+  params="${params:+${params} }ParameterKey=DeploySource,ParameterValue=${deploy_source}"
 
   local tags=""
   tags="${tags:+${tags} }Key=service,Value=dropwizard"
@@ -108,6 +111,9 @@ Options:
  --version
       Version of application to deploy
 
+  --deploy-source
+      [optional] deploy type (Docker: docker or Puppet: s3) (Default: docker)
+
  -h/--help
       Display this help message.
 EOF
@@ -125,6 +131,8 @@ function main() {
   local region="us-east-1"
   local instance_type="t2.micro"
   local template_body="ops/app_ASG.yml"
+  local deploy_source="docker"
+
 
   # Parse the arguments from the commandline.
   while [[ ${#} -gt 0 ]]; do
@@ -136,6 +144,7 @@ function main() {
       --instance-type)        instance_type="${2}"; shift;;
       --template-body)        template_body="${2}"; shift;;
       --environment)          environment="${2}"; shift;;
+      --deploy-source)        deploy_source="${2}"; shift;;
       -h|--help)              usage; exit 0;;
       --)                     break;;
       -*)                     usage_error "Unrecognized option ${1}";;
@@ -157,7 +166,9 @@ function main() {
     "${version}"          \
     "${environment}"      \
     "${instance_type}"    \
-    "${template_body}"
+    "${template_body}"    \
+    "${deploy_source}"
+
 
   wait_complete           \
     "${region}"           \
