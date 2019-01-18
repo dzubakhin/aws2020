@@ -136,6 +136,7 @@ Resources:
                   - ec2:DeleteSecurityGroup
                   - iam:DeleteRole
                   - iam:*
+                  - cloudwatch:*
 
 
   InstanceProfile:
