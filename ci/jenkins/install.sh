@@ -409,6 +409,8 @@ function main() {
 
   yum_install git
 
+  pip install boto3
+
   install_jenkins
 
   install_datadog ${region} ${datadog_secret_name}
