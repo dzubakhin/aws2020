@@ -19,7 +19,7 @@ function launch() {
   local environment="${6}"
   local instance_type="${7}"
   local template_body="${8}"
-  local deploy_source="${8}"
+  local deploy_source="${9}"
 
 
   local params=""
