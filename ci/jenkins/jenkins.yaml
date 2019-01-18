@@ -72,15 +72,30 @@ Resources:
                   - cloudformation:CreateStack
                   - iam:CreateInstanceProfile
                   - iam:CreateRole
+                  - iam:DeleteRolePolicy
+                  - iam:PutRolePolicy
                   - autoscaling:CreateLaunchConfiguration
+                  - autoscaling:DescribeLaunchConfigurations
+                  - autoscaling:CreateAutoScalingGroup
+                  - autoscaling:UpdateAutoScalingGroup
+                  - autoscaling:DescribeAutoScalingGroups
+                  - autoscaling:DescribeScalingActivities
+                  - autoscaling:PutScalingPolicy
                   - ec2:DescribeTags
                   - ec2:DescribeSnapshots
                   - ec2:DescribeVolumes
                   - ec2:DescribeAddresses
+                  - ec2:DescribeKeyPairs
                   - ec2:CreateVolume
                   - ec2:CreateTags
                   - ec2:AttachVolume
                   - ec2:AssociateAddress
+                  - ec2:CreateSecurityGroup
+                  - ec2:DescribeSecurityGroups
+                  - ec2:AuthorizeSecurityGroupIngress
+                  - ec2:DescribeAccountAttributes
+                  - iam:AddRoleToInstanceProfile
+                  - iam:PassRole
                   - secretsmanager:GetSecretValue
                   - ecr:GetAuthorizationToken
                   - ecr:BatchCheckLayerAvailability
@@ -94,6 +109,25 @@ Resources:
                   - ecr:UploadLayerPart
                   - ecr:CompleteLayerUpload
                   - ecr:PutImage
+                  - cloudformation:DescribeStacks
+                  - cloudwatch:PutMetricAlarm
+                  - rds:CreateDBSubnetGroup
+                  - rds:DescribeDBSubnetGroups
+                  - rds:DescribeAccountAttributes
+                  - rds:DescribeCertificates
+                  - rds:DescribeDBClusterSnapshots
+                  - rds:DescribeDBInstances
+                  - rds:CreateDBInstance
+                  - rds:DescribeEngineDefaultClusterParameters
+                  - rds:DescribeEngineDefaultParameters
+                  - rds:DescribeEventCategories
+                  - rds:DescribeEvents
+                  - rds:DescribeOptionGroupOptions
+                  - rds:DescribeOrderableDBInstanceOptions
+                  - rds:DownloadCompleteDBLogFile
+                  - rds:PurchaseReservedDBInstancesOffering
+
+
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -132,9 +166,6 @@ Resources:
         - Key: 'service'
           Value: 'jenkins'
           PropagateAtLaunch: true
-        - Key: 'environment'
-          Value: 'ci'
-          PropagateAtLaunch: true
 
       VPCZoneIdentifier:
         - Fn::ImportValue: !Sub "${VPCStackName}-PublicSubnet0"
@@ -153,25 +184,18 @@ Resources:
         - Ref: LBSecurityGroup
       Listeners:
         - InstancePort: 8080
+          LoadBalancerPort: 80
+          Protocol: HTTP
+        - InstancePort: 8080
           InstanceProtocol: HTTP
           LoadBalancerPort: 443
           Protocol: HTTPS
           SSLCertificateId: !Ref SSLCertificate
-          PolicyNames:
-            - TLSELBSecurityPolicy
-      Policies:
-        - PolicyName: TLSELBSecurityPolicy
-          PolicyType: SSLNegotiationPolicyType
-          Attributes:
-            - Name: Reference-Security-Policy
-              Value: ELBSecurityPolicy-TLS-1-2-2017-01
       Tags:
         - Key: 'service'
           Value: 'jenkins'
         - Key: 'resource'
           Value: 'ELB'
-        - Key: 'environment'
-          Value: 'ci'
 
   R53RecordSet:
     Type: AWS::Route53::RecordSet
