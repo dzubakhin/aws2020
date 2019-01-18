@@ -27,7 +27,9 @@ def is_environment(stack, environment):
     return rez
 
 def is_status_ok(stack):
-    return stack['StackStatus'] == 'CREATE_COMPLETE' or stack['StackStatus'] == 'UPDATE_COMPLETE'
+    return stack['StackStatus'] == 'CREATE_COMPLETE' or \
+            stack['StackStatus'] == 'UPDATE_COMPLETE' or \
+            stack['StackStatus'] == 'DELETE_FAILED'
 
 def get_version(stack):
     rez = None
