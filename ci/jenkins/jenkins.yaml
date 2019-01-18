@@ -70,6 +70,8 @@ Resources:
                   - s3:GetObject
                   - s3:PutObject
                   - cloudformation:CreateStack
+                  - cloudformation:DeleteStack
+                  - cloudformation:DescribeStacks
                   - iam:CreateInstanceProfile
                   - iam:CreateRole
                   - iam:DeleteRolePolicy
@@ -126,6 +128,15 @@ Resources:
                   - rds:DescribeOrderableDBInstanceOptions
                   - rds:DownloadCompleteDBLogFile
                   - rds:PurchaseReservedDBInstancesOffering
+                  - cloudwatch:DeleteAlarm
+                  - autoscaling:DeletePolicy
+                  - autoscaling:DeleteAutoScalingGroup
+                  - autoscaling:DeleteLaunchConfiguration
+                  - iam:RemoveRoleFromInstanceProfile
+                  - ec2:DeleteSecurityGroup
+                  - iam:DeleteRole
+                  - iam:*
+                  - cloudwatch:*
 
 
   InstanceProfile:
