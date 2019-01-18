@@ -401,8 +401,8 @@ function main() {
   set_hostname ${hostname}
 
   mount_jenkins_data_volume ${region}
- 
-  #associate_eip ${region}
+
+  associate_eip ${region}
 
   install_maven
 
