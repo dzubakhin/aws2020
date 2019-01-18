@@ -128,6 +128,12 @@ Resources:
                   - rds:DescribeOrderableDBInstanceOptions
                   - rds:DownloadCompleteDBLogFile
                   - rds:PurchaseReservedDBInstancesOffering
+                  - cloudwatch:DeleteAlarm
+                  - autoscaling:DeletePolicy
+                  - autoscaling:DeleteAutoScalingGroup
+                  - iam:RemoveRoleFromInstanceProfile
+                  - ec2:DeleteSecurityGroup
+                  - iam:DeleteRole
 
 
   InstanceProfile:
