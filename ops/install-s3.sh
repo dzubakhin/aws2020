@@ -70,14 +70,16 @@ function install_puppet() {
 function install_dropwizard() {
   local version="${1}"
 
-  aws s3 cp s3://30daysdevops/nick/release/dropwizard-example-${version}-SNAPSHOT.jar /tmp/
-  aws s3 cp s3://30daysdevops/nick/release/mysql.yml /tmp/
-  aws s3 cp s3://30daysdevops/nick/app.pp ./ && \
-  /opt/puppetlabs/bin/puppet apply app.pp
+  aws s3 cp s3://30daysdevops/dropwizard/release/dropwizard-example-${version}.jar /tmp/dropwizard.jar
+  aws s3 cp s3://30daysdevops/dropwizard/release/mysql.yml /tmp/
+  aws s3 cp s3://30daysdevops/dropwizard/ops/supervisord.conf /tmp/
+  aws s3 cp s3://30daysdevops/dropwizard/ops/conf.yaml /tmp/
+  aws s3 cp s3://30daysdevops/dropwizard/ops/app_install.pp ./ && \
+  /opt/puppetlabs/bin/puppet apply app_install.pp
 
-  sudo -u dropwizard /usr/bin/java                                               \
-                     -jar /opt/dropwizard/dropwizard-example-${version}-SNAPSHOT.jar  \
-                     server /opt/dropwizard/server.yml &
+
+
+
 }
 
 #-------------------------------------------------------------------------------
