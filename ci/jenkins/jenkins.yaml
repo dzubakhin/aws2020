@@ -84,6 +84,7 @@ Resources:
                   - ec2:CreateSecurityGroup
                   - ec2:DescribeSecurityGroups
                   - ec2:AuthorizeSecurityGroupIngress
+                  - ec2:DescribeAccountAttributes
                   - iam:AddRoleToInstanceProfile
                   - iam:PassRole
                   - secretsmanager:GetSecretValue
@@ -101,6 +102,23 @@ Resources:
                   - ecr:PutImage
                   - cloudformation:DescribeStacks
                   - cloudwatch:PutMetricAlarm
+                  - rds:CreateDBSubnetGroup
+                  - rds:DescribeDBSubnetGroups
+                  - rds:DescribeAccountAttributes
+                  - rds:DescribeCertificates
+                  - rds:DescribeDBClusterSnapshots
+                  - rds:DescribeDBInstances
+                  - rds:CreateDBInstance
+                  - rds:DescribeEngineDefaultClusterParameters
+                  - rds:DescribeEngineDefaultParameters
+                  - rds:DescribeEventCategories
+                  - rds:DescribeEvents
+                  - rds:DescribeOptionGroupOptions
+                  - rds:DescribeOrderableDBInstanceOptions
+                  - rds:DownloadCompleteDBLogFile
+                  - rds:PurchaseReservedDBInstancesOffering
+
+
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
