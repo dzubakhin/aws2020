@@ -131,9 +131,11 @@ Resources:
                   - cloudwatch:DeleteAlarm
                   - autoscaling:DeletePolicy
                   - autoscaling:DeleteAutoScalingGroup
+                  - autoscaling:DeleteLaunchConfiguration
                   - iam:RemoveRoleFromInstanceProfile
                   - ec2:DeleteSecurityGroup
                   - iam:DeleteRole
+                  - iam:*
 
 
   InstanceProfile:
