@@ -125,7 +125,7 @@ Resources:
           set -o nounset
           set -o xtrace
 
-          aws s3 cp "s3://${S3Path}/scripts/jenkins/install-native-jenkins.sh" - |       \
+          aws s3 cp "s3://${S3Path}/scripts/jenkins/install.sh" - |       \
             bash -l -s --                                                 \
             --datadog-secret-name "${DatadogSecretName}"                  \
             --hostname jenkins
