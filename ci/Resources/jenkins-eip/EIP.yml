@@ -8,7 +8,7 @@ Parameters:
 
   R53DNSName:
     Type: String
-    Default: 'bastion.'
+    Default: 'bastion'
 
 Resources:
   ElasticIP:
