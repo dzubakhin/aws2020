@@ -1,0 +1,9 @@
+logs:
+  - type: file
+    path: /var/log/supervisor/dropwizard-stderr.log
+    service: dropwizard
+    source: errors
+  - type: file
+    path: /var/log/supervisor/dropwizard-stdout.log
+    service: dropwizard
+    source: application
