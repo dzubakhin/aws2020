@@ -1,0 +1,27 @@
+Started by user [8mha:////4FuTPzBZStcYgruvItJfegEMeCRMLN/iqML4MgAjwsBxAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/jenkins_home/workspace/Jenkins/Setup Jenkins
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from https://github.com/babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse origin/jenkins_jobs_fixes^{commit} # timeout=10
+Checking out Revision dc7d5ef9a174b4b99d819525057d733f3995efb1 (origin/jenkins_jobs_fixes)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f dc7d5ef9a174b4b99d819525057d733f3995efb1
+Commit message: "fix variables description"
+ > git rev-list --no-walk dc7d5ef9a174b4b99d819525057d733f3995efb1 # timeout=10
+[Setup Jenkins] $ /bin/sh -xe /tmp/jenkins6603715380707573654.sh
++ params=
++ params='ParameterKey=Name,ParameterValue=asd-jenkins'
++ params='ParameterKey=Name,ParameterValue=asd-jenkins ParameterKey=InstanceType,ParameterValue=t2.micro'
++ params='ParameterKey=Name,ParameterValue=asd-jenkins ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=VPCStackName,ParameterValue=ProjectVPC'
++ params='ParameterKey=Name,ParameterValue=asd-jenkins ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=S3Path,ParameterValue=30daysdevops'
++ params='ParameterKey=Name,ParameterValue=asd-jenkins ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=S3Path,ParameterValue=30daysdevops ParameterKey=KeyPairName,ParameterValue=30daysdevops'
++ params='ParameterKey=Name,ParameterValue=asd-jenkins ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=S3Path,ParameterValue=30daysdevops ParameterKey=KeyPairName,ParameterValue=30daysdevops ParameterKey=DatadogSecretName,ParameterValue=datadog_api_key'
++ params='ParameterKey=Name,ParameterValue=asd-jenkins ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=S3Path,ParameterValue=30daysdevops ParameterKey=KeyPairName,ParameterValue=30daysdevops ParameterKey=DatadogSecretName,ParameterValue=datadog_api_key ParameterKey=SSLCertificate,ParameterValue=arn:aws:acm:us-east-1:230883561944:certificate/79616372-c929-4269-b861-dde983e0fb34'
++ tags=
+/tmp/jenkins6603715380707573654.sh: line 12: syntax error: unterminated quoted string
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE

@@ -1,0 +1,11 @@
+commit 69bc9caecdfa2e37271050053a9ac64b9ab30de6
+tree 6f92b099b3d69c26984b31f18c35e59ede3e3915
+parent afbe63f3a12b580a77a9b8a391cc18dd6897f4f2
+author Nick Babinskiy <nick@nb.local> 2019-01-20 19:44:20 +0200
+committer Nick Babinskiy <nick@nb.local> 2019-01-20 19:44:20 +0200
+
+    Fix Error level
+
+
+
+:100644 100644 f97f9c36290573c898c873e5ec4e5904c8a43055 ff41b1e166a0c71aca49d45329af3c4184d130c7 M	mysql.yml

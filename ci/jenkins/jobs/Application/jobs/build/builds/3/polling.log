@@ -1,0 +1,10 @@
+Started on Jan 20, 2019 5:45:14 PM
+Started by event from 192.30.252.36 ⇒ http://ci.30daystodevops.me.uk/github-webhook/ on Sun Jan 20 17:45:14 UTC 2019
+Using strategy: Default
+[poll] Last Built Revision: Revision afbe63f3a12b580a77a9b8a391cc18dd6897f4f2 (refs/remotes/origin/master)
+ > git --version # timeout=10
+ > git ls-remote -h git@github.com:babinskiy/dropwizard-example.git # timeout=10
+Found 5 remote heads on git@github.com:babinskiy/dropwizard-example.git
+[poll] Latest remote head revision on refs/heads/master is: 69bc9caecdfa2e37271050053a9ac64b9ab30de6
+Done. Took 0.15 sec
+Changes found

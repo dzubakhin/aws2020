@@ -1,0 +1,35 @@
+Started by user [8mha:////4JrjmSRx4qOtNYMMhYugXsyw+fINujBQhhzqimlc3f+QAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/lib/jenkins/workspace/Setup RDS
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from https://github.com/babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse origin/master^{commit} # timeout=10
+Checking out Revision 4923ef8049c8065959b3e1849acce05d17c2d90a (origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 4923ef8049c8065959b3e1849acce05d17c2d90a
+Commit message: "Jenkins Route53 RR (#63)"
+ > git rev-list --no-walk 4923ef8049c8065959b3e1849acce05d17c2d90a # timeout=10
+[Setup RDS] $ /bin/sh -xe /tmp/jenkins6605887503731635441.sh
+++ jq .password -r
+++ aws secretsmanager get-secret-value --region us-east-1 --secret-id rds_db_password --output json --version-stage AWSCURRENT
+++ jq .SecretString -r
++ dbpassword=jD6Y#%k2
++ params=
++ params=ParameterKey=Name,ParameterValue=testdb
++ params='ParameterKey=Name,ParameterValue=testdb ParameterKey=VPCStackName,ParameterValue=ProjectVPC'
++ params='ParameterKey=Name,ParameterValue=testdb ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test'
++ params='ParameterKey=Name,ParameterValue=testdb ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test ParameterKey=Environment,ParameterValue=stg'
++ params='ParameterKey=Name,ParameterValue=testdb ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test ParameterKey=Environment,ParameterValue=stg ParameterKey=DBName,ParameterValue=example'
++ params='ParameterKey=Name,ParameterValue=testdb ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test ParameterKey=Environment,ParameterValue=stg ParameterKey=DBName,ParameterValue=example ParameterKey=DBUser,ParameterValue=user'
++ params='ParameterKey=Name,ParameterValue=testdb ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test ParameterKey=Environment,ParameterValue=stg ParameterKey=DBName,ParameterValue=example ParameterKey=DBUser,ParameterValue=user ParameterKey=DBPassword,ParameterValue=jD6Y#%k2'
++ tags=
++ tags=Key=Service,Value=test
++ tags='Key=Service,Value=test Key=Environment,Value=stg'
++ aws --output text cloudformation create-stack --stack-name testdb --region us-east-1 --template-body file://ops/app_RDS.yml --parameters ParameterKey=Name,ParameterValue=testdb ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test ParameterKey=Environment,ParameterValue=stg ParameterKey=DBName,ParameterValue=example ParameterKey=DBUser,ParameterValue=user ParameterKey=DBPassword,ParameterValue=jD6Y#%k2 --capabilities CAPABILITY_IAM --tags Key=Service,Value=test Key=Environment,Value=stg
+
+An error occurred (ValidationError) when calling the CreateStack operation: Parameter Environment failed to satisfy constraint: Must be a valid environment name
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE

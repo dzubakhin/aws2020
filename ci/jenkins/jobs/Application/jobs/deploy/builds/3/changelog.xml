@@ -1,0 +1,31 @@
+commit 97968fe694b7e96efa86f6fdc3ebfcf050e18cd5
+tree bcdb2edbd109890fbc72922da8cba9d8b932aaf5
+parent 2c6ca6a9ba307e65b16f003a944e400dea6bf4f3
+author Ivan Yermakov <iyerm@softserveinc.com> 2019-01-18 17:45:04 +0200
+committer Ivan Yermakov <iyerm@softserveinc.com> 2019-01-18 17:45:04 +0200
+
+    fix folders
+
+
+
+:100644 100644 ec6ffdafa23081b471d178a948669d0ce318392e ec6ffdafa23081b471d178a948669d0ce318392e R100	ops/del_stacks.py	ops/cloudformation/scripts/del_stacks.py
+:100644 100644 21311253d7b5fddccf9d371c5bba234d12dfb391 2108727fc02ed689c2c7642bc38c4dfa8949c016 R099	ops/deploy_app.sh	ops/userdata/deploy_app.sh
+:100644 100644 afad8da26e77ee43fd2bb0c5cc6b921c56f6f624 0eff303a919aba5066b1b8db30a21eaedf74bdf9 R098	ops/deploy_app_ELB.sh	ops/userdata/deploy_app_ELB.sh
+commit 2c6ca6a9ba307e65b16f003a944e400dea6bf4f3
+tree d25afa12f7282609290df785518263866b75a373
+parent e30f3526c24532f6e1a876eedd028a5828d98532
+author Ivan Yermakov <iyerm@softserveinc.com> 2019-01-18 17:28:26 +0200
+committer Ivan Yermakov <iyerm@softserveinc.com> 2019-01-18 17:28:26 +0200
+
+    fix folders
+
+
+
+:100644 100644 ed4444cece3549f0051fb8f623c393f7af4fcab7 ed4444cece3549f0051fb8f623c393f7af4fcab7 R100	ops/app_ASG.yml	ops/cloudformation/app_ASG.yml
+:100644 100644 18295fce8530b65aebf51f7a11d705b049d9886a 18295fce8530b65aebf51f7a11d705b049d9886a R100	ops/app_ELB.yml	ops/cloudformation/app_ELB.yml
+:100644 100644 a8bde4905f28e164a0610f48266a8db98e99cc60 a8bde4905f28e164a0610f48266a8db98e99cc60 R100	ops/app_RDS.yml	ops/cloudformation/app_RDS.yml
+:100644 100644 43922a0c8b6b398a84248ac4ce17c176fde65c44 43922a0c8b6b398a84248ac4ce17c176fde65c44 R100	ops/app.pp	ops/cloudformation/scripts/app.pp
+:100644 100644 2fd03d9c801210624ffbd3b418a4ef8ea5637715 2fd03d9c801210624ffbd3b418a4ef8ea5637715 R100	ops/app_install.pp	ops/cloudformation/scripts/app_install.pp
+:100644 100644 0685fa41c299cfaab9b76c0ee735dee5d4988815 0685fa41c299cfaab9b76c0ee735dee5d4988815 R100	ops/install-docker.sh	ops/cloudformation/scripts/install-docker.sh
+:100644 100644 36d62acc5cadfab4245e9d0d062f88e45278c16f 36d62acc5cadfab4245e9d0d062f88e45278c16f R100	ops/install-s3.sh	ops/cloudformation/scripts/install-s3.sh
+:100644 100644 adc930597a4111014614519a5b827bcfa5789a0a adc930597a4111014614519a5b827bcfa5789a0a R100	ops/vpc.yml	ops/cloudformation/vpc.yml

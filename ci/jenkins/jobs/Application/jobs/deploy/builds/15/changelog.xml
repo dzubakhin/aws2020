@@ -1,0 +1,18 @@
+commit f83b9d48b08e225f27688d3c139966d78901bf8f
+tree 7b2c2a37d908c9da48fb702a2669d2429aa5dfe6
+parent 41445fe522fc0dc027e184f831cfb8d442b14b0f
+author Artem Uskov <uskov.artem@gmail.com> 2019-01-18 20:33:45 +0200
+committer GitHub <noreply@github.com> 2019-01-18 20:33:45 +0200
+
+    Add iam policy to jenkins (#68)
+
+    * Add iam policy to jenkins
+    
+    * iam roles for deletestack
+    
+    * add iam roles
+    
+    * add iam roles
+
+
+:100644 100644 710be994e204dad69aa030eccd2048bbc4343150 17e3e58ae98569723835d045719b7f5ea6542e1b M	ci/jenkins/jenkins.yaml

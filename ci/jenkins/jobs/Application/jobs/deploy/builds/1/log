@@ -1,0 +1,27 @@
+Started by upstream project "[8mha:////4FXQLN22QMgkDMtmLy6JcxN/mhzrtYdPlSndfvZME2BfAAAAph+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzhEgZZ/az8JH3HgoKczOTEksz8PDC/KDUnNbE4VR8AuPVywNIAAAA=[0mApplication/release" build number [8mha:////4L3yqCHMuLc9DjE+Uldhgv31bh84UsoZRyKbbJYttxEJAAAAph+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLQIwSBjn9rPwkfceCgpzM5MSSzPw8ML8oNSc1sThV3wgA+nU1oNMAAAA=[0m2
+originally caused by:
+ Started by user [8mha:////4JrjmSRx4qOtNYMMhYugXsyw+fINujBQhhzqimlc3f+QAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/lib/jenkins/workspace/Application/deploy
+Cloning the remote Git repository
+Cloning repository git@github.com:babinskiy/AWS_Demo_project.git
+ > git init /var/lib/jenkins/workspace/Application/deploy # timeout=10
+Fetching upstream changes from git@github.com:babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress git@github.com:babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url git@github.com:babinskiy/AWS_Demo_project.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url git@github.com:babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from git@github.com:babinskiy/AWS_Demo_project.git
+ > git fetch --tags --progress git@github.com:babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision e30f3526c24532f6e1a876eedd028a5828d98532 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f e30f3526c24532f6e1a876eedd028a5828d98532
+Commit message: "add_del_stack_script (#69)"
+First time build. Skipping changelog.
+[deploy] $ /bin/sh -xe /tmp/jenkins3141913184278479884.sh
++ source ops/userdata/deploy_app.sh --stack-name asg-qa-dropwizard-docker-001 --elb-stack-name qa-ELB2 --vpc-name ProjectVPC --version 0.0.1 --instance-type t2.micro --template-body ops/cloudformation/app_ASG.yml --environment qa --deploy-source docker
+/tmp/jenkins3141913184278479884.sh: line 2: ops/userdata/deploy_app.sh: No such file or directory
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE

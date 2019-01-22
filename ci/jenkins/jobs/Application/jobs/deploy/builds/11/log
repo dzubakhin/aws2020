@@ -1,0 +1,24 @@
+Started by user [8mha:////4JrjmSRx4qOtNYMMhYugXsyw+fINujBQhhzqimlc3f+QAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/lib/jenkins/workspace/Application/deploy
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url git@github.com:babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from git@github.com:babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress git@github.com:babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision ab3c0e1154ec06814c1a0d639cf015174314b435 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f ab3c0e1154ec06814c1a0d639cf015174314b435
+Commit message: "Merge pull request #71 from babinskiy/fix_folders"
+ > git rev-list --no-walk ab3c0e1154ec06814c1a0d639cf015174314b435 # timeout=10
+[deploy] $ /bin/sh -xe /tmp/jenkins3511952282663604562.sh
++ python ops/cloudformation/scripts/del_stacks.py qa dropwizard 0.0.14
+('Delete:', 'asg-qa-dropwizard-docker-0013', [{u'Value': '0.0.13', u'Key': 'Version'}, {u'Value': 'dropwizard', u'Key': 'service'}, {u'Value': 'qa', u'Key': 'Environment'}])
+('Delete:', 'asg-qa-dropwizard-docker-0012', [{u'Value': '0.0.12', u'Key': 'Version'}, {u'Value': 'dropwizard', u'Key': 'service'}, {u'Value': 'qa', u'Key': 'Environment'}])
+('Delete:', 'asg-qa-dropwizard-s3-0012', [{u'Value': '0.0.12', u'Key': 'Version'}, {u'Value': 'dropwizard', u'Key': 'service'}, {u'Value': 'qa', u'Key': 'Environment'}])
+('Delete:', 'asg-qa-dropwizard-s3-0011', [{u'Value': '0.0.11', u'Key': 'Version'}, {u'Value': 'dropwizard', u'Key': 'service'}, {u'Value': 'qa', u'Key': 'Environment'}])
+('Delete:', 'asg-qa-dropwizard-s3-0010', [{u'Value': '0.0.10', u'Key': 'Version'}, {u'Value': 'dropwizard', u'Key': 'service'}, {u'Value': 'qa', u'Key': 'Environment'}])
+('Delete:', 'asg-qa-dropwizard-s3-008', [{u'Value': '0.0.8', u'Key': 'Version'}, {u'Value': 'dropwizard', u'Key': 'service'}, {u'Value': 'qa', u'Key': 'Environment'}])
+Finished: SUCCESS

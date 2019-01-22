@@ -1,0 +1,24 @@
+Started by user [8mha:////4FuTPzBZStcYgruvItJfegEMeCRMLN/iqML4MgAjwsBxAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/jenkins_home/workspace/Setup RDS
+Cloning the remote Git repository
+Cloning repository https://github.com/babinskiy/AWS_Demo_project.git
+ > git init /var/jenkins_home/workspace/Setup RDS # timeout=10
+Fetching upstream changes from https://github.com/babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url https://github.com/babinskiy/AWS_Demo_project.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from https://github.com/babinskiy/AWS_Demo_project.git
+ > git fetch --tags --progress https://github.com/babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse origin/master^{commit} # timeout=10
+Checking out Revision f32c829da849eb37ad7dd9f46fde710b2f1de44e (origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f f32c829da849eb37ad7dd9f46fde710b2f1de44e
+Commit message: "SDOR-117: Some README.md corrections (#58)"
+First time build. Skipping changelog.
+[Setup RDS] $ /bin/sh -xe /tmp/jenkins6350391668843724708.sh
++ local 'params='
+/tmp/jenkins6350391668843724708.sh: local: line 1: not in a function
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE

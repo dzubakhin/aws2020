@@ -1,0 +1,11 @@
+commit 41445fe522fc0dc027e184f831cfb8d442b14b0f
+tree 3ce8128c970906b56deb65644e4e7ea8a839d4c4
+parent ab3c0e1154ec06814c1a0d639cf015174314b435
+author babinskiy <45942058+babinskiy@users.noreply.github.com> 2019-01-18 20:19:46 +0200
+committer Artem Uskov <uskov.artem@gmail.com> 2019-01-18 20:19:46 +0200
+
+    fix Delete failed (#72)
+
+
+
+:100644 100644 ec6ffdafa23081b471d178a948669d0ce318392e d51d7b9309545e7432225cf1a6edf22a87fcb735 M	ops/cloudformation/scripts/del_stacks.py

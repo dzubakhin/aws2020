@@ -1,0 +1,12 @@
+commit 36394c2608203246acd15cfa43987a2882e2747b
+tree 15a5bbf2664d7c08d1cdcb8a97dc753acdfd5da5
+parent e47a1537cc1d8eeadbafb923e2a836c20f9f0437
+author Ivan Yermakov <iyerm@softserveinc.com> 2019-01-18 17:53:27 +0200
+committer Ivan Yermakov <iyerm@softserveinc.com> 2019-01-18 17:53:27 +0200
+
+    move some scripts
+
+
+
+:100644 100644 2108727fc02ed689c2c7642bc38c4dfa8949c016 2108727fc02ed689c2c7642bc38c4dfa8949c016 R100	ops/userdata/deploy_app.sh	ops/deploy_app.sh
+:100644 100644 0eff303a919aba5066b1b8db30a21eaedf74bdf9 0eff303a919aba5066b1b8db30a21eaedf74bdf9 R100	ops/userdata/deploy_app_ELB.sh	ops/deploy_app_ELB.sh

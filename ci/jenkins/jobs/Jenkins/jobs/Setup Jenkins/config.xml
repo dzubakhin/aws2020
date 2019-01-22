@@ -1,0 +1,107 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Setup jenkins host, mount volume, associate eip</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.datadog.jenkins.plugins.datadog.DatadogJobProperty plugin="datadog@0.6.5">
+      <emitOnCheckout>false</emitOnCheckout>
+    </org.datadog.jenkins.plugins.datadog.DatadogJobProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.3">
+      <projectUrl>https://github.com/babinskiy/AWS_Demo_project.git/</projectUrl>
+      <displayName>AWS_Demo_project</displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>stack_name</name>
+          <description></description>
+          <defaultValue>jenkins</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>instance_type</name>
+          <description>must be valid aws instance type</description>
+          <defaultValue>t3.large</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>vpc_name</name>
+          <description></description>
+          <defaultValue>ProjectVPC</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>service</name>
+          <description>name of the service (for grouping)</description>
+          <defaultValue>jenkins</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>environment</name>
+          <description>service designation</description>
+          <defaultValue>ci</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>template_path</name>
+          <description></description>
+          <defaultValue>ci/jenkins</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>region</name>
+          <description></description>
+          <defaultValue>us-east-1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/babinskiy/AWS_Demo_project.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+  params=&quot;&quot;
+  params=&quot;${params:+${params} }ParameterKey=InstanceType,ParameterValue=${instance_type}&quot;
+  params=&quot;${params:+${params} }ParameterKey=VPCStackName,ParameterValue=${vpc_name}&quot;
+  params=&quot;${params:+${params} }ParameterKey=S3Path,ParameterValue=30daysdevops&quot;
+  params=&quot;${params:+${params} }ParameterKey=KeyPairName,ParameterValue=30daysdevops&quot;
+  params=&quot;${params:+${params} }ParameterKey=DatadogSecretName,ParameterValue=datadog_api_key&quot;
+  params=&quot;${params:+${params} }ParameterKey=SSLCertificate,ParameterValue=arn:aws:acm:us-east-1:230883561944:certificate/79616372-c929-4269-b861-dde983e0fb34&quot;
+
+  tags=&quot;&quot;
+  tags=&quot;${tags:+${tags} }Key=Service,Value=${service}&quot;
+  tags=&quot;${tags:+${tags} }Key=Environment,Value=${environment}&quot;
+
+aws cloudformation create-stack --stack-name ${stack_name} --region ${region} --template-body file://${template_path}/jenkins.yaml  \
+    --parameters ${params} --tags $tags --capabilities CAPABILITY_IAM
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.8.10"/>
+  </buildWrappers>
+</project>

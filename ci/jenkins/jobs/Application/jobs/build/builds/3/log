@@ -1,0 +1,481 @@
+Started by GitHub push by babinskiy
+Building in workspace /var/lib/jenkins/workspace/Application/build
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url git@github.com:babinskiy/dropwizard-example.git # timeout=10
+Fetching upstream changes from git@github.com:babinskiy/dropwizard-example.git
+ > git --version # timeout=10
+ > git fetch --tags --progress git@github.com:babinskiy/dropwizard-example.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 69bc9caecdfa2e37271050053a9ac64b9ab30de6 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 69bc9caecdfa2e37271050053a9ac64b9ab30de6
+Commit message: "Fix Error level"
+ > git rev-list --no-walk afbe63f3a12b580a77a9b8a391cc18dd6897f4f2 # timeout=10
+[build] $ /bin/sh -xe /tmp/jenkins3524475828749995895.sh
++ mvn clean package
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Dropwizard Example Application 0.0.1-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ dropwizard-example ---
+[INFO] Deleting /var/lib/jenkins/workspace/Application/build/target
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.4.1:enforce (enforce) @ dropwizard-example ---
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:3.0.0:check (checkstyle) @ dropwizard-example ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.2:prepare-agent (prepare-agent) @ dropwizard-example ---
+[INFO] argLine set to -javaagent:/var/lib/jenkins/.m2/repository/org/jacoco/org.jacoco.agent/0.8.2/org.jacoco.agent-0.8.2-runtime.jar=destfile=/var/lib/jenkins/workspace/Application/build/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:resources (default-resources) @ dropwizard-example ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 10 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.0:compile (default-compile) @ dropwizard-example ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 23 source files to /var/lib/jenkins/workspace/Application/build/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:3.1.0:testResources (default-testResources) @ dropwizard-example ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.0:testCompile (default-testCompile) @ dropwizard-example ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 6 source files to /var/lib/jenkins/workspace/Application/build/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.1:test (default-test) @ dropwizard-example ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.example.helloworld.resources.PeopleResourceTest
+17:45:32.307 [main] DEBUG org.jboss.logging - Logging Provider: org.jboss.logging.Slf4jLoggerProvider
+17:45:32.313 [main] INFO org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 5.4.2.Final
+17:45:32.344 [main] DEBUG org.hibernate.validator.internal.engine.resolver.DefaultTraversableResolver - Found javax.persistence.Persistence on classpath containing 'getPersistenceUtil'. Assuming JPA 2 environment. Trying to instantiate JPA aware TraversableResolver
+17:45:32.346 [main] DEBUG org.hibernate.validator.internal.engine.resolver.DefaultTraversableResolver - Instantiated JPA aware TraversableResolver of type org.hibernate.validator.internal.engine.resolver.JPATraversableResolver.
+17:45:32.352 [main] DEBUG org.hibernate.validator.internal.engine.ConfigurationImpl - Setting custom ParameterNameProvider of type io.dropwizard.jersey.validation.JerseyParameterNameProvider
+17:45:32.354 [main] DEBUG org.hibernate.validator.internal.xml.ValidationXmlParser - Trying to load META-INF/validation.xml for XML based Validator configuration.
+17:45:32.356 [main] DEBUG org.hibernate.validator.internal.xml.ResourceLoaderHelper - Trying to load META-INF/validation.xml via TCCL
+17:45:32.357 [main] DEBUG org.hibernate.validator.internal.xml.ResourceLoaderHelper - Trying to load META-INF/validation.xml via Hibernate Validator's class loader
+17:45:32.357 [main] DEBUG org.hibernate.validator.internal.xml.ValidationXmlParser - No META-INF/validation.xml found. Using annotation based configuration only.
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.886 s - in com.example.helloworld.resources.PeopleResourceTest
+[INFO] Running com.example.helloworld.resources.PersonResourceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.936 s - in com.example.helloworld.resources.PersonResourceTest
+[INFO] Running com.example.helloworld.resources.ProtectedResourceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.279 s - in com.example.helloworld.resources.ProtectedResourceTest
+[INFO] Running com.example.helloworld.resources.ProtectedClassResourceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.179 s - in com.example.helloworld.resources.ProtectedClassResourceTest
+[INFO] Running com.example.helloworld.IntegrationTest
+INFO  [2019-01-20 17:45:36,925] io.dropwizard.server.DefaultServerFactory: Registering jersey handler with root path prefix: /
+INFO  [2019-01-20 17:45:36,929] io.dropwizard.server.DefaultServerFactory: Registering admin handler with root path prefix: /
+INFO  [2019-01-20 17:45:36,931] io.dropwizard.assets.AssetsBundle: Registering AssetBundle with name: assets for path /assets/*
+INFO  [2019-01-20 17:45:37,193] org.hibernate.Version: HHH000412: Hibernate Core {5.2.15.Final}
+INFO  [2019-01-20 17:45:37,195] org.hibernate.cfg.Environment: HHH000206: hibernate.properties not found
+INFO  [2019-01-20 17:45:37,213] io.dropwizard.hibernate.SessionFactoryFactory: Entity classes: [com.example.helloworld.core.Person]
+INFO  [2019-01-20 17:45:37,255] org.hibernate.annotations.common.Version: HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+INFO  [2019-01-20 17:45:37,817] org.hibernate.dialect.Dialect: HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+INFO  [2019-01-20 17:45:38,327] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.util.Currency] overrides previous : org.hibernate.type.CurrencyType@17a75ba8
+INFO  [2019-01-20 17:45:38,328] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.Duration] overrides previous : org.hibernate.type.DurationType@54aa2f99
+INFO  [2019-01-20 17:45:38,328] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.Instant] overrides previous : org.hibernate.type.InstantType@1c743db7
+INFO  [2019-01-20 17:45:38,329] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalDate] overrides previous : org.hibernate.type.LocalDateType@13f5bb85
+INFO  [2019-01-20 17:45:38,329] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalDateTime] overrides previous : org.hibernate.type.LocalDateTimeType@3e22d848
+INFO  [2019-01-20 17:45:38,329] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalTime] overrides previous : org.hibernate.type.LocalTimeType@3bf1fef2
+INFO  [2019-01-20 17:45:38,330] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.OffsetDateTime] overrides previous : org.hibernate.type.OffsetDateTimeType@655f5be
+INFO  [2019-01-20 17:45:38,330] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.OffsetTime] overrides previous : org.hibernate.type.OffsetTimeType@38c25f62
+INFO  [2019-01-20 17:45:38,330] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.ZonedDateTime] overrides previous : org.hibernate.type.ZonedDateTimeType@108a20aa
+INFO  [2019-01-20 17:45:38,769] org.hibernate.hql.internal.QueryTranslatorFactoryInitiator: HHH000397: Using ASTQueryTranslatorFactory
+INFO  [2019-01-20 17:45:38,927] io.dropwizard.server.ServerFactory: Starting hello-world
+                           web-scale hello world dP for the web
+                                                 88
+  .d8888b. dP.  .dP .d8888b. 88d8b.d8b. 88d888b. 88 .d8888b.
+  88ooood8  `8bd8'  88'  `88 88'`88'`88 88'  `88 88 88ooood8
+  88.  ...  .d88b.  88.  .88 88  88  88 88.  .88 88 88.  ...
+  `88888P' dP'  `dP `88888P8 dP  dP  dP 88Y888P' dP `88888P'
+                                        88
+                                        dP
+
+INFO  [2019-01-20 17:45:39,077] org.eclipse.jetty.setuid.SetUIDListener: Opened application@835603f{HTTP/1.1,[http/1.1]}{0.0.0.0:46845}
+INFO  [2019-01-20 17:45:39,077] org.eclipse.jetty.setuid.SetUIDListener: Opened admin@3dde0575{HTTP/1.1,[http/1.1]}{0.0.0.0:44887}
+INFO  [2019-01-20 17:45:39,080] org.eclipse.jetty.server.Server: jetty-9.4.11.v20180605; built: 2018-06-05T18:24:03.829Z; git: d5fc0523cfa96bfebfbda19606cad384d772f04c; jvm 1.8.0_191-b12
+INFO  [2019-01-20 17:45:39,241] io.dropwizard.jersey.DropwizardResourceConfig: The following paths were found for the configured resources:
+
+    GET     /filtered/hello (com.example.helloworld.resources.FilteredResource)
+    GET     /hello-world (com.example.helloworld.resources.HelloWorldResource)
+    POST    /hello-world (com.example.helloworld.resources.HelloWorldResource)
+    GET     /hello-world/date (com.example.helloworld.resources.HelloWorldResource)
+    GET     /people (com.example.helloworld.resources.PeopleResource)
+    POST    /people (com.example.helloworld.resources.PeopleResource)
+    GET     /people/{personId} (com.example.helloworld.resources.PersonResource)
+    GET     /people/{personId}/view_freemarker (com.example.helloworld.resources.PersonResource)
+    GET     /people/{personId}/view_mustache (com.example.helloworld.resources.PersonResource)
+    GET     /protected (com.example.helloworld.resources.ProtectedResource)
+    GET     /protected/admin (com.example.helloworld.resources.ProtectedResource)
+    GET     /views/iso88591.ftl (com.example.helloworld.resources.ViewResource)
+    GET     /views/iso88591.mustache (com.example.helloworld.resources.ViewResource)
+    GET     /views/utf8.ftl (com.example.helloworld.resources.ViewResource)
+    GET     /views/utf8.mustache (com.example.helloworld.resources.ViewResource)
+
+INFO  [2019-01-20 17:45:39,245] org.eclipse.jetty.server.handler.ContextHandler: Started i.d.j.MutableServletContextHandler@1ff5fb9e{/,null,AVAILABLE}
+INFO  [2019-01-20 17:45:39,249] io.dropwizard.setup.AdminEnvironment: tasks = 
+
+    POST    /tasks/echo (com.example.helloworld.tasks.EchoTask)
+    POST    /tasks/log-level (io.dropwizard.servlets.tasks.LogConfigurationTask)
+    POST    /tasks/gc (io.dropwizard.servlets.tasks.GarbageCollectionTask)
+
+INFO  [2019-01-20 17:45:39,266] org.eclipse.jetty.server.handler.ContextHandler: Started i.d.j.MutableServletContextHandler@77dc18ab{/,null,AVAILABLE}
+INFO  [2019-01-20 17:45:39,277] org.eclipse.jetty.server.AbstractConnector: Started application@835603f{HTTP/1.1,[http/1.1]}{0.0.0.0:46845}
+INFO  [2019-01-20 17:45:39,277] org.eclipse.jetty.server.AbstractConnector: Started admin@3dde0575{HTTP/1.1,[http/1.1]}{0.0.0.0:44887}
+INFO  [2019-01-20 17:45:39,278] org.eclipse.jetty.server.Server: Started @10148ms
+INFO  [2019-01-20 17:45:40,175] liquibase.executor.jvm.JdbcExecutor: SELECT COUNT(*) FROM PUBLIC.DATABASECHANGELOGLOCK
+INFO  [2019-01-20 17:45:40,188] liquibase.executor.jvm.JdbcExecutor: CREATE TABLE PUBLIC.DATABASECHANGELOGLOCK (ID INT NOT NULL, LOCKED BOOLEAN NOT NULL, LOCKGRANTED TIMESTAMP, LOCKEDBY VARCHAR(255), CONSTRAINT PK_DATABASECHANGELOGLOCK PRIMARY KEY (ID))
+INFO  [2019-01-20 17:45:40,197] liquibase.executor.jvm.JdbcExecutor: SELECT COUNT(*) FROM PUBLIC.DATABASECHANGELOGLOCK
+INFO  [2019-01-20 17:45:40,201] liquibase.executor.jvm.JdbcExecutor: DELETE FROM PUBLIC.DATABASECHANGELOGLOCK
+INFO  [2019-01-20 17:45:40,203] liquibase.executor.jvm.JdbcExecutor: INSERT INTO PUBLIC.DATABASECHANGELOGLOCK (ID, LOCKED) VALUES (1, FALSE)
+INFO  [2019-01-20 17:45:40,206] liquibase.executor.jvm.JdbcExecutor: SELECT LOCKED FROM PUBLIC.DATABASECHANGELOGLOCK WHERE ID=1
+INFO  [2019-01-20 17:45:40,216] liquibase.lockservice.StandardLockService: Successfully acquired change log lock
+INFO  [2019-01-20 17:45:41,080] liquibase.changelog.StandardChangeLogHistoryService: Creating database history table with name: PUBLIC.DATABASECHANGELOG
+INFO  [2019-01-20 17:45:41,082] liquibase.executor.jvm.JdbcExecutor: CREATE TABLE PUBLIC.DATABASECHANGELOG (ID VARCHAR(255) NOT NULL, AUTHOR VARCHAR(255) NOT NULL, FILENAME VARCHAR(255) NOT NULL, DATEEXECUTED TIMESTAMP NOT NULL, ORDEREXECUTED INT NOT NULL, EXECTYPE VARCHAR(10) NOT NULL, MD5SUM VARCHAR(35), DESCRIPTION VARCHAR(255), COMMENTS VARCHAR(255), TAG VARCHAR(255), LIQUIBASE VARCHAR(20), CONTEXTS VARCHAR(255), LABELS VARCHAR(255), DEPLOYMENT_ID VARCHAR(10))
+INFO  [2019-01-20 17:45:41,084] liquibase.executor.jvm.JdbcExecutor: SELECT COUNT(*) FROM PUBLIC.DATABASECHANGELOG
+INFO  [2019-01-20 17:45:41,084] liquibase.changelog.StandardChangeLogHistoryService: Reading from PUBLIC.DATABASECHANGELOG
+INFO  [2019-01-20 17:45:41,085] liquibase.executor.jvm.JdbcExecutor: SELECT * FROM PUBLIC.DATABASECHANGELOG ORDER BY DATEEXECUTED ASC, ORDEREXECUTED ASC
+INFO  [2019-01-20 17:45:41,086] liquibase.executor.jvm.JdbcExecutor: SELECT COUNT(*) FROM PUBLIC.DATABASECHANGELOGLOCK
+INFO  [2019-01-20 17:45:41,098] liquibase.executor.jvm.JdbcExecutor: CREATE TABLE PUBLIC.people (id BIGINT AUTO_INCREMENT NOT NULL, fullName VARCHAR(255) NOT NULL, jobTitle VARCHAR(255), CONSTRAINT PK_PEOPLE PRIMARY KEY (id))
+INFO  [2019-01-20 17:45:41,107] liquibase.changelog.ChangeSet: Table people created
+INFO  [2019-01-20 17:45:41,107] liquibase.changelog.ChangeSet: ChangeSet migrations.xml::1::codahale ran successfully in 10ms
+INFO  [2019-01-20 17:45:41,108] liquibase.executor.jvm.JdbcExecutor: SELECT MAX(ORDEREXECUTED) FROM PUBLIC.DATABASECHANGELOG
+INFO  [2019-01-20 17:45:41,115] liquibase.executor.jvm.JdbcExecutor: INSERT INTO PUBLIC.DATABASECHANGELOG (ID, AUTHOR, FILENAME, DATEEXECUTED, ORDEREXECUTED, MD5SUM, DESCRIPTION, COMMENTS, EXECTYPE, CONTEXTS, LABELS, LIQUIBASE, DEPLOYMENT_ID) VALUES ('1', 'codahale', 'migrations.xml', NOW(), 1, '8:a466b7f04155c06f80453d6d5a36b55c', 'createTable tableName=people', '', 'EXECUTED', NULL, NULL, '3.6.1', '8006341087')
+INFO  [2019-01-20 17:45:41,118] liquibase.lockservice.StandardLockService: Successfully released change log lock
+INFO  [2019-01-20 17:45:41,430] org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: Session Metrics {
+    115510 nanoseconds spent acquiring 2 JDBC connections;
+    112848 nanoseconds spent releasing 2 JDBC connections;
+    6991745 nanoseconds spent preparing 1 JDBC statements;
+    3498118 nanoseconds spent executing 1 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    4850048 nanoseconds spent executing 1 flushes (flushing a total of 1 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+127.0.0.1 - - [20/Jan/2019:17:45:41 +0000] "POST /people HTTP/1.1" 200 67 "-" "Jersey/2.25.1 (HttpUrlConnection 1.8.0_191)" 201
+INFO  [2019-01-20 17:45:41,504] org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: Session Metrics {
+    72889 nanoseconds spent acquiring 2 JDBC connections;
+    50393 nanoseconds spent releasing 2 JDBC connections;
+    396211 nanoseconds spent preparing 1 JDBC statements;
+    215744 nanoseconds spent executing 1 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    170843 nanoseconds spent executing 1 flushes (flushing a total of 1 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+127.0.0.1 - - [20/Jan/2019:17:45:41 +0000] "GET /people/1/view_mustache HTTP/1.1" 200 205 "-" "Jersey/2.25.1 (HttpUrlConnection 1.8.0_191)" 63
+INFO  [2019-01-20 17:45:41,527] org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: Session Metrics {
+    78632 nanoseconds spent acquiring 2 JDBC connections;
+    48544 nanoseconds spent releasing 2 JDBC connections;
+    87578 nanoseconds spent preparing 1 JDBC statements;
+    795300 nanoseconds spent executing 1 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    176177 nanoseconds spent executing 1 flushes (flushing a total of 1 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+127.0.0.1 - - [20/Jan/2019:17:45:41 +0000] "POST /people HTTP/1.1" 200 67 "-" "Jersey/2.25.1 (HttpUrlConnection 1.8.0_191)" 10
+INFO  [2019-01-20 17:45:41,533] org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: Session Metrics {
+    56324 nanoseconds spent acquiring 2 JDBC connections;
+    63335 nanoseconds spent releasing 2 JDBC connections;
+    50762 nanoseconds spent preparing 1 JDBC statements;
+    166956 nanoseconds spent executing 1 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    133290 nanoseconds spent executing 1 flushes (flushing a total of 1 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+127.0.0.1 - - [20/Jan/2019:17:45:41 +0000] "POST /people HTTP/1.1" 200 67 "-" "Jersey/2.25.1 (HttpUrlConnection 1.8.0_191)" 6
+INFO  [2019-01-20 17:45:41,728] org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: Session Metrics {
+    361773 nanoseconds spent acquiring 2 JDBC connections;
+    43046 nanoseconds spent releasing 2 JDBC connections;
+    45586 nanoseconds spent preparing 1 JDBC statements;
+    180911 nanoseconds spent executing 1 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    143366 nanoseconds spent executing 1 flushes (flushing a total of 1 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+127.0.0.1 - - [20/Jan/2019:17:45:41 +0000] "GET /people/3/view_freemarker HTTP/1.1" 200 270 "-" "Jersey/2.25.1 (HttpUrlConnection 1.8.0_191)" 194
+INFO  [2019-01-20 17:45:41,761] org.eclipse.jetty.server.AbstractConnector: Stopped application@835603f{HTTP/1.1,[http/1.1]}{0.0.0.0:0}
+INFO  [2019-01-20 17:45:41,761] org.eclipse.jetty.server.AbstractConnector: Stopped admin@3dde0575{HTTP/1.1,[http/1.1]}{0.0.0.0:0}
+INFO  [2019-01-20 17:45:41,763] org.eclipse.jetty.server.handler.ContextHandler: Stopped i.d.j.MutableServletContextHandler@77dc18ab{/,null,UNAVAILABLE}
+INFO  [2019-01-20 17:45:41,768] org.eclipse.jetty.server.handler.ContextHandler: Stopped i.d.j.MutableServletContextHandler@1ff5fb9e{/,null,UNAVAILABLE}
+127.0.0.1 - - [20/Jan/2019:17:45:41 +0000] "GET /hello-world?name=Dr.+IntegrationTest HTTP/1.1" 200 48 "-" "Jersey/2.25.1 (HttpUrlConnection 1.8.0_191)" 30
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.019 s - in com.example.helloworld.IntegrationTest
+[INFO] Running com.example.helloworld.db.PersonDAOTest
+WARN  [2019-01-20 17:45:41,827] org.hibernate.orm.connections.pooling: HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+INFO  [2019-01-20 17:45:41,829] org.hibernate.orm.connections.pooling: HHH10001005: using driver [org.h2.Driver] at URL [jdbc:h2:mem:11c53763-1cce-4880-b2bd-38dc0ed56783]
+INFO  [2019-01-20 17:45:41,830] org.hibernate.orm.connections.pooling: HHH10001001: Connection properties: {user=sa, password=}
+INFO  [2019-01-20 17:45:41,830] org.hibernate.orm.connections.pooling: HHH10001003: Autocommit mode: false
+INFO  [2019-01-20 17:45:41,833] org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl: HHH000115: Hibernate connection pool size: 20 (min=1)
+INFO  [2019-01-20 17:45:41,837] org.hibernate.dialect.Dialect: HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+INFO  [2019-01-20 17:45:41,870] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.util.Currency] overrides previous : org.hibernate.type.CurrencyType@17a75ba8
+INFO  [2019-01-20 17:45:41,871] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.Duration] overrides previous : org.hibernate.type.DurationType@54aa2f99
+INFO  [2019-01-20 17:45:41,872] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.Instant] overrides previous : org.hibernate.type.InstantType@1c743db7
+INFO  [2019-01-20 17:45:41,872] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalDate] overrides previous : org.hibernate.type.LocalDateType@13f5bb85
+INFO  [2019-01-20 17:45:41,872] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalDateTime] overrides previous : org.hibernate.type.LocalDateTimeType@3e22d848
+INFO  [2019-01-20 17:45:41,872] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalTime] overrides previous : org.hibernate.type.LocalTimeType@3bf1fef2
+INFO  [2019-01-20 17:45:41,872] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.OffsetDateTime] overrides previous : org.hibernate.type.OffsetDateTimeType@655f5be
+INFO  [2019-01-20 17:45:41,872] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.OffsetTime] overrides previous : org.hibernate.type.OffsetTimeType@38c25f62
+INFO  [2019-01-20 17:45:41,872] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.ZonedDateTime] overrides previous : org.hibernate.type.ZonedDateTimeType@108a20aa
+INFO  [2019-01-20 17:45:41,905] org.hibernate.orm.connections.access: HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@5e14efc0] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+INFO  [2019-01-20 17:45:41,911] org.hibernate.orm.connections.access: HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@7fd0d7be] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+INFO  [2019-01-20 17:45:41,914] org.hibernate.tool.schema.internal.SchemaCreatorImpl: HHH000476: Executing import script 'org.hibernate.tool.schema.internal.exec.ScriptSourceInputNonExistentImpl@19857fce'
+INFO  [2019-01-20 17:45:41,914] org.hibernate.hql.internal.QueryTranslatorFactoryInitiator: HHH000397: Using ASTQueryTranslatorFactory
+INFO  [2019-01-20 17:45:41,955] org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: Session Metrics {
+    26133 nanoseconds spent acquiring 2 JDBC connections;
+    114826 nanoseconds spent releasing 2 JDBC connections;
+    437724 nanoseconds spent preparing 4 JDBC statements;
+    870367 nanoseconds spent executing 4 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    2060427 nanoseconds spent executing 1 flushes (flushing a total of 3 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+WARN  [2019-01-20 17:45:41,961] org.hibernate.orm.connections.pooling: HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+INFO  [2019-01-20 17:45:41,961] org.hibernate.orm.connections.pooling: HHH10001005: using driver [org.h2.Driver] at URL [jdbc:h2:mem:67cf0c87-2d6f-4119-9398-5b4b64da271e]
+INFO  [2019-01-20 17:45:41,962] org.hibernate.orm.connections.pooling: HHH10001001: Connection properties: {user=sa, password=}
+INFO  [2019-01-20 17:45:41,962] org.hibernate.orm.connections.pooling: HHH10001003: Autocommit mode: false
+INFO  [2019-01-20 17:45:41,962] org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl: HHH000115: Hibernate connection pool size: 20 (min=1)
+INFO  [2019-01-20 17:45:41,964] org.hibernate.dialect.Dialect: HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+INFO  [2019-01-20 17:45:41,981] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.util.Currency] overrides previous : org.hibernate.type.CurrencyType@17a75ba8
+INFO  [2019-01-20 17:45:41,984] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.Duration] overrides previous : org.hibernate.type.DurationType@54aa2f99
+INFO  [2019-01-20 17:45:41,984] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.Instant] overrides previous : org.hibernate.type.InstantType@1c743db7
+INFO  [2019-01-20 17:45:41,984] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalDate] overrides previous : org.hibernate.type.LocalDateType@13f5bb85
+INFO  [2019-01-20 17:45:41,984] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalDateTime] overrides previous : org.hibernate.type.LocalDateTimeType@3e22d848
+INFO  [2019-01-20 17:45:41,985] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalTime] overrides previous : org.hibernate.type.LocalTimeType@3bf1fef2
+INFO  [2019-01-20 17:45:41,985] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.OffsetDateTime] overrides previous : org.hibernate.type.OffsetDateTimeType@655f5be
+INFO  [2019-01-20 17:45:41,987] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.OffsetTime] overrides previous : org.hibernate.type.OffsetTimeType@38c25f62
+INFO  [2019-01-20 17:45:41,987] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.ZonedDateTime] overrides previous : org.hibernate.type.ZonedDateTimeType@108a20aa
+INFO  [2019-01-20 17:45:42,000] org.hibernate.orm.connections.access: HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@7d541b9a] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+INFO  [2019-01-20 17:45:42,001] org.hibernate.orm.connections.access: HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@19bedfc5] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+INFO  [2019-01-20 17:45:42,003] org.hibernate.tool.schema.internal.SchemaCreatorImpl: HHH000476: Executing import script 'org.hibernate.tool.schema.internal.exec.ScriptSourceInputNonExistentImpl@19857fce'
+INFO  [2019-01-20 17:45:42,004] org.hibernate.hql.internal.QueryTranslatorFactoryInitiator: HHH000397: Using ASTQueryTranslatorFactory
+WARN  [2019-01-20 17:45:42,014] org.hibernate.engine.jdbc.spi.SqlExceptionHelper: SQL Error: 23502, SQLState: 23502
+ERROR [2019-01-20 17:45:42,014] org.hibernate.engine.jdbc.spi.SqlExceptionHelper: NULL not allowed for column "FULLNAME"; SQL statement:
+insert into people (id, fullName, jobTitle) values (null, ?, ?) [23502-197]
+INFO  [2019-01-20 17:45:42,023] org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: Session Metrics {
+    10139 nanoseconds spent acquiring 1 JDBC connections;
+    46781 nanoseconds spent releasing 1 JDBC connections;
+    138566 nanoseconds spent preparing 1 JDBC statements;
+    5750495 nanoseconds spent executing 1 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    0 nanoseconds spent executing 0 flushes (flushing a total of 0 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+WARN  [2019-01-20 17:45:42,029] org.hibernate.orm.connections.pooling: HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+INFO  [2019-01-20 17:45:42,029] org.hibernate.orm.connections.pooling: HHH10001005: using driver [org.h2.Driver] at URL [jdbc:h2:mem:8cd70146-bec8-4260-9a52-f9f2dc737722]
+INFO  [2019-01-20 17:45:42,029] org.hibernate.orm.connections.pooling: HHH10001001: Connection properties: {user=sa, password=}
+INFO  [2019-01-20 17:45:42,029] org.hibernate.orm.connections.pooling: HHH10001003: Autocommit mode: false
+INFO  [2019-01-20 17:45:42,030] org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl: HHH000115: Hibernate connection pool size: 20 (min=1)
+INFO  [2019-01-20 17:45:42,031] org.hibernate.dialect.Dialect: HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+INFO  [2019-01-20 17:45:42,047] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.util.Currency] overrides previous : org.hibernate.type.CurrencyType@17a75ba8
+INFO  [2019-01-20 17:45:42,049] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.Duration] overrides previous : org.hibernate.type.DurationType@54aa2f99
+INFO  [2019-01-20 17:45:42,049] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.Instant] overrides previous : org.hibernate.type.InstantType@1c743db7
+INFO  [2019-01-20 17:45:42,049] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalDate] overrides previous : org.hibernate.type.LocalDateType@13f5bb85
+INFO  [2019-01-20 17:45:42,049] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalDateTime] overrides previous : org.hibernate.type.LocalDateTimeType@3e22d848
+INFO  [2019-01-20 17:45:42,049] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.LocalTime] overrides previous : org.hibernate.type.LocalTimeType@3bf1fef2
+INFO  [2019-01-20 17:45:42,050] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.OffsetDateTime] overrides previous : org.hibernate.type.OffsetDateTimeType@655f5be
+INFO  [2019-01-20 17:45:42,050] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.OffsetTime] overrides previous : org.hibernate.type.OffsetTimeType@38c25f62
+INFO  [2019-01-20 17:45:42,050] org.hibernate.type.BasicTypeRegistry: HHH000270: Type registration [java.time.ZonedDateTime] overrides previous : org.hibernate.type.ZonedDateTimeType@108a20aa
+INFO  [2019-01-20 17:45:42,061] org.hibernate.orm.connections.access: HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@482b7363] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+INFO  [2019-01-20 17:45:42,061] org.hibernate.orm.connections.access: HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@29914a73] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+INFO  [2019-01-20 17:45:42,063] org.hibernate.tool.schema.internal.SchemaCreatorImpl: HHH000476: Executing import script 'org.hibernate.tool.schema.internal.exec.ScriptSourceInputNonExistentImpl@19857fce'
+INFO  [2019-01-20 17:45:42,063] org.hibernate.hql.internal.QueryTranslatorFactoryInitiator: HHH000397: Using ASTQueryTranslatorFactory
+INFO  [2019-01-20 17:45:42,090] org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: Session Metrics {
+    9457 nanoseconds spent acquiring 1 JDBC connections;
+    48572 nanoseconds spent releasing 1 JDBC connections;
+    105178 nanoseconds spent preparing 1 JDBC statements;
+    417389 nanoseconds spent executing 1 JDBC statements;
+    0 nanoseconds spent executing 0 JDBC batches;
+    0 nanoseconds spent performing 0 L2C puts;
+    0 nanoseconds spent performing 0 L2C hits;
+    0 nanoseconds spent performing 0 L2C misses;
+    313632 nanoseconds spent executing 1 flushes (flushing a total of 1 entities and 0 collections);
+    0 nanoseconds spent executing 0 partial-flushes (flushing a total of 0 entities and 0 collections)
+}
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.3 s - in com.example.helloworld.db.PersonDAOTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 22, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- maven-jar-plugin:3.1.0:jar (default-jar) @ dropwizard-example ---
+[INFO] Building jar: /var/lib/jenkins/workspace/Application/build/target/dropwizard-example.jar
+[INFO] 
+[INFO] >>> maven-source-plugin:3.0.1:jar (attach-sources) > generate-sources @ dropwizard-example >>>
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.4.1:enforce (enforce) @ dropwizard-example ---
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:3.0.0:check (checkstyle) @ dropwizard-example ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.2:prepare-agent (prepare-agent) @ dropwizard-example ---
+[INFO] argLine set to -javaagent:/var/lib/jenkins/.m2/repository/org/jacoco/org.jacoco.agent/0.8.2/org.jacoco.agent-0.8.2-runtime.jar=destfile=/var/lib/jenkins/workspace/Application/build/target/jacoco.exec
+[INFO] 
+[INFO] <<< maven-source-plugin:3.0.1:jar (attach-sources) < generate-sources @ dropwizard-example <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-source-plugin:3.0.1:jar (attach-sources) @ dropwizard-example ---
+[INFO] Building jar: /var/lib/jenkins/workspace/Application/build/target/dropwizard-example-sources.jar
+[INFO] 
+[INFO] --- maven-shade-plugin:3.2.1:shade (default) @ dropwizard-example ---
+[INFO] Including io.dropwizard:dropwizard-core:jar:1.3.7 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-util:jar:1.3.7 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.core:jackson-annotations:jar:2.9.0 in the shaded jar.
+[INFO] Including com.google.guava:guava:jar:24.0-jre in the shaded jar.
+[INFO] Including org.checkerframework:checker-compat-qual:jar:2.0.0 in the shaded jar.
+[INFO] Including com.google.errorprone:error_prone_annotations:jar:2.1.3 in the shaded jar.
+[INFO] Including com.google.j2objc:j2objc-annotations:jar:1.1 in the shaded jar.
+[INFO] Including org.codehaus.mojo:animal-sniffer-annotations:jar:1.14 in the shaded jar.
+[INFO] Including com.google.code.findbugs:jsr305:jar:3.0.2 in the shaded jar.
+[INFO] Including joda-time:joda-time:jar:2.9.9 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-jackson:jar:1.3.7 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.core:jackson-core:jar:2.9.6 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.core:jackson-databind:jar:2.9.6 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.datatype:jackson-datatype-guava:jar:2.9.6 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.9.6 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.9.6 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.module:jackson-module-parameter-names:jar:2.9.6 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.module:jackson-module-afterburner:jar:2.9.6 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.datatype:jackson-datatype-joda:jar:2.9.6 in the shaded jar.
+[INFO] Including org.slf4j:slf4j-api:jar:1.7.25 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-validation:jar:1.3.7 in the shaded jar.
+[INFO] Including org.hibernate:hibernate-validator:jar:5.4.2.Final in the shaded jar.
+[INFO] Including org.jboss.logging:jboss-logging:jar:3.3.0.Final in the shaded jar.
+[INFO] Including org.glassfish:javax.el:jar:3.0.0 in the shaded jar.
+[INFO] Including org.javassist:javassist:jar:3.22.0-GA in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-configuration:jar:1.3.7 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.9.6 in the shaded jar.
+[INFO] Including org.yaml:snakeyaml:jar:1.18 in the shaded jar.
+[INFO] Including org.apache.commons:commons-lang3:jar:3.7 in the shaded jar.
+[INFO] Including org.apache.commons:commons-text:jar:1.2 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-logging:jar:1.3.7 in the shaded jar.
+[INFO] Including io.dropwizard.metrics:metrics-logback:jar:4.0.2 in the shaded jar.
+[INFO] Including org.slf4j:jul-to-slf4j:jar:1.7.25 in the shaded jar.
+[INFO] Including ch.qos.logback:logback-core:jar:1.2.3 in the shaded jar.
+[INFO] Including ch.qos.logback:logback-classic:jar:1.2.3 in the shaded jar.
+[INFO] Including org.slf4j:log4j-over-slf4j:jar:1.7.25 in the shaded jar.
+[INFO] Including org.slf4j:jcl-over-slf4j:jar:1.7.25 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-util:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-metrics:jar:1.3.7 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-jersey:jar:1.3.7 in the shaded jar.
+[INFO] Including org.glassfish.jersey.ext:jersey-metainf-services:jar:2.25.1 in the shaded jar.
+[INFO] Including org.glassfish.jersey.ext:jersey-bean-validation:jar:2.25.1 in the shaded jar.
+[INFO] Including io.dropwizard.metrics:metrics-jersey2:jar:4.0.2 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.9.6 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:jar:2.9.6 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:2.9.6 in the shaded jar.
+[INFO] Including org.glassfish.jersey.containers:jersey-container-servlet:jar:2.25.1 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-server:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including javax.servlet:javax.servlet-api:jar:3.1.0 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-webapp:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-xml:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-continuation:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-servlets:jar:1.3.7 in the shaded jar.
+[INFO] Including io.dropwizard.metrics:metrics-annotation:jar:4.0.2 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-jetty:jar:1.3.7 in the shaded jar.
+[INFO] Including io.dropwizard.metrics:metrics-jetty9:jar:4.0.2 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-servlet:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-security:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-servlets:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-http:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-lifecycle:jar:1.3.7 in the shaded jar.
+[INFO] Including io.dropwizard.metrics:metrics-core:jar:4.0.2 in the shaded jar.
+[INFO] Including io.dropwizard.metrics:metrics-jvm:jar:4.0.2 in the shaded jar.
+[INFO] Including io.dropwizard.metrics:metrics-jmx:jar:4.0.2 in the shaded jar.
+[INFO] Including io.dropwizard.metrics:metrics-servlets:jar:4.0.2 in the shaded jar.
+[INFO] Including io.dropwizard.metrics:metrics-json:jar:4.0.2 in the shaded jar.
+[INFO] Including com.papertrail:profiler:jar:1.0.2 in the shaded jar.
+[INFO] Including io.dropwizard.metrics:metrics-healthchecks:jar:4.0.2 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-request-logging:jar:1.3.7 in the shaded jar.
+[INFO] Including ch.qos.logback:logback-access:jar:1.2.3 in the shaded jar.
+[INFO] Including net.sourceforge.argparse4j:argparse4j:jar:0.8.1 in the shaded jar.
+[INFO] Including org.eclipse.jetty.toolchain.setuid:jetty-setuid-java:jar:1.0.3 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-auth:jar:1.3.7 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-assets:jar:1.3.7 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-http2:jar:1.3.7 in the shaded jar.
+[INFO] Including org.eclipse.jetty.http2:http2-server:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including org.eclipse.jetty.http2:http2-common:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including org.eclipse.jetty.http2:http2-hpack:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-alpn-openjdk8-server:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-alpn-server:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including org.eclipse.jetty:jetty-io:jar:9.4.11.v20180605 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-hibernate:jar:1.3.7 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-db:jar:1.3.7 in the shaded jar.
+[INFO] Including org.apache.tomcat:tomcat-jdbc:jar:9.0.5 in the shaded jar.
+[INFO] Including org.apache.tomcat:tomcat-juli:jar:9.0.5 in the shaded jar.
+[INFO] Including com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:jar:2.9.6 in the shaded jar.
+[INFO] Including org.jadira.usertype:usertype.core:jar:7.0.0.CR1 in the shaded jar.
+[INFO] Including org.jadira.usertype:usertype.spi:jar:7.0.0.CR1 in the shaded jar.
+[INFO] Including org.hibernate:hibernate-core:jar:5.2.15.Final in the shaded jar.
+[INFO] Including org.hibernate.javax.persistence:hibernate-jpa-2.1-api:jar:1.0.0.Final in the shaded jar.
+[INFO] Including antlr:antlr:jar:2.7.7 in the shaded jar.
+[INFO] Including org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:jar:1.0.1.Final in the shaded jar.
+[INFO] Including org.jboss:jandex:jar:2.0.3.Final in the shaded jar.
+[INFO] Including com.fasterxml:classmate:jar:1.3.4 in the shaded jar.
+[INFO] Including dom4j:dom4j:jar:1.6.1 in the shaded jar.
+[INFO] Including org.hibernate.common:hibernate-commons-annotations:jar:5.0.1.Final in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-migrations:jar:1.3.7 in the shaded jar.
+[INFO] Including org.liquibase:liquibase-core:jar:3.6.1 in the shaded jar.
+[INFO] Including com.mattbertolini:liquibase-slf4j:jar:2.0.0 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-views-freemarker:jar:1.3.7 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-views:jar:1.3.7 in the shaded jar.
+[INFO] Including org.freemarker:freemarker:jar:2.3.27-incubating in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-views-mustache:jar:1.3.7 in the shaded jar.
+[INFO] Including com.github.spullara.mustache.java:compiler:jar:0.9.5 in the shaded jar.
+[INFO] Including io.dropwizard:dropwizard-metrics-graphite:jar:1.3.7 in the shaded jar.
+[INFO] Including io.dropwizard.metrics:metrics-graphite:jar:4.0.2 in the shaded jar.
+[INFO] Including com.rabbitmq:amqp-client:jar:4.4.1 in the shaded jar.
+[INFO] Including com.h2database:h2:jar:1.4.197 in the shaded jar.
+[INFO] Including mysql:mysql-connector-java:jar:8.0.13 in the shaded jar.
+[INFO] Including com.google.protobuf:protobuf-java:jar:3.6.1 in the shaded jar.
+[INFO] Including org.glassfish.jersey.containers:jersey-container-servlet-core:jar:2.25.1 in the shaded jar.
+[INFO] Including org.glassfish.jersey.core:jersey-server:jar:2.25.1 in the shaded jar.
+[INFO] Including org.glassfish.jersey.core:jersey-common:jar:2.25.1 in the shaded jar.
+[INFO] Including org.glassfish.jersey.bundles.repackaged:jersey-guava:jar:2.25.1 in the shaded jar.
+[INFO] Including org.glassfish.hk2:osgi-resource-locator:jar:1.0.1 in the shaded jar.
+[INFO] Including javax.ws.rs:javax.ws.rs-api:jar:2.0.1 in the shaded jar.
+[INFO] Including org.glassfish.jersey.media:jersey-media-jaxb:jar:2.25.1 in the shaded jar.
+[INFO] Including javax.annotation:javax.annotation-api:jar:1.2 in the shaded jar.
+[INFO] Including org.glassfish.hk2:hk2-api:jar:2.5.0-b32 in the shaded jar.
+[INFO] Including org.glassfish.hk2:hk2-utils:jar:2.5.0-b32 in the shaded jar.
+[INFO] Including org.glassfish.hk2.external:aopalliance-repackaged:jar:2.5.0-b32 in the shaded jar.
+[INFO] Including org.glassfish.hk2.external:javax.inject:jar:2.5.0-b32 in the shaded jar.
+[INFO] Including org.glassfish.hk2:hk2-locator:jar:2.5.0-b32 in the shaded jar.
+[INFO] Including javax.validation:validation-api:jar:1.1.0.Final in the shaded jar.
+[INFO] Including org.glassfish.jersey.core:jersey-client:jar:2.25.1 in the shaded jar.
+[INFO] Replacing original artifact with shaded artifact.
+[INFO] Replacing /var/lib/jenkins/workspace/Application/build/target/dropwizard-example.jar with /var/lib/jenkins/workspace/Application/build/target/dropwizard-example-0.0.1-SNAPSHOT-shaded.jar
+[INFO] Dependency-reduced POM written at: /var/lib/jenkins/workspace/Application/build/dependency-reduced-pom.xml
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 25.728 s
+[INFO] Finished at: 2019-01-20T17:45:47Z
+[INFO] Final Memory: 44M/435M
+[INFO] ------------------------------------------------------------------------
+Finished: SUCCESS

@@ -1,0 +1,33 @@
+Started by user [8mha:////4JrjmSRx4qOtNYMMhYugXsyw+fINujBQhhzqimlc3f+QAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/lib/jenkins/workspace/Setup RDS
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from https://github.com/babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse origin/master^{commit} # timeout=10
+Checking out Revision f1cdb0d6fb606810e1c62c7b7797dd8075d856fa (origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f f1cdb0d6fb606810e1c62c7b7797dd8075d856fa
+Commit message: "Add files via upload (#61)"
+ > git rev-list --no-walk f1cdb0d6fb606810e1c62c7b7797dd8075d856fa # timeout=10
+[Setup RDS] $ /bin/sh -xe /tmp/jenkins6097337507210090033.sh
+++ aws secretsmanager get-secret-value --region us-east-1 --secret-id rds_db_password --output json --version-stage AWSCURRENT
+++ jq .password -r
+++ jq .SecretString -r
++ dbpassword=jD6Y#%k2
++ params=
++ params=ParameterKey=Name,ParameterValue=test-db
++ params='ParameterKey=Name,ParameterValue=test-db ParameterKey=VPCStackName,ParameterValue=ProjectVPC'
++ params='ParameterKey=Name,ParameterValue=test-db ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test'
++ params='ParameterKey=Name,ParameterValue=test-db ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test ParameterKey=Environment,ParameterValue=qa'
++ params='ParameterKey=Name,ParameterValue=test-db ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test ParameterKey=Environment,ParameterValue=qa ParameterKey=DBName,ParameterValue=test'
++ params='ParameterKey=Name,ParameterValue=test-db ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test ParameterKey=Environment,ParameterValue=qa ParameterKey=DBName,ParameterValue=test ParameterKey=DBUser,ParameterValue=test'
++ params='ParameterKey=Name,ParameterValue=test-db ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test ParameterKey=Environment,ParameterValue=qa ParameterKey=DBName,ParameterValue=test ParameterKey=DBUser,ParameterValue=test ParameterKey=DBPassword,ParameterValue=jD6Y#%k2'
++ tags=
++ tags=Key=Service,Value=test
++ tags='Key=Service,Value=test Key=Environment,Value=qa'
++ aws --output text cloudformation create-stack --stack-name test-db --region us-east-1 --template-body file://ops/app_RDS.yml --parameters ParameterKey=Name,ParameterValue=test-db ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Service,ParameterValue=test ParameterKey=Environment,ParameterValue=qa ParameterKey=DBName,ParameterValue=test ParameterKey=DBUser,ParameterValue=test ParameterKey=DBPassword,ParameterValue=jD6Y#%k2 --capabilities CAPABILITY_IAM --tags Key=Service,Value=test Key=Environment,Value=qa
+arn:aws:cloudformation:us-east-1:230883561944:stack/test-db/a8f5f480-1b22-11e9-855c-1270c4b0e9f2
+Finished: SUCCESS

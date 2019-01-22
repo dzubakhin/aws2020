@@ -1,0 +1,120 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.29.3">
+      <projectUrl>https://github.com/babinskiy/AWS_Demo_project.git/</projectUrl>
+      <displayName>AWS_Demo_project</displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>stack_name</name>
+          <description></description>
+          <defaultValue>dropwizard-db</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>service</name>
+          <description></description>
+          <defaultValue>dropwizard</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>vpc_name</name>
+          <description>should be existing vpc</description>
+          <defaultValue>ProjectVPC</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>dbname</name>
+          <description>[\w]+</description>
+          <defaultValue>example</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>dbuser</name>
+          <description>[\w]+</description>
+          <defaultValue></defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>region</name>
+          <description>must be valit aws region</description>
+          <defaultValue>us-east-1</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>environment</name>
+          <description>must be valid environment name</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>qa</string>
+              <string>prod</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/babinskiy/AWS_Demo_project.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>dbpassword=$(aws secretsmanager get-secret-value                     \
+                                                --region ${region}                   \
+                                                --secret-id rds_db_password   \
+                                                --output json                        \
+                                                --version-stage AWSCURRENT |         \
+                                                jq &quot;.SecretString&quot; -r |              \
+                                                jq &quot;.password&quot; -r)
+  
+params=&quot;&quot;
+params=&quot;${params:+${params} }ParameterKey=Name,ParameterValue=${stack_name}&quot;
+params=&quot;${params:+${params} }ParameterKey=VPCStackName,ParameterValue=${vpc_name}&quot;
+params=&quot;${params:+${params} }ParameterKey=Service,ParameterValue=${service}&quot;
+params=&quot;${params:+${params} }ParameterKey=Environment,ParameterValue=${environment}&quot;
+params=&quot;${params:+${params} }ParameterKey=DBName,ParameterValue=${dbname}&quot;
+params=&quot;${params:+${params} }ParameterKey=DBUser,ParameterValue=${dbuser}&quot;
+params=&quot;${params:+${params} }ParameterKey=DBPassword,ParameterValue=${dbpassword}&quot;
+
+tags=&quot;&quot;
+tags=&quot;${tags:+${tags} }Key=Service,Value=${service}&quot;
+tags=&quot;${tags:+${tags} }Key=Environment,Value=${environment}&quot;
+
+aws --output text cloudformation create-stack                             \
+      --stack-name &quot;${stack_name}&quot;                                          \
+      --region &quot;${region}&quot;                                                  \
+      --template-body file://ops/app_RDS.yml                      \
+      --parameters ${params}                                                \
+      --capabilities CAPABILITY_IAM                                         \
+      --tags ${tags}</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.8.10"/>
+  </buildWrappers>
+</project>
