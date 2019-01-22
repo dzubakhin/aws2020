@@ -1,0 +1,111 @@
+Started by user [8mha:////4JrjmSRx4qOtNYMMhYugXsyw+fINujBQhhzqimlc3f+QAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/lib/jenkins/workspace/Application/deploy
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url git@github.com:babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from git@github.com:babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress git@github.com:babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 41445fe522fc0dc027e184f831cfb8d442b14b0f (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 41445fe522fc0dc027e184f831cfb8d442b14b0f
+Commit message: "fix Delete failed (#72)"
+ > git rev-list --no-walk ab3c0e1154ec06814c1a0d639cf015174314b435 # timeout=10
+[deploy] $ /bin/sh -xe /tmp/jenkins5722788288010734718.sh
++ source ops/deploy_app.sh --stack-name asg-qa-dropwizard-docker-0017 --elb-stack-name qa-ELB2 --vpc-name ProjectVPC --version 0.0.17 --instance-type t2.micro --template-body ops/cloudformation/app_ASG.yml --environment qa --deploy-source docker
+++ set -o errexit
+++ set -o nounset
+++ main --stack-name asg-qa-dropwizard-docker-0017 --elb-stack-name qa-ELB2 --vpc-name ProjectVPC --version 0.0.17 --instance-type t2.micro --template-body ops/cloudformation/app_ASG.yml --environment qa --deploy-source docker
+++ local stack_name=app
+++ local ELB_stack_name=app-ELB
+++ local vpc_name=DefaultVPC
+++ local version=
+++ local environment=qa
+++ local region=us-east-1
+++ local instance_type=t2.micro
+++ local template_body=ops/cloudformation/app_ASG.yml
+++ local deploy_source=docker
+++ [[ 16 -gt 0 ]]
+++ case "${1}" in
+++ stack_name=asg-qa-dropwizard-docker-0017
+++ shift
+++ shift
+++ [[ 14 -gt 0 ]]
+++ case "${1}" in
+++ ELB_stack_name=qa-ELB2
+++ shift
+++ shift
+++ [[ 12 -gt 0 ]]
+++ case "${1}" in
+++ vpc_name=ProjectVPC
+++ shift
+++ shift
+++ [[ 10 -gt 0 ]]
+++ case "${1}" in
+++ version=0.0.17
+++ shift
+++ shift
+++ [[ 8 -gt 0 ]]
+++ case "${1}" in
+++ instance_type=t2.micro
+++ shift
+++ shift
+++ [[ 6 -gt 0 ]]
+++ case "${1}" in
+++ template_body=ops/cloudformation/app_ASG.yml
+++ shift
+++ shift
+++ [[ 4 -gt 0 ]]
+++ case "${1}" in
+++ environment=qa
+++ shift
+++ shift
+++ [[ 2 -gt 0 ]]
+++ case "${1}" in
+++ deploy_source=docker
+++ shift
+++ shift
+++ [[ 0 -gt 0 ]]
+++ [[ -z 0.0.17 ]]
+++ launch us-east-1 asg-qa-dropwizard-docker-0017 qa-ELB2 ProjectVPC 0.0.17 qa t2.micro ops/cloudformation/app_ASG.yml docker
+++ local region=us-east-1
+++ local stack_name=asg-qa-dropwizard-docker-0017
+++ local ELB_stack_name=qa-ELB2
+++ local vpc_name=ProjectVPC
+++ local version=0.0.17
+++ local environment=qa
+++ local instance_type=t2.micro
+++ local template_body=ops/cloudformation/app_ASG.yml
+++ local deploy_source=docker
+++ local params=
+++ params=ParameterKey=Name,ParameterValue=asg-qa-dropwizard-docker-0017
+++ params='ParameterKey=Name,ParameterValue=asg-qa-dropwizard-docker-0017 ParameterKey=ELBStackName,ParameterValue=qa-ELB2'
+++ params='ParameterKey=Name,ParameterValue=asg-qa-dropwizard-docker-0017 ParameterKey=ELBStackName,ParameterValue=qa-ELB2 ParameterKey=VPCStackName,ParameterValue=ProjectVPC'
+++ params='ParameterKey=Name,ParameterValue=asg-qa-dropwizard-docker-0017 ParameterKey=ELBStackName,ParameterValue=qa-ELB2 ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Version,ParameterValue=0.0.17'
+++ params='ParameterKey=Name,ParameterValue=asg-qa-dropwizard-docker-0017 ParameterKey=ELBStackName,ParameterValue=qa-ELB2 ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Version,ParameterValue=0.0.17 ParameterKey=Environment,ParameterValue=qa'
+++ params='ParameterKey=Name,ParameterValue=asg-qa-dropwizard-docker-0017 ParameterKey=ELBStackName,ParameterValue=qa-ELB2 ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Version,ParameterValue=0.0.17 ParameterKey=Environment,ParameterValue=qa ParameterKey=InstanceType,ParameterValue=t2.micro'
+++ params='ParameterKey=Name,ParameterValue=asg-qa-dropwizard-docker-0017 ParameterKey=ELBStackName,ParameterValue=qa-ELB2 ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Version,ParameterValue=0.0.17 ParameterKey=Environment,ParameterValue=qa ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=DeploySource,ParameterValue=docker'
+++ local tags=
+++ tags=Key=service,Value=dropwizard
+++ tags='Key=service,Value=dropwizard Key=Version,Value=0.0.17'
+++ tags='Key=service,Value=dropwizard Key=Version,Value=0.0.17 Key=Environment,Value=qa'
+++ aws --output text cloudformation create-stack --stack-name asg-qa-dropwizard-docker-0017 --region us-east-1 --template-body file://ops/cloudformation/app_ASG.yml --parameters ParameterKey=Name,ParameterValue=asg-qa-dropwizard-docker-0017 ParameterKey=ELBStackName,ParameterValue=qa-ELB2 ParameterKey=VPCStackName,ParameterValue=ProjectVPC ParameterKey=Version,ParameterValue=0.0.17 ParameterKey=Environment,ParameterValue=qa ParameterKey=InstanceType,ParameterValue=t2.micro ParameterKey=DeploySource,ParameterValue=docker --capabilities CAPABILITY_IAM --tags Key=service,Value=dropwizard Key=Version,Value=0.0.17 Key=Environment,Value=qa
+arn:aws:cloudformation:us-east-1:230883561944:stack/asg-qa-dropwizard-docker-0017/3777fc00-1b4e-11e9-876b-0a129e2750f4
+++ log 'Stack creation launched'
+++ echo 'INFO: Stack creation launched'
+INFO: Stack creation launched
+++ wait_complete us-east-1 asg-qa-dropwizard-docker-0017
+++ local region=us-east-1
+++ local stack_name=asg-qa-dropwizard-docker-0017
+++ log Waiting...
+++ echo 'INFO: Waiting...'
+INFO: Waiting...
+++ aws cloudformation wait stack-create-complete --region us-east-1 --stack-name asg-qa-dropwizard-docker-0017
+++ log 'Stack creation complete'
+++ echo 'INFO: Stack creation complete'
+INFO: Stack creation complete
++ python ops/cloudformation/scripts/del_stacks.py qa dropwizard 0.0.17
+('Delete:', 'asg-qa-dropwizard-docker-0016', [{u'Value': '0.0.16', u'Key': 'Version'}, {u'Value': 'dropwizard', u'Key': 'service'}, {u'Value': 'qa', u'Key': 'Environment'}])
+Finished: SUCCESS

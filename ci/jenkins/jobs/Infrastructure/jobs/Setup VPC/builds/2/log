@@ -1,0 +1,25 @@
+Started by user [8mha:////4FuTPzBZStcYgruvItJfegEMeCRMLN/iqML4MgAjwsBxAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/jenkins_home/workspace/Setup VPC
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from https://github.com/babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision f32c829da849eb37ad7dd9f46fde710b2f1de44e (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f f32c829da849eb37ad7dd9f46fde710b2f1de44e
+Commit message: "SDOR-117: Some README.md corrections (#58)"
+ > git rev-list --no-walk f32c829da849eb37ad7dd9f46fde710b2f1de44e # timeout=10
+[Setup VPC] $ /bin/sh -xe /tmp/jenkins4581042443101227559.sh
++ params=
++ params='ParameterKey=StackName,ParameterValue=testjobVPC'
++ tags=
++ tags='Key=Service,Value=testjob'
++ aws cloudformation create-stack --stack-name testjobVPC --region us-east-1 --template-body file://ops/vpc.yml --parameters 'ParameterKey=StackName,ParameterValue=testjobVPC' --capabilities CAPABILITY_IAM --tags 'Key=Service,Value=testjob'
+{
+    "StackId": "arn:aws:cloudformation:us-east-1:230883561944:stack/testjobVPC/99b7c540-1af8-11e9-b9bc-0e8cd4caae34"
+}
+Finished: SUCCESS

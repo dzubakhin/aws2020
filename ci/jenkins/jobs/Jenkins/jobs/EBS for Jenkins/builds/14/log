@@ -1,0 +1,41 @@
+Started by user [8mha:////4FuTPzBZStcYgruvItJfegEMeCRMLN/iqML4MgAjwsBxAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/jenkins_home/workspace/Jenkins/EBS for Jenkins
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from https://github.com/babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse origin/jenkins_jobs_fixes^{commit} # timeout=10
+Checking out Revision 44f040c9d775e91a4a88f613e443cf7a55453e0a (origin/jenkins_jobs_fixes)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 44f040c9d775e91a4a88f613e443cf7a55453e0a
+Commit message: "fix default value"
+ > git rev-list --no-walk 2ddf371db8af353eca51e915faab5f3184a5d8f1 # timeout=10
+[EBS for Jenkins] $ /bin/sh -xe /tmp/jenkins5515227921087737671.sh
++ source CloudFormation/Resources/jenkins-ebs-volume/create-stack.sh
++ set -o errexit
++ set -o nounset
++ main 
++ '[[' 1 -gt 0 ]]
++ shift
++ '[[' 0 -gt 0 ]]
++ launch us-east-1 test-jenkins-ebs-volume 8 CloudFormation/Resources/jenkins-ebs-volume test-jenkins test-ci
++ local 'region=us-east-1'
++ local 'stack_name=test-jenkins-ebs-volume'
++ local 'size=8'
++ local 'templete_path=CloudFormation/Resources/jenkins-ebs-volume'
++ local 'service=test-jenkins'
++ local 'environment=test-ci'
++ local 'tags='
++ tags='Key=Service,Value=test-jenkins'
++ tags='Key=Service,Value=test-jenkins Key=Environment,Value=test-ci'
++ local 'params='
++ params='ParameterKey=Size,ParameterValue=8'
++ echo CloudFormation/Resources/jenkins-ebs-volume
+CloudFormation/Resources/jenkins-ebs-volume
++ aws cloudformation create-stack --stack-name test-jenkins-ebs-volume --region us-east-1 --template-body file://CloudFormation/Resources/jenkins-ebs-volume/ebs-volume.yaml --parameters 'ParameterKey=Size,ParameterValue=8' --tags 'Key=Service,Value=test-jenkins' 'Key=Environment,Value=test-ci' --capabilities CAPABILITY_IAM
+{
+    "StackId": "arn:aws:cloudformation:us-east-1:230883561944:stack/test-jenkins-ebs-volume/5fb9cc50-1a3d-11e9-a35b-0eb85d5eff94"
+}
+Finished: SUCCESS

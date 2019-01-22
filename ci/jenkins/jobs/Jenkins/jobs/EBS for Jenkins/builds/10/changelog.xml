@@ -1,0 +1,11 @@
+commit 4607865d6bfcf423e1e0800a780212ade1daeeab
+tree 201f2b7af0a7b5dee07e50caf3fad985be8f3a89
+parent 872733db05cd4f5541c33c1915bd89742dc1ac7b
+author Ivan Yermakov <iyerm@softserveinc.com> 2019-01-17 11:24:11 +0200
+committer Ivan Yermakov <iyerm@softserveinc.com> 2019-01-17 11:24:11 +0200
+
+    add capabilities IAM
+
+
+
+:100644 100644 f5073250605ae3707d3fe9d89e5f7cb845a1e99b 131e181d67b554ffa7477322c4b711a8c4548420 M	CloudFormation/Resources/jenkins-ebs-volume/create-stack.sh

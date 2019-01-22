@@ -1,0 +1,19 @@
+Started by user [8mha:////4FuTPzBZStcYgruvItJfegEMeCRMLN/iqML4MgAjwsBxAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/jenkins_home/workspace/Jenkins/Setup Jenkins
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from https://github.com/babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse origin/jenkins_jobs_fixes^{commit} # timeout=10
+Checking out Revision dc7d5ef9a174b4b99d819525057d733f3995efb1 (origin/jenkins_jobs_fixes)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f dc7d5ef9a174b4b99d819525057d733f3995efb1
+Commit message: "fix variables description"
+ > git rev-list --no-walk dc7d5ef9a174b4b99d819525057d733f3995efb1 # timeout=10
+[Setup Jenkins] $ /bin/bash /tmp/jenkins1437776063833220854.sh
+/tmp/jenkins1437776063833220854.sh: line 13: unexpected EOF while looking for matching `"'
+/tmp/jenkins1437776063833220854.sh: line 17: syntax error: unexpected end of file
+Build step 'Execute shell' marked build as failure
+Finished: FAILURE

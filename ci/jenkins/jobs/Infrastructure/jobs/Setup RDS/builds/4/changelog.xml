@@ -1,0 +1,11 @@
+commit f1cdb0d6fb606810e1c62c7b7797dd8075d856fa
+tree 74c1299b6ac68f84fc91073d900a3058fca09e97
+parent f32c829da849eb37ad7dd9f46fde710b2f1de44e
+author avetishani <avetis86@gmail.com> 2019-01-18 12:37:42 +0200
+committer babinskiy <45942058+babinskiy@users.noreply.github.com> 2019-01-18 12:37:42 +0200
+
+    Add files via upload (#61)
+
+
+
+:000000 100644 0000000000000000000000000000000000000000 2fd03d9c801210624ffbd3b418a4ef8ea5637715 A	ops/app_install.pp

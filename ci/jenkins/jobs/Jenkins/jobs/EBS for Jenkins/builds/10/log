@@ -1,0 +1,39 @@
+Started by user [8mha:////4FuTPzBZStcYgruvItJfegEMeCRMLN/iqML4MgAjwsBxAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/jenkins_home/workspace/Jenkins/EBS for Jenkins
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from https://github.com/babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse origin/jenkins_jobs_fixes^{commit} # timeout=10
+Checking out Revision 4607865d6bfcf423e1e0800a780212ade1daeeab (origin/jenkins_jobs_fixes)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 4607865d6bfcf423e1e0800a780212ade1daeeab
+Commit message: "add capabilities IAM"
+ > git rev-list --no-walk 872733db05cd4f5541c33c1915bd89742dc1ac7b # timeout=10
+[EBS for Jenkins] $ /bin/sh -xe /tmp/jenkins8269507143466675144.sh
++ source CloudFormation/Resources/jenkins-ebs-volume/create-stack.sh
++ set -o errexit
++ set -o nounset
++ main 
++ '[[' 1 -gt 0 ]]
++ shift
++ '[[' 0 -gt 0 ]]
++ launch us-east-1 test-jenkins-ebs-volume 8 CloudFormation/Resources/jenkins-ebs-volume
++ local 'region=us-east-1'
++ local 'stack_name=test-jenkins-ebs-volume'
++ local 'size=8'
++ local 'templete_path=CloudFormation/Resources/jenkins-ebs-volume'
++ local 'tags='
++ tags='Key=service,Value=EBS'
++ tags='Key=service,Value=EBS Key=environment,Value=ci'
++ local 'params='
++ params='ParameterKey=Size,ParameterValue=8'
++ echo CloudFormation/Resources/jenkins-ebs-volume
+CloudFormation/Resources/jenkins-ebs-volume
++ aws cloudformation create-stack --stack-name test-jenkins-ebs-volume --region us-east-1 --template-body file://CloudFormation/Resources/jenkins-ebs-volume/ebs-volume.yaml --parameters 'ParameterKey=Size,ParameterValue=8' --tags 'Key=service,Value=EBS' 'Key=environment,Value=ci' --capabilities CAPABILITY_IAM
+{
+    "StackId": "arn:aws:cloudformation:us-east-1:230883561944:stack/test-jenkins-ebs-volume/356e4d30-1a39-11e9-9955-0e7a6b775da6"
+}
+Finished: SUCCESS

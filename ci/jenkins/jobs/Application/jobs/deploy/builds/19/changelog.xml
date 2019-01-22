@@ -1,0 +1,11 @@
+commit 7b4a6d22bb1c406ce630a0603d2c25a5b35db2f5
+tree 24a82819bbf0ef04fb4b82f8b68e99a83360d655
+parent f83b9d48b08e225f27688d3c139966d78901bf8f
+author Nick Babinskiy <nick@nb.local> 2019-01-20 21:02:20 +0200
+committer Nick Babinskiy <nick@nb.local> 2019-01-20 21:02:20 +0200
+
+    Fix Typo
+
+
+
+:100644 100644 14c3f10e2aa409571b34586271c5b9ba79b3101d 8c89c143f9dbd41cd84ae5d2935c7411569af02e M	ci/Resources/jenkins-eip/EIP.yml

@@ -1,0 +1,131 @@
+Started by user [8mha:////4JrjmSRx4qOtNYMMhYugXsyw+fINujBQhhzqimlc3f+QAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/lib/jenkins/workspace/Application/release
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] Done
+Cloning the remote Git repository
+Cloning repository git@github.com:babinskiy/dropwizard-example.git
+ > git init /var/lib/jenkins/workspace/Application/release # timeout=10
+Fetching upstream changes from git@github.com:babinskiy/dropwizard-example.git
+ > git --version # timeout=10
+ > git fetch --tags --progress git@github.com:babinskiy/dropwizard-example.git +refs/heads/*:refs/remotes/origin/*
+ > git config remote.origin.url git@github.com:babinskiy/dropwizard-example.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url git@github.com:babinskiy/dropwizard-example.git # timeout=10
+Fetching upstream changes from git@github.com:babinskiy/dropwizard-example.git
+ > git fetch --tags --progress git@github.com:babinskiy/dropwizard-example.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision afbe63f3a12b580a77a9b8a391cc18dd6897f4f2 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f afbe63f3a12b580a77a9b8a391cc18dd6897f4f2
+Commit message: "Delete DB password"
+ > git rev-list --no-walk afbe63f3a12b580a77a9b8a391cc18dd6897f4f2 # timeout=10
+[release] $ /bin/sh -xe /tmp/jenkins2346876665503115916.sh
++ sed 's/^defaultName:.*/defaultName: DropWizard-0.0.11/' mysql.yml
+template: Hello, %s!
+
+defaultName: DropWizard-0.0.11
+
+# Database settings.
+database:
+
+  # the name of your JDBC driver
+  driverClass: com.mysql.cj.jdbc.Driver
+
+  # the username
+  user: user
+
+  # the password
+  password: 
+
+  # the JDBC URL
+  url: jdbc:mysql://dm15cpobta14nvz.cq9tffzgbytc.us-east-1.rds.amazonaws.com:3306/example
+
+  # the minimum number of connections to keep open
+  minSize: 3
+
+  # the maximum number of connections to keep open
+  maxSize: 20
+
+# use the simple server factory if you only want to run on a single port
+#server:
+#  type: simple
+#  connector:
+#    type: http
+#    port: 8080
+
+server:
+#  softNofileLimit: 1000
+#  hardNofileLimit: 1000
+  applicationConnectors:
+    - type: http
+      port: 8080
+    # - type: https
+    #   port: 8443
+    #   keyStorePath: example.keystore
+    #   keyStorePassword: example
+    #this requires the alpn-boot library on the JVM's boot classpath
+    #- type: h2
+    #  port: 8445
+    #  keyStorePath: example.keystore
+    #  keyStorePassword: example
+  adminConnectors:
+    - type: http
+      port: 8081
+    # - type: https
+    #   port: 8444
+    #   keyStorePath: example.keystore
+    #   keyStorePassword: example
+
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: INFO
+
+  # Logger-specific levels.
+  loggers:
+
+    # Sets the level for 'com.example.app' to DEBUG.
+    com.example.app: INFO
+
+    # Redirects SQL logs to a separate file
+    org.hibernate.SQL:
+      level: ERROR
+
+# Logback's Time Based Rolling Policy - archivedLogFilenamePattern: /tmp/application-%d{yyyy-MM-dd}.log.gz
+# Logback's Size and Time Based Rolling Policy -  archivedLogFilenamePattern: /tmp/application-%d{yyyy-MM-dd}-%i.log.gz
+# Logback's Fixed Window Rolling Policy -  archivedLogFilenamePattern: /tmp/application-%i.log.gz
+
+  appenders:
+    - type: console
+    # - type: file
+    #   threshold: INFO
+    #   logFormat: "%-6level [%d{HH:mm:ss.SSS}] [%t] %logger{5} - %X{code} %msg %n"
+    #   currentLogFilename: /tmp/application.log
+    #   archivedLogFilenamePattern: /tmp/application-%d{yyyy-MM-dd}-%i.log.gz
+    #   archivedFileCount: 7
+    #   timeZone: UTC
+    #   maxFileSize: 10MB
+
+# the key needs to match the configuration key of the renderer (ViewRenderer::getConfigurationKey)
+viewRendererConfiguration:
+    freemarker:
+        strict_syntax: yes
+        whitespace_stripping: yes
+
+# metrics:
+#   reporters:
+#     - type: graphite
+#       host: localhost
+#       port: 2003
+#       prefix: example
+#       frequency: 1m
+ > git tag -l 0.0.11 # timeout=10
+ > git tag -a -f -m Jenkins Git plugin tagging with 0.0.11 0.0.11 # timeout=10
+Pushing tag 0.0.11 to repo origin
+ > git --version # timeout=10
+ > git push git@github.com:babinskiy/dropwizard-example.git 0.0.11
+Triggering a new build of [8mha:////4KjwUBrb0iOFr17OBhRbgwmXZd2Ko3Zle6rpqK0P499GAAAApR+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyREgYZ/az8JH3HgoKczOTEksz8PDA/JbUgJ79SHwA0Xw+m0QAAAA==[0mApplication » deploy
+Finished: SUCCESS

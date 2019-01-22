@@ -1,0 +1,11 @@
+commit 44f040c9d775e91a4a88f613e443cf7a55453e0a
+tree 5b1d558614f0728fb97f5d5d12e3d29e7e738437
+parent 2ddf371db8af353eca51e915faab5f3184a5d8f1
+author Ivan Yermakov <iyerm@softserveinc.com> 2019-01-17 11:56:16 +0200
+committer Ivan Yermakov <iyerm@softserveinc.com> 2019-01-17 11:56:16 +0200
+
+    fix default value
+
+
+
+:100644 100644 78515c9d6715ff075dba6a9a0b5aa809ae031d11 2d788cad32ab8dc622cbf5003a384e9818588e24 M	CloudFormation/Resources/jenkins-ebs-volume/ebs-volume.yaml

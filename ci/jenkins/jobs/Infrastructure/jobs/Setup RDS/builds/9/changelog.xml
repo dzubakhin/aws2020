@@ -1,0 +1,22 @@
+commit 4923ef8049c8065959b3e1849acce05d17c2d90a
+tree 7a50a665a70ea7e555549412956ce89b857a360a
+parent 7c227379fc2f9f9bfd58caaea00bc2c225505302
+author babinskiy <45942058+babinskiy@users.noreply.github.com> 2019-01-18 15:19:52 +0200
+committer GitHub <noreply@github.com> 2019-01-18 15:19:52 +0200
+
+    Jenkins Route53 RR (#63)
+
+
+
+:100644 100644 3e94c327b29f87ba3d4b5f38e4a26676b0be7e98 61095fdd2a30064c36ef3ce82d97092bdf56edfd M	ci/jenkins/jenkins.yaml
+commit 7c227379fc2f9f9bfd58caaea00bc2c225505302
+tree 39e6d3a10b54df52801a25b6ded782c974155b81
+parent f1cdb0d6fb606810e1c62c7b7797dd8075d856fa
+author babinskiy <45942058+babinskiy@users.noreply.github.com> 2019-01-18 15:19:27 +0200
+committer GitHub <noreply@github.com> 2019-01-18 15:19:27 +0200
+
+    fix Deploy source (#65)
+
+
+
+:100644 100644 25735ef1bec92694b9a6c191dba52170c728895a dedffade3aff52d1253a58e366c342d002545190 M	ops/deploy_app.sh

@@ -1,0 +1,68 @@
+Started by user [8mha:////4FuTPzBZStcYgruvItJfegEMeCRMLN/iqML4MgAjwsBxAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAyWEgYu/dLi1CIwAQDYegtJvwAAAA==[0muser
+Building in workspace /var/jenkins_home/workspace/Jenkins/EBS for Jenkins
+ > git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/babinskiy/AWS_Demo_project.git # timeout=10
+Fetching upstream changes from https://github.com/babinskiy/AWS_Demo_project.git
+ > git --version # timeout=10
+ > git fetch --tags --progress https://github.com/babinskiy/AWS_Demo_project.git +refs/heads/*:refs/remotes/origin/*
+ > git rev-parse origin/jenkins_jobs_fixes^{commit} # timeout=10
+Checking out Revision ab00ba4f128247621c061f4492f25a11e79314b2 (origin/jenkins_jobs_fixes)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f ab00ba4f128247621c061f4492f25a11e79314b2
+Commit message: "add again variables"
+ > git rev-list --no-walk ab00ba4f128247621c061f4492f25a11e79314b2 # timeout=10
+[EBS for Jenkins] $ /bin/sh -xe /tmp/jenkins636133352405998775.sh
++ source CloudFormation/Resources/jenkins-ebs-volume/create-stack.sh --region us-east-1 --stack-name asd-jenkins-ebs-volume --size 8 --templete-path CloudFormation/Resources/jenkins-ebs-volume --service asd-jenkins --environment asd-ci
++ set -o errexit
++ set -o nounset
++ main --region us-east-1 --stack-name asd-jenkins-ebs-volume --size 8 --templete-path CloudFormation/Resources/jenkins-ebs-volume --service asd-jenkins --environment asd-ci
++ local 'stack_name=jenkins-ebs-volume'
++ local 'size=8'
++ local 'region=us-east-1'
++ dirname /tmp/jenkins636133352405998775.sh
++ local 'templete_path=/tmp'
++ local 'service=jenkins'
++ local 'environment=ci'
++ '[[' 12 -gt 0 ]]
++ region=us-east-1
++ shift
++ shift
++ '[[' 10 -gt 0 ]]
++ stack_name=asd-jenkins-ebs-volume
++ shift
++ shift
++ '[[' 8 -gt 0 ]]
++ size=8
++ shift
++ shift
++ '[[' 6 -gt 0 ]]
++ templete_path=CloudFormation/Resources/jenkins-ebs-volume
++ shift
++ shift
++ '[[' 4 -gt 0 ]]
++ service=asd-jenkins
++ shift
++ shift
++ '[[' 2 -gt 0 ]]
++ environment=asd-ci
++ shift
++ shift
++ '[[' 0 -gt 0 ]]
++ launch us-east-1 asd-jenkins-ebs-volume 8 CloudFormation/Resources/jenkins-ebs-volume asd-jenkins asd-ci
++ local 'region=us-east-1'
++ local 'stack_name=asd-jenkins-ebs-volume'
++ local 'size=8'
++ local 'templete_path=CloudFormation/Resources/jenkins-ebs-volume'
++ local 'service=asd-jenkins'
++ local 'environment=asd-ci'
++ local 'tags='
++ tags='Key=Service,Value=asd-jenkins'
++ tags='Key=Service,Value=asd-jenkins Key=Environment,Value=asd-ci'
++ local 'params='
++ params='ParameterKey=Size,ParameterValue=8'
++ aws cloudformation create-stack --stack-name asd-jenkins-ebs-volume --region us-east-1 --template-body file://CloudFormation/Resources/jenkins-ebs-volume/ebs-volume.yaml --parameters 'ParameterKey=Size,ParameterValue=8' --tags 'Key=Service,Value=asd-jenkins' 'Key=Environment,Value=asd-ci' --capabilities CAPABILITY_IAM
+{
+    "StackId": "arn:aws:cloudformation:us-east-1:230883561944:stack/asd-jenkins-ebs-volume/5f217530-1a43-11e9-ba23-12d954a12b14"
+}
+Finished: SUCCESS
